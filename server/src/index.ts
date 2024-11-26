@@ -1,9 +1,9 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
-import { configDotenv } from 'dotenv';
+import dotenv from 'dotenv';
 
 // Load environment variables from the .env file
-configDotenv();
+dotenv.config();
 
 // Create an instance of the Express application
 const app = express();
@@ -11,9 +11,9 @@ const app = express();
 // CORS Configuration
 app.use(
   cors({
-    origin: '*', // Allow all domains for cross-origin requests
-    methods: ['GET', 'POST', 'DELETE', 'PUT'], // Allow specific HTTP methods
-    allowedHeaders: ['Content-Type', 'Authorization'], // Allow specific headers
+    origin: '*',
+    methods: ['GET', 'POST', 'DELETE', 'PUT'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   }),
 );
 
@@ -29,8 +29,8 @@ app.use(express.static('public'));
 // 404 Fallback Middleware: Handles requests to undefined routes
 app.use((req: Request, res: Response) => {
   res.status(404).json({
-    success: false, // Indicate failure
-    message: 'Resource not found', // Inform the user that the resource was not found
+    success: false,
+    message: 'Resource not found',
   });
 });
 
@@ -39,12 +39,12 @@ app.use((req: Request, res: Response) => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 app.use((err: any, req: Request, res: Response) => {
   res.status(err.status || 500).json({
-    success: false, // Indicate failure
-    message: err.message || 'Internal Server Error', // Provide the error message or a generic error message
+    success: false,
+    message: err.message || 'Internal Server Error',
   });
 });
 
 // Start the server and listen on the port defined in the environment variables
 app.listen(process.env.PORT, () => {
-  console.log('Started listening on port ' + process.env.PORT); // Log a message indicating the server has started
+  console.log('Started listening on port ' + process.env.PORT);
 });
