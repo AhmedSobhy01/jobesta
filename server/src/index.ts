@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
-import {configDotenv} from 'dotenv';
+import { configDotenv } from 'dotenv';
 
 // Load environment variables from the .env file
 configDotenv();
