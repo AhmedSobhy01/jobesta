@@ -35,12 +35,12 @@ jobs:
             - name: Run ESLint for server
               working-directory: ./server
               run: |
-                  npx eslint . --ext .ts,.js
+                  npx eslint .
 
             - name: Run ESLint for client
               working-directory: ./client
               run: |
-                  npx eslint . --ext .ts,.tsx,.js,.jsx
+                  npx eslint .
 
             - name: Run Prettier check for server
               working-directory: ./server
