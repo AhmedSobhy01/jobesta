@@ -1,0 +1,23 @@
+services:
+  database:
+    image: postgres-db
+    container_name: jobesta-db
+    command: -p ${DB_PORT}
+    expose:
+      - ${DB_PORT}:${DB_PORT}
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - jobesta-data:/var/lib/postgresql/data
+
+volumes:
+  jobesta-data:
+    name: "jobesta-data"
