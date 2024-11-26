@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES6", // Transpile to ES6 JavaScript
+    "module": "ES6", // Use ES6 module system (for import/export)
+    "moduleResolution": "node", // Resolve modules like Node.js
+    "esModuleInterop": true, // Allows default imports for non-ES modules
+    "skipLibCheck": true, // Skip type checking of declaration files
+    "forceConsistentCasingInFileNames": true, // Ensure consistent casing in file names
+    "outDir": "./dist", // Directory where compiled JS files will be saved
+    "rootDir": "./src", // The root directory of TypeScript source files
+    "strict": true, // Enable strict type checking
+    "resolveJsonModule": true, // Allow importing JSON files
+    "lib": ["es6", "dom"] // Include libraries for modern JavaScript and browser environments
+  },
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+  },
+  "include": ["src/**/*.ts"], // Include all files inside the 'src' directory
+  "exclude": ["node_modules"] // Exclude node_modules from TypeScript compilation
+}
