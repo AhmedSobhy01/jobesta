@@ -27,11 +27,11 @@ app.use(express.json());
 // Serve static files from the 'public' directory
 app.use(express.static('public'));
 
-app.get("/",async(req: Request, res: Response)=>{
-  const query = await db.query("Select * from accounts");
+app.get('/', async (req: Request, res: Response) => {
+  const query = await db.query('Select * from accounts');
   res.json({
-    data:query.rows
-  })
+    data: query.rows,
+  });
 });
 
 // 404 Fallback Middleware: Handles requests to undefined routes
