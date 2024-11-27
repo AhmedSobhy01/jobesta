@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "ESnext", // Transpile to ES6 JavaScript
-    "module": "ESnext", // Use ES6 module system (for import/export)
+    "target": "ESnext", // Transpile to ESNext JavaScript
+    "module": "ESnext", // Use ESNext module system (for import/export)
     "moduleResolution": "node", // Resolve modules like Node.js
     "esModuleInterop": true, // Allows default imports for non-ES modules
     "skipLibCheck": true, // Skip type checking of declaration files
