@@ -10,14 +10,15 @@ services:
     build:
       context: ./db
       dockerfile: ./Dockerfile
-    env_file: ./server/.env
+    env_file: 
+      - "./server/.env"
     environment:
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - jobesta-data:/var/lib/postgresql/data
 
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U jobesta-user -d jobesta"]
       start_period: 0s
       interval: 5s
       timeout: 5s

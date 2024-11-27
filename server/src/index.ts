@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import { configDotenv } from 'dotenv';
+import db from './db/db.js';
 
 // Load environment variables from the .env file
 configDotenv();
