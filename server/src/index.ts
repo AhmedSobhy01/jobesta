@@ -36,11 +36,9 @@ app.get("/",async(req: Request, res: Response)=>{
 
 // 404 Fallback Middleware: Handles requests to undefined routes
 app.use(async (req: Request, res: Response) => {
-  const query = await db.query("Select * from accounts");
   res.status(404).json({
     success: false,
     message: 'Resource not found',
-    data:query.rows
   });
 });
 
