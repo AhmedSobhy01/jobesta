@@ -1,0 +1,51 @@
+services:
+  database:
+    image: postgres-db
+    container_name: jobesta-db
+    command: -p 5432
+    expose:
+      - 5432:5432
+    ports:
+      - 5432:5432
+    build:
+      context: ./db
+      dockerfile: ./Dockerfile
+    env_file: ./server/.env.example
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - jobesta-data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jobesta-user -d jobesta"]
+      start_period: 0s
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  server:
+    image: jobesta-node
+    container_name: jobesta-api
+    env_file: ./server/.env.example
+    ports:
+      - 3000:3000
+    build: 
+      context: ./server
+      dockerfile: ./Dockerfile
+    depends_on:
+      database:
+        condition: service_healthy
+
+  frontend:
+    image: jobesta-frontend
+    container_name: jobesta-frontend
+    env_file: ./client/.env.example
+    ports:
+      - 8080:80
+    build: 
+      context: ./client
+      dockerfile: ./Dockerfile
+
+volumes:
+  jobesta-data:
+    name: "jobesta-data"
