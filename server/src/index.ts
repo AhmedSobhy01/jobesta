@@ -1,6 +1,8 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import { configDotenv } from 'dotenv';
+import db from './db/db.js';
+import authRouter from './routes/authRoutes.js';
 
 // Load environment variables from the .env file
 configDotenv();
@@ -26,11 +28,16 @@ app.use(express.json());
 // Serve static files from the 'public' directory
 app.use(express.static('public'));
 
+
+// Mount the authRouter at the /auth endpoint
+app.use("/auth",authRouter);
+
+
 // 404 Fallback Middleware: Handles requests to undefined routes
 app.use((req: Request, res: Response) => {
   res.status(404).json({
     success: false,
-    message: 'Resource not found',
+    message: 'Resource not found'
   });
 });
 
