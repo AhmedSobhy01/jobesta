@@ -60,72 +60,64 @@ export async function registerAccount(
   const data = req.body;
 
   if (data == null || !validRegisterationData(data)) {
-    res.status(400).json({ message: 'Invalid data' });
+    res.status(422).json({ message: 'Invalid data' });
     return;
   }
 
   const userExist = await userExists(data.email);
   if (userExist) {
-    res.status(400).json({ message: 'User already exists' });
+    res.status(422).json({ message: 'User already exists' });
     return;
   }
 
   const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(data.password, salt);
-  data.password = hashedPassword;
+  data.password = await bcrypt.hash(data.password, salt);
 
-  await db.query(
-    'INSERT INTO accounts (first_name,last_name,username,email,password,role,profile_picture) VALUES ($1,$2,$3,$4,$5,$6,$7)',
-    [
-      data.first_name,
-      data.last_name,
-      data.username,
-      data.email,
-      data.password,
-      data.role,
-      data.profile_picture || null,
-    ],
-    (err: Error) => {
-      if (err) {
-        res.status(400).json({ message: 'Error creating user', error: err }); // Send an error response if the query fails
-        return;
-      }
-    },
-  );
+  try {
+    const userIdQuery = await db.query(
+      'INSERT INTO accounts (first_name,last_name,username,email,password,role,profile_picture) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING id,email',
+      [
+        data.first_name,
+        data.last_name,
+        data.username,
+        data.email,
+        data.password,
+        data.role,
+        data.profile_picture || null,
+      ],
+    );
 
-  const userQuery = await db.query('SELECT * FROM accounts WHERE email = $1', [
-    data.email,
-  ]);
-  const user = userQuery.rows[0];
-  const jwtToken = jwt.sign(
-    {
-      id: user.id,
-      email: user.email,
-    },
-    process.env.JWT_SECRET as string,
-    {
-      expiresIn: '1hour',
-    },
-  );
-  // Generate the refresh token
-  const refreshToken = jwt.sign(
-    { id: user.id, email: user.email },
-    process.env.REFRESH_TOKEN_SECRET as string,
-    { expiresIn: '30d' },
-  );
+    const user = userIdQuery.rows[0];
+    const jwtToken = jwt.sign(
+      {
+        id: user.id,
+      },
+      process.env.JWT_SECRET as string,
+      {
+        expiresIn: '1hour',
+      },
+    );
+    // Generate the refresh token
+    const refreshToken = jwt.sign(
+      { id: user.id },
+      process.env.REFRESH_TOKEN_SECRET as string,
+      { expiresIn: '30d' },
+    );
 
-  // Send the response
-  res
-    .status(201)
-    .json({ message: 'User created', data: { jwtToken, refreshToken } });
-  return;
+    // Send the response
+    res
+      .status(201)
+      .json({ message: 'User created', data: { jwtToken, refreshToken } });
+  } catch (err) {
+    res.status(500).json({ message: 'Error creating user', error: err });
+  }
 }
 
 export async function loginAccount(req: Request, res: Response): Promise<void> {
   const data: IuserData = req.body;
 
   if (!validLoginData(data)) {
-    res.status(400).json({ message: 'Invalid data' });
+    res.status(422).json({ message: 'Invalid data' });
     return;
   }
 
@@ -145,20 +137,18 @@ export async function loginAccount(req: Request, res: Response): Promise<void> {
     return;
   }
 
-  const jwtToken = jwt.sign(
-    { id: user.id, email: user.email },
-    process.env.JWT_SECRET as string,
-    {
-      expiresIn: '1hour',
-    },
-  );
+  const jwtToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET as string, {
+    expiresIn: '1hour',
+  });
   const refreshToken = jwt.sign(
-    { id: user.id, email: user.email },
+    { id: user.id },
     process.env.REFRESH_TOKEN_SECRET as string,
     { expiresIn: '30d' },
   );
 
-  res.status(200).json({ message: 'Login successful', jwtToken, refreshToken });
+  res
+    .status(200)
+    .json({ message: 'Login successful', data: { jwtToken, refreshToken } });
 }
 
 export async function generateRefreshToken(
@@ -168,7 +158,7 @@ export async function generateRefreshToken(
   const { refreshToken } = req.body;
 
   if (!refreshToken) {
-    res.status(400).json({ message: 'Invalid token' });
+    res.status(422).json({ message: 'Invalid token' });
     return;
   }
 
@@ -179,16 +169,14 @@ export async function generateRefreshToken(
     ) as { id: string; email: string };
 
     const jwtToken = jwt.sign(
-      { id: decoded.id, email: decoded.email },
+      { id: decoded.id },
       process.env.JWT_SECRET as string,
       {
         expiresIn: '1hour',
       },
     );
     res.status(200).json({ message: 'Token refreshed', jwtToken });
-    return;
   } catch (err) {
     res.status(403).json({ message: 'Invalid token', err });
-    return;
   }
 }
