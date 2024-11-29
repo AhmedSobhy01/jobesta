@@ -175,8 +175,8 @@ export async function generateRefreshToken(
         expiresIn: '1hour',
       },
     );
-    res.status(200).json({ message: 'Token refreshed', jwtToken });
+    res.status(200).json({ message: 'Token refreshed', data: { jwtToken } });
   } catch (err) {
-    res.status(403).json({ message: 'Invalid token', err });
+    res.status(403).json({ message: 'Invalid token', error: { err } });
   }
 }
