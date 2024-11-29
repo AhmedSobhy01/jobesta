@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import { configDotenv } from 'dotenv';
 import usersRouter from './routes/usersRoutes.js';
+import authRouter from './routes/authRoutes.js';
 
 // Load environment variables from the .env file
 configDotenv();
@@ -27,9 +28,9 @@ app.use(express.json());
 // Serve static files from the 'public' directory
 app.use(express.static('public'));
 
-// Mount the Users Router
-
 app.use('/users', usersRouter);
+
+app.use('/auth', authRouter);
 
 // 404 Fallback Middleware: Handles requests to undefined routes
 app.use((req: Request, res: Response) => {
