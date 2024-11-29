@@ -1,9 +1,10 @@
 import { Outlet } from 'react-router-dom';
+import MainNavigationBar from '@/components/NavBar/MainNavigationBar';
 
 function MainLayout() {
   return (
     <>
-      <h1 className="text-blue-400 text-3xl">on progress....</h1>
+      <MainNavigationBar />
       <main>
         <Outlet />
       </main>
