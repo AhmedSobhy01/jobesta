@@ -2,6 +2,9 @@ import db from '../db/db.js';
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { configDotenv } from 'dotenv';
+
+configDotenv();
 
 interface IuserData {
   first_name: string;
@@ -46,10 +49,11 @@ function validRegisterationData(data: IuserData): boolean {
   return true;
 }
 
-export async function userExists(email: string): Promise<boolean> {
+async function userExists(email: string): Promise<boolean> {
   const query = await db.query('SELECT * FROM accounts WHERE email = $1', [
     email,
   ]);
+
   return query.rowCount !== null && query.rowCount > 0;
 }
 
@@ -97,14 +101,14 @@ export async function registerAccount(
         expiresIn: '1hour',
       },
     );
+
     // Generate the refresh token
     const refreshToken = jwt.sign(
       { id: user.id },
-      process.env.REFRESH_TOKEN_SECRET as string,
+      process.env.JWT_REFRESH_SECRET as string,
       { expiresIn: '30d' },
     );
 
-    // Send the response
     res
       .status(201)
       .json({ message: 'User created', data: { jwtToken, refreshToken } });
@@ -142,7 +146,7 @@ export async function loginAccount(req: Request, res: Response): Promise<void> {
   });
   const refreshToken = jwt.sign(
     { id: user.id },
-    process.env.REFRESH_TOKEN_SECRET as string,
+    process.env.JWT_REFRESH_SECRET as string,
     { expiresIn: '30d' },
   );
 
@@ -165,7 +169,7 @@ export async function generateRefreshToken(
   try {
     const decoded = jwt.verify(
       refreshToken,
-      process.env.REFRESH_TOKEN_SECRET as string,
+      process.env.JWT_REFRESH_SECRET as string,
     ) as { id: string; email: string };
 
     const jwtToken = jwt.sign(
