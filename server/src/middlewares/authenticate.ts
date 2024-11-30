@@ -1,7 +1,15 @@
 import type { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import { configDotenv } from 'dotenv';
+import db from '../db/db.js';
 
-export function authenticate(req: Request, res: Response, next: NextFunction) {
+configDotenv();
+
+export async function authenticate(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   const bearerText = req.header('Authorization');
   if (!bearerText || bearerText.trim() == 'Bearer') {
     res.status(401).json({ message: 'Unauthorized', status: false });
@@ -11,12 +19,26 @@ export function authenticate(req: Request, res: Response, next: NextFunction) {
   const jwtToken = bearerText.split(' ')[1];
 
   try {
-    const user = jwt.verify(jwtToken, process.env.JWT_SECRET as string) as {
-      id: string;
+    const { id } = jwt.verify(
+      jwtToken,
+      process.env.JWT_SECRET as string,
+    ) as JwtPayload;
+
+    const query = await db.query('SELECT * FROM Accounts WHERE id = $1', [id]);
+    if (query.rowCount == 0) throw 'User not found';
+
+    req.user = {
+      id: query.rows[0].id,
+      first_name: query.rows[0].first_name,
+      last_name: query.rows[0].last_name,
+      username: query.rows[0].username,
+      email: query.rows[0].email,
+      role: query.rows[0].role,
+      is_banned: query.rows[0].is_banned,
+      profile_picture: query.rows[0].profile_picture,
     };
-    req.user = user;
-  } catch (err) {
-    res.status(401).json({ message: 'Invalid JWT', err, status: false });
+  } catch {
+    res.status(401).json({ message: 'Invalid JWT', status: false });
     return;
   }
 

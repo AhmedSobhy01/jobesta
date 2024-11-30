@@ -3,34 +3,12 @@ import type { IPreviousWork } from '../models/model.js';
 import db from '../db/db.js';
 
 export async function getUser(req: Request, res: Response) {
-  if (!req.user) {
-    res.status(401).json({ message: 'User not found', status: false });
-    return;
-  }
-
-  const query = await db.query('SELECT * FROM Accounts WHERE id = $1', [
-    req.user.id,
-  ]);
-
-  if (query.rowCount == 0) {
-    res.status(401).json({ message: 'User not found', status: false });
-    return;
-  }
-
-  const userData = query.rows[0];
-  delete userData.password;
-  delete userData.id;
-
+  const userData = req.user;
   res.status(200).json({ status: true, message: 'User Found', data: userData });
 }
 
 export async function updateUser(req: Request, res: Response) {
-  if (!req.user) {
-    res.status(422).json({ message: 'User not found', status: false });
-    return;
-  }
-
-  const id = req.user.id;
+  const id = req.user!.id;
   const bio = req.body.bio;
 
   const user = await db.query(
@@ -56,6 +34,10 @@ export async function updateUser(req: Request, res: Response) {
   const skills = req.body.skills;
   try {
     const freelancerIdQuery = await db.query(updateFreelancerQuery);
+
+    await db.query('DELETE FROM skills WHERE freelancer_id = $1', [id]);
+    await db.query('DELETE FROM previous_works WHERE account_id = $1', [id]);
+
     for (const work of previousWork as Array<IPreviousWork>) {
       await db.query('INSERT INTO previous_works values ($1,$2,$3,$4,$5)', [
         freelancerIdQuery.rows[0].id,
@@ -74,11 +56,10 @@ export async function updateUser(req: Request, res: Response) {
     }
 
     res.status(201).json({ status: true, message: 'Updated freelancer' });
-  } catch (err) {
+  } catch {
     res.status(500).json({
       status: false,
       message: 'Error updating freelancer',
-      error: err,
     });
   }
 }
