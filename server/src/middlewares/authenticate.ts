@@ -13,7 +13,6 @@ export function authenticate(req: Request, res: Response, next: NextFunction) {
   try {
     const user = jwt.verify(jwtToken, process.env.JWT_SECRET as string) as {
       id: string;
-      email: string;
     };
     req.user = user;
   } catch (err) {

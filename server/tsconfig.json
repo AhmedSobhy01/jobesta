@@ -10,7 +10,7 @@
     "rootDir": "./src", // The root directory of TypeScript source files
     "strict": true, // Enable strict type checking
     "resolveJsonModule": true, // Allow importing JSON files
-    "lib": ["es6", "dom"], // Include libraries for modern JavaScript and browser environments
+    "lib": ["es6", "dom"] // Include libraries for modern JavaScript and browser environments
   },
   "ts-node": {
     "esm": true,
