@@ -1,6 +1,6 @@
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
+import type { IPreviousWork } from '../models/model.js';
 import db from '../db/db.js';
-import { IPreviousWork } from '../models/model.js';
 
 export async function getUser(req: Request, res: Response) {
   if (!req.user) {
