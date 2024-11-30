@@ -64,13 +64,13 @@ export async function registerAccount(
   const data = req.body;
 
   if (data == null || !validRegisterationData(data)) {
-    res.status(422).json({ message: 'Invalid data' });
+    res.status(422).json({ status: false, message: 'Invalid data' });
     return;
   }
 
   const userExist = await userExists(data.email);
   if (userExist) {
-    res.status(422).json({ message: 'User already exists' });
+    res.status(422).json({ status: false, message: 'User already exists' });
     return;
   }
 
@@ -102,18 +102,19 @@ export async function registerAccount(
       },
     );
 
-    // Generate the refresh token
     const refreshToken = jwt.sign(
       { id: user.id },
       process.env.JWT_REFRESH_SECRET as string,
       { expiresIn: '30d' },
     );
 
-    res
-      .status(201)
-      .json({ message: 'User created', data: { jwtToken, refreshToken } });
-  } catch (err) {
-    res.status(500).json({ message: 'Error creating user', error: err });
+    res.status(201).json({
+      status: true,
+      message: 'User created',
+      data: { jwtToken, refreshToken },
+    });
+  } catch {
+    res.status(500).json({ status: false, message: 'Failed to create user' });
   }
 }
 
@@ -121,15 +122,16 @@ export async function loginAccount(req: Request, res: Response): Promise<void> {
   const data: IuserData = req.body;
 
   if (!validLoginData(data)) {
-    res.status(422).json({ message: 'Invalid data' });
+    res.status(422).json({ status: false, message: 'Invalid data' });
     return;
   }
 
   const query = await db.query('SELECT * FROM accounts WHERE email = $1', [
     data.email,
   ]);
+
   if (query.rowCount === 0) {
-    res.status(404).json({ message: 'User not found' });
+    res.status(404).json({ status: false, message: 'User not found' });
     return;
   }
 
@@ -137,22 +139,25 @@ export async function loginAccount(req: Request, res: Response): Promise<void> {
 
   const validPassword = await bcrypt.compare(data.password, user.password);
   if (!validPassword) {
-    res.status(401).json({ message: 'Invalid password' });
+    res.status(401).json({ status: false, message: 'Invalid password' });
     return;
   }
 
   const jwtToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET as string, {
     expiresIn: '1hour',
   });
+
   const refreshToken = jwt.sign(
     { id: user.id },
     process.env.JWT_REFRESH_SECRET as string,
     { expiresIn: '30d' },
   );
 
-  res
-    .status(200)
-    .json({ message: 'Login successful', data: { jwtToken, refreshToken } });
+  res.status(200).json({
+    status: true,
+    message: 'Login successful',
+    data: { jwtToken, refreshToken },
+  });
 }
 
 export async function generateRefreshToken(
@@ -162,7 +167,7 @@ export async function generateRefreshToken(
   const { refreshToken } = req.body;
 
   if (!refreshToken) {
-    res.status(422).json({ message: 'Invalid token' });
+    res.status(422).json({ status: false, message: 'Invalid token' });
     return;
   }
 
@@ -179,8 +184,11 @@ export async function generateRefreshToken(
         expiresIn: '1hour',
       },
     );
-    res.status(200).json({ message: 'Token refreshed', data: { jwtToken } });
-  } catch (err) {
-    res.status(403).json({ message: 'Invalid token', error: { err } });
+
+    res
+      .status(200)
+      .json({ status: true, message: 'Token refreshed', data: { jwtToken } });
+  } catch {
+    res.status(403).json({ status: false, message: 'Invalid token' });
   }
 }
