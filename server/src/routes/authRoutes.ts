@@ -4,11 +4,29 @@ import {
   loginAccount,
   generateRefreshToken,
 } from '../controllers/authController.js';
+import {
+  loginValidationRules,
+  registerValidationRules,
+  refreshValidationRules,
+} from '../validations/authValidation';
+import { validateRequest } from '../middlewares/validationMiddleware';
 
 const authRouter = router();
 
-authRouter.post('/register', registerAccount);
-authRouter.post('/login', loginAccount);
-authRouter.post('/refresh', generateRefreshToken);
+authRouter.post(
+  '/register',
+  registerValidationRules,
+  validateRequest,
+  registerAccount,
+);
+
+authRouter.post('/login', loginValidationRules, validateRequest, loginAccount);
+
+authRouter.post(
+  '/refresh',
+  refreshValidationRules,
+  validateRequest,
+  generateRefreshToken,
+);
 
 export default authRouter;
