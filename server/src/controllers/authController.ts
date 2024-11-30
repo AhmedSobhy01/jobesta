@@ -1,7 +1,7 @@
 import db from '../db/db.js';
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { configDotenv } from 'dotenv';
 
 configDotenv();
@@ -131,7 +131,7 @@ export async function loginAccount(req: Request, res: Response): Promise<void> {
   ]);
 
   if (query.rowCount === 0) {
-    res.status(404).json({ status: false, message: 'User not found' });
+    res.status(404).json({ status: false, message: 'Invalid credentials' });
     return;
   }
 
@@ -139,7 +139,7 @@ export async function loginAccount(req: Request, res: Response): Promise<void> {
 
   const validPassword = await bcrypt.compare(data.password, user.password);
   if (!validPassword) {
-    res.status(401).json({ status: false, message: 'Invalid password' });
+    res.status(401).json({ status: false, message: 'Invalid credentials' });
     return;
   }
 
@@ -175,7 +175,7 @@ export async function generateRefreshToken(
     const decoded = jwt.verify(
       refreshToken,
       process.env.JWT_REFRESH_SECRET as string,
-    ) as { id: string; email: string };
+    ) as JwtPayload;
 
     const jwtToken = jwt.sign(
       { id: decoded.id },
