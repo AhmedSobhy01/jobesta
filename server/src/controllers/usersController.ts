@@ -8,6 +8,12 @@ export async function getUser(req: Request, res: Response) {
 }
 
 export async function updateUser(req: Request, res: Response) {
+  if (req.user!.role != 'freelancer')
+    return res.status(403).json({
+      status: false,
+      message: 'You are not authorized to update this user',
+    });
+
   const id = req.user!.id;
   const bio = req.body.bio;
 
