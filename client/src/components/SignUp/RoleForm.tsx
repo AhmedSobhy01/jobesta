@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import RoleButton from './RoleButton';
+import RoleButton from '@/components/SignUp/RoleButton';
 
 const RoleForm: React.FC<{
   onSelection: (type: string) => unknown;

@@ -1,7 +1,7 @@
+import { FormEvent } from 'react';
 import { Link } from 'react-router';
 import signinpic from '@/assets/signinpic.png';
 import Input from '@/utils/Input';
-import { FormEvent } from 'react';
 
 function Login() {
   function handleSubmit(event: FormEvent) {

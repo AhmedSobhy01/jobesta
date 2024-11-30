@@ -1,9 +1,9 @@
-import NavBarItem from './NavBarItem';
+import { Link } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
-import { Link } from 'react-router';
-import NavButton from './NavButton';
+import NavBarItem from '@/components/NavBar/NavBarItem';
+import NavButton from '@/components/NavBar/NavButton';
 import jobestaLogo from '@/assets/jobesta-logo.png';
 
 function MainNavigationBar() {

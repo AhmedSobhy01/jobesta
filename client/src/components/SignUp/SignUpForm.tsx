@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import Input from '@/utils/Input';
 import { FormEvent } from 'react';
+import Input from '@/utils/Input';
 
 const SignUpForm: React.FC<{ role: string }> = (props) => {
   function handleSubmit(event: FormEvent) {

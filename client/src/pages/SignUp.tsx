@@ -1,6 +1,6 @@
+import { useState } from 'react';
 import signinpic from '@/assets/signinpic.png';
 import SignUpForm from '@/components/SignUp/SignUpForm';
-import { useState } from 'react';
 import RoleForm from '@/components/SignUp/RoleForm';
 
 function SignUp() {
