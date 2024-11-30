@@ -4,7 +4,7 @@ import db from '../db/db.js';
 
 export async function getUser(req: Request, res: Response) {
   if (!req.user) {
-    res.status(401).json({ message: 'User not found' });
+    res.status(401).json({ message: 'User not found', status: false });
     return;
   }
 
@@ -13,7 +13,7 @@ export async function getUser(req: Request, res: Response) {
   ]);
 
   if (query.rowCount == 0) {
-    res.status(401).json({ message: 'User not found' });
+    res.status(401).json({ message: 'User not found', status: false });
     return;
   }
 
@@ -21,12 +21,12 @@ export async function getUser(req: Request, res: Response) {
   delete userData.password;
   delete userData.id;
 
-  res.status(200).json({ message: 'User Found', data: userData });
+  res.status(200).json({ status: true, message: 'User Found', data: userData });
 }
 
 export async function updateUser(req: Request, res: Response) {
   if (!req.user) {
-    res.status(422).json({ message: 'User not found' });
+    res.status(422).json({ message: 'User not found', status: false });
     return;
   }
 
@@ -73,8 +73,14 @@ export async function updateUser(req: Request, res: Response) {
       ]);
     }
 
-    res.status(201).json({ message: 'Updated freelancer' });
+    res.status(201).json({ status: true, message: 'Updated freelancer' });
   } catch (err) {
-    res.status(500).json({ message: 'Error updating freelancer', error: err });
+    res
+      .status(500)
+      .json({
+        status: false,
+        message: 'Error updating freelancer',
+        error: err,
+      });
   }
 }
