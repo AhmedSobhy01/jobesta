@@ -36,16 +36,16 @@ export async function registerAccount(
     ],
   );
 
+  if (role === 'freelancer') {
+    await db.query('INSERT INTO freelancers (account_id) VALUES ($1)', [
+      userIdQuery.rows[0].id,
+    ]);
+  }
+
   const user = userIdQuery.rows[0];
-  const jwtToken = jwt.sign(
-    {
-      id: user.id,
-    },
-    process.env.JWT_SECRET as string,
-    {
-      expiresIn: '1hour',
-    },
-  );
+  const jwtToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET as string, {
+    expiresIn: '1hour',
+  });
 
   const refreshToken = jwt.sign(
     { id: user.id },
