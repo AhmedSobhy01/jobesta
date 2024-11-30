@@ -75,12 +75,10 @@ export async function updateUser(req: Request, res: Response) {
 
     res.status(201).json({ status: true, message: 'Updated freelancer' });
   } catch (err) {
-    res
-      .status(500)
-      .json({
-        status: false,
-        message: 'Error updating freelancer',
-        error: err,
-      });
+    res.status(500).json({
+      status: false,
+      message: 'Error updating freelancer',
+      error: err,
+    });
   }
 }
