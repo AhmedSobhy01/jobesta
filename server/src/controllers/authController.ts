@@ -24,7 +24,7 @@ export async function registerAccount(
   const hashedPassword = await bcrypt.hash(password, salt);
 
   const userIdQuery = await db.query(
-    'INSERT INTO accounts (first_name,last_name,username,email,password,role,profile_picture) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING id,email',
+    'INSERT INTO accounts (first_name,last_name,username,email,password,role,profile_picture) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING id',
     [
       first_name,
       last_name,
