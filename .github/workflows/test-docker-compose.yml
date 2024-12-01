@@ -38,6 +38,8 @@ jobs:
                       status=$(docker inspect --format='{{.State.Health.Status}}' jobesta-$service)
                       if [ "$status" != "healthy" ]; then
                         echo "Service $service is not healthy. Current status: $status";
+                        echo "Detailed information for $service:";
+                        docker inspect jobesta-$service --format='{{json .State.Health}}'
                         all_healthy=false
                       fi
                     done
