@@ -3,7 +3,7 @@ import {
   registerAccount,
   loginAccount,
   generateRefreshToken,
-} from '../controllers/authController.js';
+} from '../controllers/authController';
 import {
   loginValidationRules,
   registerValidationRules,

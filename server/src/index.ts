@@ -1,8 +1,8 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import { configDotenv } from 'dotenv';
-import usersRouter from './routes/usersRoutes.js';
-import authRouter from './routes/authRoutes.js';
+import usersRouter from './routes/usersRoutes';
+import authRouter from './routes/authRoutes';
 
 // Load environment variables from the .env file
 configDotenv();

@@ -1,4 +1,4 @@
-import db from '../db/db.js';
+import db from '../db/db';
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt, { JwtPayload } from 'jsonwebtoken';
