@@ -1,5 +1,5 @@
 # Build the app
-FROM node:lts-alpine AS build
+FROM node:23-alpine AS build
 
 WORKDIR /app
 
@@ -14,7 +14,7 @@ COPY . .
 COPY .env.example .env
 
 # Build the app
-RUN npm run build
+RUN npm run build --force
 
 # Serve with Nginx
 FROM nginx:alpine
