@@ -1,0 +1,39 @@
+# Node modules directory
+node_modules
+
+# Log files
+*.log
+
+# Environment files
+.env
+
+# Build output
+build
+
+# Temporary and cache files
+.cache
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+.pnp.js
+.pnp.cjs
+
+# IDE and editor directories and files
+.vscode
+.idea
+*.sublime-workspace
+*.sublime-project
+*.code-workspace
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Docker and system files
+.dockerignore
+Dockerfile
+docker-compose.yml
+
+# Git directory and files
+.git
+.gitignore
