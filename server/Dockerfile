@@ -7,10 +7,13 @@ ENV NODE_ENV=production
 # Set working directory
 WORKDIR /usr/src/app
 
+# Install curl
+RUN apk update && apk add --no-cache curl
+
 # Copy dependency files
 COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
 
-# Install production dependencies and 
+# Install production dependencies
 RUN npm install --omit=dev --force
 
 # Move node_modules to parent directory

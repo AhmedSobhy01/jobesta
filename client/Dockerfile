@@ -1,7 +1,11 @@
 # Build the app
 FROM node:23-alpine AS build
 
+# Set working directory
 WORKDIR /app
+
+# Install curl
+RUN apk update && apk add --no-cache curl
 
 # Copy package files and install dependencies
 COPY package.json package-lock.json ./
