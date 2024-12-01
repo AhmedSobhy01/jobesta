@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import type { IPreviousWork } from '../models/model.js';
+import type { IPreviousWork } from '../models/model';
 import db from '../db/db.js';
 
 export async function getUser(req: Request, res: Response): Promise<void> {

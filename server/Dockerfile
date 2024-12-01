@@ -1,5 +1,5 @@
 # Use Node.js LTS version with Alpine Linux
-FROM node:lts-alpine
+FROM node:23-alpine
 
 # Set production environment
 ENV NODE_ENV=production
@@ -7,11 +7,17 @@ ENV NODE_ENV=production
 # Set working directory
 WORKDIR /usr/src/app
 
+# Install curl
+RUN apk update && apk add --no-cache curl
+
 # Copy dependency files
 COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
 
-# Install production dependencies and move node_modules up
-RUN npm install --omit=dev && mv node_modules ../
+# Install production dependencies
+RUN npm install --omit=dev --force
+
+# Move node_modules to parent directory
+RUN mv node_modules ../
 
 # Copy application source code
 COPY . .

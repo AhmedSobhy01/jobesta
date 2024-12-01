@@ -32,6 +32,14 @@ app.use('/users', usersRouter);
 
 app.use('/auth', authRouter);
 
+// Default Route: Sends a welcome message to the user (for health-checks)
+app.get('/', (req: Request, res: Response) => {
+  res.json({
+    success: true,
+    message: 'Welcome to Jobesta API',
+  });
+});
+
 // 404 Fallback Middleware: Handles requests to undefined routes
 app.use((req: Request, res: Response) => {
   res.status(404).json({

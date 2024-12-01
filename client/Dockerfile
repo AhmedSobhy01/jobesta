@@ -1,7 +1,11 @@
 # Build the app
-FROM node:lts-alpine AS build
+FROM node:23-alpine AS build
 
+# Set working directory
 WORKDIR /app
+
+# Install curl
+RUN apk update && apk add --no-cache curl
 
 # Copy package files and install dependencies
 COPY package.json package-lock.json ./
@@ -14,7 +18,7 @@ COPY . .
 COPY .env.example .env
 
 # Build the app
-RUN npm run build
+RUN npm run build --force
 
 # Serve with Nginx
 FROM nginx:alpine
