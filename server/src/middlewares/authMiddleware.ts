@@ -43,10 +43,14 @@ export async function authenticate(
         'SELECT * FROM freelancers WHERE account_id = $1',
         [id],
       );
+
       if (freelancerQuery.rowCount == 0) throw 'Freelancer not found';
-      req.user.freelancer!.id = freelancerQuery.rows[0].id;
-      req.user.freelancer!.balance = freelancerQuery.rows[0].balance;
-      req.user.freelancer!.bio = freelancerQuery.rows[0].bio;
+
+      req.user.freelancer = {
+        id: freelancerQuery.rows[0].id,
+        balance: freelancerQuery.rows[0].balance,
+        bio: freelancerQuery.rows[0].bio,
+      };
     }
   } catch {
     res.status(401).json({ message: 'Invalid JWT', status: false });
