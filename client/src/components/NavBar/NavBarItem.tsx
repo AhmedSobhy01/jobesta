@@ -11,15 +11,13 @@ const NavBarItem: React.FC<{ page: string; children: React.ReactNode }> = (
 
   return (
     <>
-      <li>
-        <NavLink
-          to={props.page}
-          className={({ isActive }) => (isActive ? activeCss : notActiveCss)}
-          aria-current="page"
-        >
-          {props.children}
-        </NavLink>
-      </li>
+      <NavLink
+        to={props.page}
+        className={({ isActive }) => (isActive ? activeCss : notActiveCss)}
+        aria-current="page"
+      >
+        {props.children}
+      </NavLink>
     </>
   );
 };
