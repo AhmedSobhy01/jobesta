@@ -8,8 +8,8 @@ import {
   loginValidationRules,
   registerValidationRules,
   refreshValidationRules,
-} from '../validations/authValidation';
-import { validateRequest } from '../middlewares/validationMiddleware';
+} from '../validations/authValidation.js';
+import { validateRequest } from '../middlewares/validationMiddleware.js';
 
 const authRouter = router();
 

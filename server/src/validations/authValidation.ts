@@ -1,5 +1,5 @@
 import { body } from 'express-validator';
-import db from '../db/db';
+import db from '../db/db.js';
 
 export const loginValidationRules = [
   body('email')
