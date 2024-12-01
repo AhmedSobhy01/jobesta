@@ -1,12 +1,13 @@
-import { IAccount } from './model';
+import { IAccount, IFreelancer } from './model';
 
 export {};
 
 declare global {
   namespace Express {
     interface Request {
-      user?: IAccount;
-      freelancerId?: string;
+      user?: IAccount & {
+        freelancer?: IFreelancer;
+      };
     }
   }
 }

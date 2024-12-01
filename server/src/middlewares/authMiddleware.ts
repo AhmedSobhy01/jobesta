@@ -44,7 +44,9 @@ export async function authenticate(
         [id],
       );
       if (freelancerQuery.rowCount == 0) throw 'Freelancer not found';
-      req.freelancerId = freelancerQuery.rows[0].id;
+      req.user.freelancer!.id = freelancerQuery.rows[0].id;
+      req.user.freelancer!.balance = freelancerQuery.rows[0].balance;
+      req.user.freelancer!.bio = freelancerQuery.rows[0].bio;
     }
   } catch {
     res.status(401).json({ message: 'Invalid JWT', status: false });

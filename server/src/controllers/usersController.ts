@@ -8,7 +8,7 @@ export async function getUser(req: Request, res: Response) {
 }
 
 export async function updateUser(req: Request, res: Response) {
-  const freelancerId = req.freelancerId!;
+  const freelancerId = req.user!.freelancer!.id;
   const bio = req.body.bio;
   const previousWork = req.body.previousWork as Array<IPreviousWork>;
   const skills = req.body.skills;
