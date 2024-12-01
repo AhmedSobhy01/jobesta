@@ -20,7 +20,7 @@ services:
             timeout: 5s
 
     server:
-        image: jobesta-node
+        image: jobesta-api
         container_name: jobesta-api
         ports:
             - 3000:3000
