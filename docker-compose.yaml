@@ -1,6 +1,6 @@
 services:
     database:
-        image: postgres-db
+        image: jobesta-db
         container_name: jobesta-db
         ports:
             - 5432:5432
