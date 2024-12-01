@@ -29,18 +29,32 @@ jobs:
               run: |
                   docker-compose up --build -d
 
-            - name: Wait for services to be healthy
+            - name: Wait for all services to be healthy
               run: |
+                  services=("db" "api" "frontend")
                   for i in {1..10}; do
-                    if docker-compose ps | grep "healthy"; then
+                    all_healthy=true
+                    for service in "${services[@]}"; do
+                      status=$(docker inspect --format='{{.State.Health.Status}}' jobesta-$service)
+                      if [ "$status" != "healthy" ]; then
+                        echo "Service $service is not healthy. Current status: $status";
+                        echo "Detailed information for $service:";
+                        docker inspect jobesta-$service --format='{{json .State.Health}}'
+                        all_healthy=false
+                      fi
+                    done
+                    if [ "$all_healthy" == "true" ]; then
                       echo "All services are healthy";
-                      break;
+                      break
                     else
-                      echo "Waiting for services to be healthy...";
-                      sleep 5;
-                    fi;
+                      echo "Waiting for all services to be healthy...";
+                      sleep 5
+                    fi
                   done
-                  docker-compose ps
+                  if [ "$all_healthy" != "true" ]; then
+                    echo "Not all services are healthy after waiting.";
+                    exit 1
+                  fi
               shell: bash
 
             - name: Verify services are running
