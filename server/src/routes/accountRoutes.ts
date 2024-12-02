@@ -1,19 +1,19 @@
 import router from 'express';
-import { getUser, updateUser } from '../controllers/usersController.js';
 import { authenticate } from '../middlewares/authMiddleware.js';
-import { updateFreelancerValidationRules } from '../validations/userValidation.js';
+import { getAccount, updateAccount } from '../controllers/accountController.js';
+import { updateAccountValidationRules } from '../validations/accountValidations.js';
 import { validateRequest } from '../middlewares/validationMiddleware.js';
 
 const usersRouter = router();
 
-usersRouter.get('/me', authenticate, getUser);
+usersRouter.get('/me', authenticate, getAccount);
 
 usersRouter.put(
   '/me',
   authenticate,
-  updateFreelancerValidationRules,
+  updateAccountValidationRules,
   validateRequest,
-  updateUser,
+  updateAccount,
 );
 
 export default usersRouter;

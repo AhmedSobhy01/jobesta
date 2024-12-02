@@ -1,8 +1,9 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import { configDotenv } from 'dotenv';
-import usersRouter from './routes/usersRoutes.js';
-import authRouter from './routes/authRoutes.js';
+import accountRoutes from './routes/accountRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+import freelancerRoutes from './routes/freelancerRoutes.js';
 
 // Load environment variables from the .env file
 configDotenv();
@@ -28,9 +29,11 @@ app.use(express.json());
 // Serve static files from the 'public' directory
 app.use(express.static('public'));
 
-app.use('/users', usersRouter);
+app.use('/account', accountRoutes);
 
-app.use('/auth', authRouter);
+app.use('/freelancer', freelancerRoutes);
+
+app.use('/auth', authRoutes);
 
 // Default Route: Sends a welcome message to the user (for health-checks)
 app.get('/', (req: Request, res: Response) => {

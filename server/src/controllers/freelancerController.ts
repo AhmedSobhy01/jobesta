@@ -2,25 +2,56 @@ import type { Request, Response } from 'express';
 import type { IPreviousWork } from '../models/model';
 import db from '../db/db.js';
 
-export async function getUser(req: Request, res: Response): Promise<void> {
-  const userData = req.user;
-  res.status(200).json({ status: true, message: 'User Found', data: userData });
+export async function getCurrentFreelancer({ user }: Request, res: Response) {
+  const freelancerId = user!.freelancer!.id;
+
+  try {
+    const skillsQuery = await db.query(
+      'SELECT name FROM skills WHERE freelancer_id = $1',
+      [freelancerId],
+    );
+
+    const previousWorkQuery = await db.query(
+      'SELECT * FROM previous_works WHERE freelancer_id = $1',
+      [freelancerId],
+    );
+
+    const previousWork = previousWorkQuery.rows.map((work) => ({
+      title: work.title,
+      description: work.description,
+      url: work.url,
+    }));
+
+    const skills = skillsQuery.rows.map((skill) => skill.name);
+
+    const freelancer = {
+      id: user!.freelancer!.id,
+      balance: user!.freelancer!.balance,
+      bio: user!.freelancer!.bio,
+      previousWork,
+      skills,
+    };
+
+    res
+      .status(200)
+      .json({ status: true, message: 'Freelancer Found', data: freelancer });
+  } catch {
+    res.status(500).json({
+      status: false,
+      message: 'Error fetching freelancer',
+    });
+  }
 }
 
-export async function updateUser(req: Request, res: Response): Promise<void> {
-  if (req.user!.role != 'freelancer') {
-    res.status(403).json({
-      status: false,
-      message: 'You are not authorized to update this user',
-    });
-
-    return;
-  }
-
+export async function updateFreelancer(
+  req: Request,
+  res: Response,
+): Promise<void> {
   const freelancerId = req.user!.freelancer!.id;
   const bio = req.body.bio;
   const previousWork = req.body.previousWork as Array<IPreviousWork>;
   const skills = req.body.skills;
+
   try {
     await db.query(
       'UPDATE freelancers SET bio = $1 WHERE id = $2 RETURNING id',
