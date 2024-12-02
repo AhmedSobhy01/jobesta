@@ -10,30 +10,14 @@ export async function registerAccount(
   req: Request,
   res: Response,
 ): Promise<void> {
-  const {
-    first_name,
-    last_name,
-    username,
-    email,
-    password,
-    role,
-    profile_picture,
-  } = req.body;
+  const { first_name, last_name, username, email, password, role } = req.body;
 
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
   const userIdQuery = await db.query(
-    'INSERT INTO accounts (first_name,last_name,username,email,password,role,profile_picture) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING id',
-    [
-      first_name,
-      last_name,
-      username,
-      email,
-      hashedPassword,
-      role,
-      profile_picture || null,
-    ],
+    'INSERT INTO accounts (first_name,last_name,username,email,password,role) VALUES ($1,$2,$3,$4,$5,$6) RETURNING id',
+    [first_name, last_name, username, email, hashedPassword, role],
   );
 
   if (role === 'freelancer') {
