@@ -2,12 +2,21 @@ import type { Request, Response } from 'express';
 import type { IPreviousWork } from '../models/model';
 import db from '../db/db.js';
 
-export async function getUser(req: Request, res: Response) {
+export async function getUser(req: Request, res: Response): Promise<void> {
   const userData = req.user;
   res.status(200).json({ status: true, message: 'User Found', data: userData });
 }
 
-export async function updateUser(req: Request, res: Response) {
+export async function updateUser(req: Request, res: Response): Promise<void> {
+  if (req.user!.role != 'freelancer') {
+    res.status(403).json({
+      status: false,
+      message: 'You are not authorized to update this user',
+    });
+
+    return;
+  }
+
   const freelancerId = req.user!.freelancer!.id;
   const bio = req.body.bio;
   const previousWork = req.body.previousWork as Array<IPreviousWork>;
