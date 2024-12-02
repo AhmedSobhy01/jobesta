@@ -37,6 +37,21 @@ export async function authenticate(
       is_banned: query.rows[0].is_banned,
       profile_picture: query.rows[0].profile_picture,
     };
+
+    if (query.rows[0].role == 'freelancer') {
+      const freelancerQuery = await db.query(
+        'SELECT * FROM freelancers WHERE account_id = $1',
+        [id],
+      );
+
+      if (freelancerQuery.rowCount == 0) throw 'Freelancer not found';
+
+      req.user.freelancer = {
+        id: freelancerQuery.rows[0].id,
+        balance: freelancerQuery.rows[0].balance,
+        bio: freelancerQuery.rows[0].bio,
+      };
+    }
   } catch {
     res.status(401).json({ message: 'Invalid JWT', status: false });
     return;

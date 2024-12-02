@@ -16,3 +16,9 @@ export interface IAccount {
   is_banned: string;
   profile_picture: string;
 }
+
+export interface IFreelancer {
+  id: string;
+  balance: number;
+  bio: string;
+}
