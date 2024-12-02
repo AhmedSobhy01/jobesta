@@ -1,9 +1,11 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import { configDotenv } from 'dotenv';
 import accountRoutes from './routes/accountRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import freelancerRoutes from './routes/freelancerRoutes.js';
+import { FileUploadError } from './utils/errors.js';
+import { MulterError } from 'multer';
 
 // Load environment variables from the .env file
 configDotenv();
@@ -29,10 +31,12 @@ app.use(express.json());
 // Serve static files from the 'public' directory
 app.use(express.static('public'));
 
+// Serve static files from the 'uploads' directory
+app.use('/uploads', express.static('uploads'));
+
+// Register the routes
 app.use('/account', accountRoutes);
-
 app.use('/freelancer', freelancerRoutes);
-
 app.use('/auth', authRoutes);
 
 // Default Route: Sends a welcome message to the user (for health-checks)
@@ -52,10 +56,52 @@ app.use((req: Request, res: Response) => {
 });
 
 // Error Handling Middleware: Catches any errors and sends a response
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+app.use((err: Error, req: Request, res: Response, next: NextFunction): void => {
+  if (err instanceof FileUploadError) {
+    res.status(400).json({
+      success: false,
+      message: err.message,
+      errors: err.errors,
+    });
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-app.use((err: any, req: Request, res: Response) => {
-  res.status(err.status || 500).json({
+    return;
+  } else if (err instanceof MulterError) {
+    if (err.code === 'LIMIT_UNEXPECTED_FILE') {
+      res.status(400).json({
+        success: false,
+        message: 'Invalid file field value',
+        errors: {
+          file: 'Invalid file field value',
+        },
+      });
+
+      return;
+    } else if (err.code === 'LIMIT_FILE_SIZE') {
+      res.status(400).json({
+        success: false,
+        message: 'File size too large',
+        errors: {
+          file: 'File size too large',
+        },
+      });
+
+      return;
+    } else if (err.code === 'LIMIT_FILE_COUNT') {
+      res.status(400).json({
+        success: false,
+        message: 'Too many files uploaded',
+        errors: {
+          file: 'Too many files uploaded',
+        },
+      });
+
+      return;
+    }
+  }
+
+  console.error(err);
+  res.status(500).json({
     success: false,
     message: 'Internal Server Error',
   });
