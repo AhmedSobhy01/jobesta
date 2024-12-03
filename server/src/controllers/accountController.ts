@@ -12,8 +12,8 @@ export async function updateAccount(
   res: Response,
 ): Promise<void> {
   const userId = req.user!.id;
-  const firstName = req.body.first_name;
-  const lastName = req.body.last_name;
+  const firstName = req.body.firstName;
+  const lastName = req.body.lastName;
   const username = req.body.username;
   const email = req.body.email;
 

@@ -2,7 +2,7 @@ import { body } from 'express-validator';
 import db from '../db/db.js';
 
 export const updateAccountValidationRules = [
-  body('first_name')
+  body('firstName')
     .trim()
     .notEmpty()
     .withMessage('First name is required')
@@ -11,7 +11,7 @@ export const updateAccountValidationRules = [
     .isLength({ max: 255 })
     .withMessage('Last name must not exceed 255 characters'),
 
-  body('last_name')
+  body('lastName')
     .trim()
     .notEmpty()
     .withMessage('Last name is required')

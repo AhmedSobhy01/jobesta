@@ -10,14 +10,14 @@ export async function registerAccount(
   req: Request,
   res: Response,
 ): Promise<void> {
-  const { first_name, last_name, username, email, password, role } = req.body;
+  const { firstName, lastName, username, email, password, role } = req.body;
 
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
   const userIdQuery = await db.query(
     'INSERT INTO accounts (first_name,last_name,username,email,password,role) VALUES ($1,$2,$3,$4,$5,$6) RETURNING id',
-    [first_name, last_name, username, email, hashedPassword, role],
+    [firstName, lastName, username, email, hashedPassword, role],
   );
 
   if (role === 'freelancer') {
@@ -104,7 +104,8 @@ export async function generateRefreshToken(
     res
       .status(200)
       .json({ status: true, message: 'Token refreshed', data: { jwtToken } });
-  } catch {
+  } catch (err) {
+    console.log(err);
     res.status(403).json({ status: false, message: 'Invalid token' });
   }
 }

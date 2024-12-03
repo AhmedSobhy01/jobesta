@@ -13,7 +13,7 @@ export const loginValidationRules = [
 ];
 
 export const registerValidationRules = [
-  body('first_name')
+  body('firstName')
     .trim()
     .notEmpty()
     .withMessage('First name is required')
@@ -22,7 +22,7 @@ export const registerValidationRules = [
     .isLength({ max: 255 })
     .withMessage('Last name must not exceed 255 characters'),
 
-  body('last_name')
+  body('lastName')
     .trim()
     .notEmpty()
     .withMessage('Last name is required')
@@ -88,7 +88,7 @@ export const registerValidationRules = [
 ];
 
 export const refreshValidationRules = [
-  body('refresh_token')
+  body('refreshToken')
     .trim()
     .notEmpty()
     .withMessage('Refresh token is required'),
