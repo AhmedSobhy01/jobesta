@@ -4,7 +4,26 @@ import db from '../db/db.js';
 
 export async function getAccount(req: Request, res: Response): Promise<void> {
   const userData = req.user;
-  res.status(200).json({ status: true, message: 'User Found', data: userData });
+
+  res.status(200).json({
+    status: true,
+    message: 'User Found',
+    data: {
+      id: userData!.id,
+      firstName: userData!.first_name,
+      lastName: userData!.last_name,
+      username: userData!.username,
+      email: userData!.email,
+      role: userData!.role,
+      isBanned: userData!.is_banned,
+      profilePicture: userData!.profile_picture,
+      freelancer: {
+        id: userData!.freelancer!.id,
+        balance: userData!.freelancer!.balance,
+        bio: userData!.freelancer!.bio,
+      },
+    },
+  });
 }
 
 export async function updateAccount(
