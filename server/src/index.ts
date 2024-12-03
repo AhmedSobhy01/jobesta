@@ -59,7 +59,7 @@ app.use((req: Request, res: Response) => {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err: Error, req: Request, res: Response, next: NextFunction): void => {
   if (err instanceof FileUploadError) {
-    res.status(400).json({
+    res.status(422).json({
       success: false,
       message: err.message,
       errors: err.errors,
@@ -68,7 +68,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction): void => {
     return;
   } else if (err instanceof MulterError) {
     if (err.code === 'LIMIT_UNEXPECTED_FILE') {
-      res.status(400).json({
+      res.status(422).json({
         success: false,
         message: 'Invalid file field value',
         errors: {
@@ -78,7 +78,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction): void => {
 
       return;
     } else if (err.code === 'LIMIT_FILE_SIZE') {
-      res.status(400).json({
+      res.status(422).json({
         success: false,
         message: 'File size too large',
         errors: {
@@ -88,7 +88,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction): void => {
 
       return;
     } else if (err.code === 'LIMIT_FILE_COUNT') {
-      res.status(400).json({
+      res.status(422).json({
         success: false,
         message: 'Too many files uploaded',
         errors: {

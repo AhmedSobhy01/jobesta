@@ -57,7 +57,7 @@ export async function updateProfilePicture(
 ): Promise<void> {
   try {
     if (!req.file) {
-      res.status(400).json({
+      res.status(422).json({
         status: false,
         message: 'No file uploaded or invalid file format',
         errors: {
