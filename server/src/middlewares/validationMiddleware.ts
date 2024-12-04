@@ -17,7 +17,7 @@ export const validateRequest = (
       }
     });
 
-    res.status(400).json({ status: false, errors: errorMessages });
+    res.status(422).json({ status: false, errors: errorMessages });
     return;
   }
 
