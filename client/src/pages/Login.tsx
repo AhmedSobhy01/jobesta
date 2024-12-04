@@ -151,7 +151,7 @@ export async function action({ request }: ActionFunctionArgs) {
       refreshedTokenExpiration.toISOString(),
     );
 
-    return redirect('/set-tokens');
+    return redirect('/set-user');
   } catch {
     return {
       status: false,

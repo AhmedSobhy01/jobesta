@@ -25,22 +25,49 @@
 
 import { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import TokensContext from '@/store/tokensContext';
+import UserContext from '@/store/userContext';
 
 export function Logout() {
-  const { setTokens } = useContext(TokensContext);
+  const { setUser } = useContext(UserContext);
   const navigate = useNavigate();
 
   useEffect(() => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('expiration');
+    localStorage.removeItem('jwtToken');
+    localStorage.removeItem('jwtTokenExpiration');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('refreshTokenExpiration');
+    const account_id = null;
+    const freelancer_id = null;
+    const balance = null;
+    const firstName = null;
+    const lastName = null;
+    const userName = null;
+    const email = null;
+    const role = null;
+    const isBanned = null;
+    const bio = null;
+    const profilePicture = null;
     const jwtToken = null;
     const refreshToken = null;
 
-    setTokens({ jwtToken, refreshToken });
+    setUser({
+      account_id,
+      freelancer_id,
+      balance,
+      firstName,
+      lastName,
+      userName,
+      email,
+      role,
+      isBanned,
+      bio,
+      profilePicture,
+      jwtToken,
+      refreshToken,
+    });
 
     navigate('/');
-  }, [setTokens, navigate]);
+  }, [setUser, navigate]);
 
   return null;
 }

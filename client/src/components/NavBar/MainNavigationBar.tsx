@@ -6,10 +6,11 @@ import NavBarItem from '@/components/NavBar/NavBarItem';
 import NavButton from '@/components/NavBar/NavButton';
 import jobestaLogo from '@/assets/jobesta-logo.png';
 import { useContext, useState } from 'react';
-import TokensContext from '@/store/tokensContext';
+import UserContext from '@/store/userContext';
+import ProfileDropdown from '../Profile/ProfileDropDown';
 
 function MainNavigationBar() {
-  const { refreshToken } = useContext(TokensContext);
+  const { refreshToken, role } = useContext(UserContext);
   const [isDropdownBarOpen, setIsDropdownBarMenu] = useState(false);
   const [isDropdownProfileOpen, setIsDropdownProfileMenu] = useState(false);
 
@@ -38,7 +39,7 @@ function MainNavigationBar() {
               className="bg-transparent w-min h-9 align-baseline self-auto"
               src={jobestaLogo}
             />
-            <span className="font-customFont self-auto text-2xl text-green-700 font-semibold whitespace-nowrap dark:text-green-700">
+            <span className="font-customFont self-center text-2xl text-green-700 font-semibold whitespace-nowrap dark:text-green-700">
               JOBESTA
             </span>
           </Link>
@@ -61,18 +62,7 @@ function MainNavigationBar() {
                   >
                     <FontAwesomeIcon icon={faCircleUser} />
                   </NavButton>
-                  {isDropdownProfileOpen && (
-                    <div className="absolute top-12 right-0 w-fit rounded-3xl bg-white shadow-lg z-50  dark:bg-gray-800 dark:border-gray-700">
-                      <ul className="flex flex-col rounded-3xl font-medium p-4 border-t border-gray-100 bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
-                        <li
-                          className="py-2 border-b hover:bg-gray-100 dark:hover:bg-gray-700"
-                          onClick={handleProfileClick}
-                        >
-                          <NavBarItem page="/logout">Logout</NavBarItem>
-                        </li>
-                      </ul>
-                    </div>
-                  )}
+                  {isDropdownProfileOpen && <ProfileDropdown />}
                 </div>
               </>
             )}
@@ -128,6 +118,14 @@ function MainNavigationBar() {
                 >
                   <NavBarItem page="/contacts">Contacts</NavBarItem>
                 </li>
+                {role === 'client' && (
+                  <li
+                    className="py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    onClick={handleBarClick}
+                  >
+                    <NavBarItem page="/create-job">Create Job</NavBarItem>
+                  </li>
+                )}
               </ul>
             </div>
           )}
@@ -140,6 +138,9 @@ function MainNavigationBar() {
               <NavBarItem page="/about">About</NavBarItem>
               <NavBarItem page="/jobs">Jobs</NavBarItem>
               <NavBarItem page="/contacts">Contacts</NavBarItem>
+              {role === 'client' && (
+                <NavBarItem page="/create-job">Create Job</NavBarItem>
+              )}
             </ul>
           </div>
         </div>
@@ -149,3 +150,22 @@ function MainNavigationBar() {
 }
 
 export default MainNavigationBar;
+
+//{
+//   <div className="absolute top-12 right-0 w-fit rounded-3xl bg-white shadow-lg z-50  dark:bg-gray-800 dark:border-gray-700">
+//                       <ul className="flex flex-col rounded-3xl font-medium p-4 border-t border-gray-100 bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+//                         <li
+//                           className="py-2 border-b hover:bg-gray-100 dark:hover:bg-gray-700"
+//                           onClick={handleProfileClick}
+//                         >
+//                           <NavBarItem page="/me">Profile</NavBarItem>
+//                         </li>
+//                         <li
+//                           className="py-2 border-b hover:bg-gray-100 dark:hover:bg-gray-700"
+//                           onClick={handleProfileClick}
+//                         >
+//                           <NavBarItem page="/logout">Logout</NavBarItem>
+//                         </li>
+//                       </ul>
+//                     </div>
+// }

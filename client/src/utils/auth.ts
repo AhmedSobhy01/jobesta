@@ -1,12 +1,24 @@
-// export function getTokenDuration() {
-//   const storedExpirationDate = localStorage.getItem('jwtTokenExpiration');
-//   const expirationDate = new Date(storedExpirationDate);
-//   const now = new Date();
-//   const duration = expirationDate.getTime() - now.getTime();
-//   return duration;
-// }
+export function getJwtTokenDuration() {
+  const storedExpirationDate = localStorage.getItem('jwtTokenExpiration');
+  if (!storedExpirationDate) {
+    return -1; // or throw an error if you prefer
+  }
+  const expirationDate = new Date(storedExpirationDate);
+  const now = new Date();
+  const duration = expirationDate.getTime() - now.getTime();
+  return duration;
+}
 
-import { redirect } from 'react-router-dom';
+export function getRefreshTokenDuration() {
+  const storedExpirationDate = localStorage.getItem('refreshTokenExpiration');
+  if (!storedExpirationDate) {
+    return -1;
+  }
+  const expirationDate = new Date(storedExpirationDate);
+  const now = new Date();
+  const duration = expirationDate.getTime() - now.getTime();
+  return duration;
+}
 
 export function getAuthJwtToken() {
   const token = localStorage.getItem('jwtToken');
@@ -15,11 +27,11 @@ export function getAuthJwtToken() {
     return null;
   }
 
-  //const tokenDuration = getTokenDuration();
+  const tokenDuration = getJwtTokenDuration();
 
-  // if (tokenDuration < 0) {
-  //   return 'EXPIRED';
-  // }
+  if (tokenDuration < 0) {
+    return 'EXPIRED';
+  }
 
   return token;
 }
@@ -31,21 +43,11 @@ export function getAuthRefreshToken() {
     return null;
   }
 
-  //const tokenDuration = getTokenDuration();
+  const tokenDuration = getRefreshTokenDuration();
 
-  // if (tokenDuration < 0) {
-  //   return 'EXPIRED';
-  // }
-
-  return token;
-}
-
-export function checkAuthLoader() {
-  const token = getAuthJwtToken();
-
-  if (!token) {
-    return redirect('/auth');
+  if (tokenDuration < 0) {
+    return 'EXPIRED';
   }
 
-  return true;
+  return token;
 }
