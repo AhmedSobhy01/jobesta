@@ -105,11 +105,9 @@ export async function getUserByUsername(
     status: true,
     message: 'User Found',
     data: {
-      id: userData!.id,
       firstName: userData!.first_name,
       lastName: userData!.last_name,
       username: userData!.username,
-      email: userData!.email,
       role: userData!.role,
       isBanned: userData!.is_banned,
       profilePicture: userData!.profile_picture,

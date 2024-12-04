@@ -133,8 +133,6 @@ export async function getFreelancerByUsername(req: Request, res: Response) {
   const skills = skillsQuery.rows.map((skill) => skill.name);
 
   const freelancer = {
-    id: freelancerData.id,
-    balance: freelancerData.balance,
     bio: freelancerData.bio,
     previousWork,
     skills,
