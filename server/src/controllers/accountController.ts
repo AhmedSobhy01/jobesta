@@ -17,11 +17,6 @@ export async function getAccount(req: Request, res: Response): Promise<void> {
       role: userData!.role,
       isBanned: userData!.is_banned,
       profilePicture: userData!.profile_picture,
-      freelancer: {
-        id: userData!.freelancer!.id,
-        balance: userData!.freelancer!.balance,
-        bio: userData!.freelancer!.bio,
-      },
     },
   });
 }
