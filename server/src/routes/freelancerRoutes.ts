@@ -2,6 +2,7 @@ import { authenticate } from '../middlewares/authMiddleware.js';
 import {
   getCurrentFreelancer,
   updateFreelancer,
+  getFreelancerByUsername,
 } from '../controllers/freelancerController.js';
 import { updateFreelancerValidationRules } from '../validations/freelancerValidations.js';
 import { validateRequest } from '../middlewares/validationMiddleware.js';
@@ -9,6 +10,8 @@ import router from 'express';
 import { checkIfFreelancer } from '../middlewares/freelancerMiddleware.js';
 
 const freelancerRouter = router();
+
+freelancerRouter.get('/:username', getFreelancerByUsername);
 
 freelancerRouter.get(
   '/me',

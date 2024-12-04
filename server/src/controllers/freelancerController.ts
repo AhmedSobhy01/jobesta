@@ -95,3 +95,52 @@ export async function updateFreelancer(
     });
   }
 }
+
+export async function getFreelancerByUsername(req: Request, res: Response) {
+  const { username } = req.params;
+
+  const freelancerDataQuery = await db.query(
+    'SELECT f.id, f.bio, f.balance FROM accounts a JOIN freelancers f ON f.account_id = a.id WHERE a.username = $1',
+    [username],
+  );
+
+  if (freelancerDataQuery.rowCount === 0) {
+    res.status(404).json({
+      status: false,
+      message: 'Freelancer not found',
+    });
+    return;
+  }
+
+  const freelancerData = freelancerDataQuery.rows[0];
+
+  const skillsQuery = await db.query(
+    'SELECT name FROM skills WHERE freelancer_id = $1',
+    [freelancerData.id],
+  );
+
+  const previousWorkQuery = await db.query(
+    'SELECT * FROM previous_works WHERE freelancer_id = $1',
+    [freelancerData.id],
+  );
+
+  const previousWork = previousWorkQuery.rows.map((work) => ({
+    title: work.title,
+    description: work.description,
+    url: work.url,
+  }));
+
+  const skills = skillsQuery.rows.map((skill) => skill.name);
+
+  const freelancer = {
+    id: freelancerData.id,
+    balance: freelancerData.balance,
+    bio: freelancerData.bio,
+    previousWork,
+    skills,
+  };
+
+  res
+    .status(200)
+    .json({ status: true, message: 'Freelancer Found', data: freelancer });
+}
