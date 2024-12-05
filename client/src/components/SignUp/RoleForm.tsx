@@ -18,7 +18,7 @@ const RoleForm: React.FC<{
   return (
     <>
       <h2 className="text-xl font-bold mb-6">Choose Your Role</h2>
-      <div className=" my-2 md:flex md:gap-4 md:w-96">
+      <div className="px-5 my-2 w-full md:flex sm:gap-4 sm:w-96">
         <RoleButton
           type="freelancer"
           selection={selected}

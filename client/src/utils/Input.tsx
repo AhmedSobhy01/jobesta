@@ -6,6 +6,7 @@ const Input: React.FC<{
   minLength?: number;
   type?: string;
   errorMessage?: string;
+  className?: string;
 }> = (props) => {
   let css =
     'px-3 py-2 border border-gray-300 rounded-md focus:ring focus:outline-none focus:ring-green-500 focus:border-green-500';
@@ -16,14 +17,7 @@ const Input: React.FC<{
   }
 
   return (
-    <div
-      className={`
-      ${
-        props.label === 'first-name' || props.label === 'last-name'
-          ? 'w-1/2 inline-block'
-          : 'w-full'
-      } ${props.label === 'last-name' ? 'pl-2' : ''}`}
-    >
+    <div className={props.className}>
       <label
         htmlFor={props.label}
         className="block text-gray-700 font-medium text-base mb-1"

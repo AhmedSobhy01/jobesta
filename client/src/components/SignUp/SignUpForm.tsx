@@ -16,15 +16,23 @@ const SignUpForm: React.FC = () => {
       <h2 className="text-3xl font-bold text-gray-800 mb-4">
         Create New Account
       </h2>
-      <div className="flex flex-col max-w-lg w-full px-8">
+      <div className="flex flex-col w-full px-8">
         <Form method="post" className=" border-green-700 border-6 border-solid">
           <div className="space-y-2.5">
-            <div className="flex">
-              <Input label="first-name" errorMessage={errors?.firstName}>
+            <div className="flex flex-col md:flex-row md:gap-4">
+              <Input
+                className="w-full inline-block"
+                label="first-name"
+                errorMessage={errors?.firstName}
+              >
                 First Name
               </Input>
 
-              <Input label="last-name" errorMessage={errors?.lastName}>
+              <Input
+                className="w-full inline-block"
+                label="last-name"
+                errorMessage={errors?.lastName}
+              >
                 Last Name
               </Input>
             </div>

@@ -34,7 +34,7 @@ function Login() {
   };
   return (
     <div className="justify-items-center">
-      <div className="h-screen flex flex-row md:w-4/5">
+      <div className="h-screen flex items-center justify-center w-full">
         {isGlobalError && (
           <ErrorModule
             errorMessage={errors?.global}
@@ -50,7 +50,7 @@ function Login() {
         <div className="hidden md:basis-1/2 md:w-full md:h-full md:grid content-center justify-items-center">
           <img className="md:w-2/3" src={signinpic} />
         </div>
-        <div className="-translate-x-3 md:basis-1/2 flex-col flex items-center justify-center">
+        <div className="flex-col flex items-center justify-center w-full md:max-w-lg">
           <Link
             to="/"
             className="font-customFont text-5xl basis-20 text-green-700 font-bold mb-6"
