@@ -1,7 +1,6 @@
 import { Form, Link, redirect, useActionData } from 'react-router-dom';
 import { ActionFunctionArgs } from 'react-router-dom';
 import Input from '@/utils/Input';
-//type ErrorsState = Record<string, string>;
 
 const SignUpForm: React.FC = () => {
   const errors = useActionData();
@@ -33,11 +32,13 @@ const SignUpForm: React.FC = () => {
           {errors?.username && (
             <p className="mt-1 text-sm text-red-500">{errors.username}</p>
           )}
-          <Input label="email">Email</Input>
+          <Input label="email" type="email">
+            Email
+          </Input>
           {errors?.email && (
             <p className="mt-1 text-sm text-red-500">{errors.email}</p>
           )}
-          <Input minLength={8} label="password">
+          <Input minLength={8} label="password" type="password">
             Password
           </Input>
           {errors?.password && (

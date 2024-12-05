@@ -62,11 +62,13 @@ function Login() {
           </h2>
           <div className="flex flex-col max-w-md w-full px-8">
             <Form method="post">
-              <Input label="email">Email</Input>
+              <Input label="email" type="email">
+                Email
+              </Input>
               {errors?.email && (
                 <p className="mt-1 text-sm text-red-500">{errors.email}</p>
               )}
-              <Input minLength={8} label="password">
+              <Input minLength={8} label="password" type="password">
                 Password
               </Input>
               {errors?.password && (
