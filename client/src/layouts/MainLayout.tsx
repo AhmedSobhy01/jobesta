@@ -74,13 +74,16 @@ export async function loader() {
           refreshToken: refreshToken,
         };
 
-        const response = await fetch('http://localhost:3000/auth/refresh', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
+        const response = await fetch(
+          import.meta.env.VITE_API_URL + '/auth/refresh',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(authData),
           },
-          body: JSON.stringify(authData),
-        });
+        );
 
         console.log(response);
         const resData = await response.json();
@@ -99,12 +102,15 @@ export async function loader() {
       localStorage.setItem('jwtToken', jwtToken);
 
       try {
-        const response = await fetch('http://localhost:3000/account/me', {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + jwtToken,
+        const response = await fetch(
+          import.meta.env.VITE_API_URL + '/auth/me',
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: 'Bearer ' + jwtToken,
+            },
           },
-        });
+        );
         const resData = await response.json();
 
         if (!response.ok) {
