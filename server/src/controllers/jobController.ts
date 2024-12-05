@@ -72,3 +72,24 @@ export async function getJobs(req: Request, res: Response): Promise<void> {
     res.status(500).json({ status: false, message: 'Error retrieving jobs' });
   }
 }
+
+export async function getJobById(req: Request, res: Response) {
+  try {
+    const jobQuery = await db.query('SELECT * FROM jobs WHERE id = $1', [
+      req.params.id,
+    ]);
+    if (jobQuery.rows.length === 0) {
+      res.status(404).json({ status: false, message: 'Job not found' });
+      return;
+    }
+    res.json({
+      status: true,
+      message: 'Job retrieved',
+      data: {
+        job: jobQuery.rows[0],
+      },
+    });
+  } catch {
+    res.status(500).json({ status: false, message: 'Error retrieving job' });
+  }
+}
