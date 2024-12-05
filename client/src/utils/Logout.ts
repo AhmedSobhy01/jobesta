@@ -36,8 +36,8 @@ export function Logout() {
     localStorage.removeItem('jwtTokenExpiration');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('refreshTokenExpiration');
-    const account_id = null;
-    const freelancer_id = null;
+    const accountId = null;
+    const freelancerId = null;
     const balance = null;
     const firstName = null;
     const lastName = null;
@@ -51,8 +51,8 @@ export function Logout() {
     const refreshToken = null;
 
     setUser({
-      account_id,
-      freelancer_id,
+      accountId,
+      freelancerId,
       balance,
       firstName,
       lastName,

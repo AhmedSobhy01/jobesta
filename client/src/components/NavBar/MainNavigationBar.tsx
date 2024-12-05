@@ -7,7 +7,7 @@ import NavButton from '@/components/NavBar/NavButton';
 import jobestaLogo from '@/assets/jobesta-logo.png';
 import { useContext, useState } from 'react';
 import UserContext from '@/store/userContext';
-import ProfileDropdown from '../Profile/ProfileDropDown';
+import ProfileDropdown from '@/components/Profile/ProfileDropdown';
 
 function MainNavigationBar() {
   const { refreshToken, role } = useContext(UserContext);
@@ -89,46 +89,48 @@ function MainNavigationBar() {
             >
               <FontAwesomeIcon icon={faBars} />
             </NavButton>
+            {isDropdownBarOpen && (
+              <div className="relative">
+                <div className="md:hidden absolute right-2 w-min rounded-xl bg-white shadow-lg z-50">
+                  <ul className="flex flex-col rounded-3xl font-medium p-4 border-t border-gray-100 bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+                    <li
+                      className="py-2 border-b hover:bg-gray-100 dark:hover:bg-gray-700"
+                      onClick={handleBarClick}
+                    >
+                      <NavBarItem page="/">Home</NavBarItem>
+                    </li>
+                    <li
+                      className="py-2 border-b hover:bg-gray-100 dark:hover:bg-gray-700"
+                      onClick={handleBarClick}
+                    >
+                      <NavBarItem page="/about">About</NavBarItem>
+                    </li>
+                    <li
+                      className="py-2 border-b hover:bg-gray-100 dark:hover:bg-gray-700"
+                      onClick={handleBarClick}
+                    >
+                      <NavBarItem page="/jobs">Jobs</NavBarItem>
+                    </li>
+                    <li
+                      className="py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      onClick={handleBarClick}
+                    >
+                      <NavBarItem page="/contacts">Contacts</NavBarItem>
+                    </li>
+                    {role === 'client' && (
+                      <li
+                        className="py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+                        onClick={handleBarClick}
+                      >
+                        <NavBarItem page="/create-job">Create Job</NavBarItem>
+                      </li>
+                    )}
+                  </ul>
+                </div>
+              </div>
+            )}
           </div>
 
-          {isDropdownBarOpen && (
-            <div className="md:hidden absolute top-20 right-2 w-min rounded-xl bg-white shadow-lg z-50">
-              <ul className="flex flex-col rounded-3xl font-medium p-4 border-t border-gray-100 bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
-                <li
-                  className="py-2 border-b hover:bg-gray-100 dark:hover:bg-gray-700"
-                  onClick={handleBarClick}
-                >
-                  <NavBarItem page="/">Home</NavBarItem>
-                </li>
-                <li
-                  className="py-2 border-b hover:bg-gray-100 dark:hover:bg-gray-700"
-                  onClick={handleBarClick}
-                >
-                  <NavBarItem page="/about">About</NavBarItem>
-                </li>
-                <li
-                  className="py-2 border-b hover:bg-gray-100 dark:hover:bg-gray-700"
-                  onClick={handleBarClick}
-                >
-                  <NavBarItem page="/jobs">Jobs</NavBarItem>
-                </li>
-                <li
-                  className="py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-                  onClick={handleBarClick}
-                >
-                  <NavBarItem page="/contacts">Contacts</NavBarItem>
-                </li>
-                {role === 'client' && (
-                  <li
-                    className="py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-                    onClick={handleBarClick}
-                  >
-                    <NavBarItem page="/create-job">Create Job</NavBarItem>
-                  </li>
-                )}
-              </ul>
-            </div>
-          )}
           <div
             className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
             id="navbar-cta"
@@ -150,22 +152,3 @@ function MainNavigationBar() {
 }
 
 export default MainNavigationBar;
-
-//{
-//   <div className="absolute top-12 right-0 w-fit rounded-3xl bg-white shadow-lg z-50  dark:bg-gray-800 dark:border-gray-700">
-//                       <ul className="flex flex-col rounded-3xl font-medium p-4 border-t border-gray-100 bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
-//                         <li
-//                           className="py-2 border-b hover:bg-gray-100 dark:hover:bg-gray-700"
-//                           onClick={handleProfileClick}
-//                         >
-//                           <NavBarItem page="/me">Profile</NavBarItem>
-//                         </li>
-//                         <li
-//                           className="py-2 border-b hover:bg-gray-100 dark:hover:bg-gray-700"
-//                           onClick={handleProfileClick}
-//                         >
-//                           <NavBarItem page="/logout">Logout</NavBarItem>
-//                         </li>
-//                       </ul>
-//                     </div>
-// }
