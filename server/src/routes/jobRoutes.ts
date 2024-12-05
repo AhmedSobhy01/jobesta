@@ -5,7 +5,7 @@ import {
   getJobs,
 } from '../controllers/jobController.js';
 import { authenticate } from '../middlewares/authMiddleware.js';
-import { checkIfClient } from '../middlewares/clientMiddleware';
+import { checkIfClient } from '../middlewares/clientMiddleware.js';
 import { validateRequest } from '../middlewares/validationMiddleware.js';
 import { getJobsValidationRules } from '../validations/jobValidations.js';
 
