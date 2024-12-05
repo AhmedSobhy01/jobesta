@@ -11,7 +11,7 @@ const RoleButton: React.FC<{
   const icon = props.type === 'freelancer' ? freelancerIcon : clientIcon;
   return (
     <button
-      className={`border rounded-lg p-4 min-w-full my-6 flex flex-col md:min-w-min md:w-1/2 items-center transition ${
+      className={`border rounded-lg p-4 min-w-full my-6 flex flex-col md:min-w-min md:w-1/2 w-full items-center transition ${
         props.selection === props.type
           ? 'border-green-700 ring ring-green-500'
           : 'border-gray-300'

@@ -62,25 +62,26 @@ function MainNavigationBar() {
                   >
                     <FontAwesomeIcon icon={faCircleUser} />
                   </NavButton>
+                  
                   {isDropdownProfileOpen && <ProfileDropdown />}
                 </div>
               </>
             )}
             {!refreshToken && (
-              <>
+              <div className="flex gap-3">
                 <Link
                   to="/login"
-                  className="py-2 -translate-x-5 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-green-700 md:dark:hover:text-green-500 dark:text-white dark:hover:bg-transparent dark:hover:text-green-500 md:dark:hover:bg-transparent dark:border-gray-700"
+                  className="py-2 px-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-green-700 md:dark:hover:text-green-500 dark:text-white dark:hover:bg-transparent dark:hover:text-green-500 md:dark:hover:bg-transparent dark:border-gray-700"
                 >
                   Login
                 </Link>
                 <Link
                   to="/signup"
-                  className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-500 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-green-700 dark:hover:bg-green-800 dark:focus:ring-green-800"
+                  className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-500 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-green-700 dark:hover:bg-green-800 dark:focus:ring-green-800 flex items-center justify-center"
                 >
                   Sign Up
                 </Link>
-              </>
+              </div>
             )}
             <NavButton
               focus={isDropdownBarOpen}
@@ -130,7 +131,7 @@ function MainNavigationBar() {
               </div>
             )}
           </div>
-
+          
           <div
             className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
             id="navbar-cta"

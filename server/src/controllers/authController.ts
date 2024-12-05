@@ -10,42 +10,26 @@ export async function registerAccount(
   req: Request,
   res: Response,
 ): Promise<void> {
-  const {
-    first_name,
-    last_name,
-    username,
-    email,
-    password,
-    role,
-    profile_picture,
-  } = req.body;
+  const { firstName, lastName, username, email, password, role } = req.body;
 
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
   const userIdQuery = await db.query(
-    'INSERT INTO accounts (first_name,last_name,username,email,password,role,profile_picture) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING id',
-    [
-      first_name,
-      last_name,
-      username,
-      email,
-      hashedPassword,
-      role,
-      profile_picture || null,
-    ],
+    'INSERT INTO accounts (first_name,last_name,username,email,password,role) VALUES ($1,$2,$3,$4,$5,$6) RETURNING id',
+    [firstName, lastName, username, email, hashedPassword, role],
   );
 
+  if (role === 'freelancer') {
+    await db.query('INSERT INTO freelancers (account_id) VALUES ($1)', [
+      userIdQuery.rows[0].id,
+    ]);
+  }
+
   const user = userIdQuery.rows[0];
-  const jwtToken = jwt.sign(
-    {
-      id: user.id,
-    },
-    process.env.JWT_SECRET as string,
-    {
-      expiresIn: '1hour',
-    },
-  );
+  const jwtToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET as string, {
+    expiresIn: '1hour',
+  });
 
   const refreshToken = jwt.sign(
     { id: user.id },
@@ -120,7 +104,8 @@ export async function generateRefreshToken(
     res
       .status(200)
       .json({ status: true, message: 'Token refreshed', data: { jwtToken } });
-  } catch {
+  } catch (err) {
+    console.log(err);
     res.status(403).json({ status: false, message: 'Invalid token' });
   }
 }

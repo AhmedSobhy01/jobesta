@@ -1,51 +1,59 @@
 services:
-  database:
-    image: postgres-db
-    container_name: jobesta-db
-    command: -p 5432
-    expose:
-      - 5432:5432
-    ports:
-      - 5432:5432
-    build:
-      context: ./db
-      dockerfile: ./Dockerfile
-    env_file: ./server/.env.example
-    environment:
-      - PGDATA=/var/lib/postgresql/data/pgdata
-    volumes:
-      - jobesta-data:/var/lib/postgresql/data
+    database:
+        image: jobesta-db
+        container_name: jobesta-db
+        ports:
+            - 5432:5432
+        build:
+            context: ./db
+            dockerfile: ./Dockerfile
+        env_file: ./server/.env.example
+        environment:
+            - PGDATA=/var/lib/postgresql/data/pgdata
+        volumes:
+            - jobesta-data:/var/lib/postgresql/data
+        healthcheck:
+            test: ["CMD", "pg_isready", "-U", "jobesta-user", "-d", "jobesta"]
+            interval: 10s
+            retries: 5
+            start_period: 30s
+            timeout: 5s
 
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U jobesta-user -d jobesta"]
-      start_period: 0s
-      interval: 5s
-      timeout: 5s
-      retries: 5
+    server:
+        image: jobesta-api
+        container_name: jobesta-api
+        ports:
+            - 3000:3000
+        build:
+            context: ./server
+            dockerfile: ./Dockerfile
+        env_file: ./server/.env.example
+        depends_on:
+            database:
+                condition: service_healthy
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:3000"]
+            interval: 10s
+            retries: 5
+            start_period: 30s
+            timeout: 5s
 
-  server:
-    image: jobesta-node
-    container_name: jobesta-api
-    env_file: ./server/.env.example
-    ports:
-      - 3000:3000
-    build: 
-      context: ./server
-      dockerfile: ./Dockerfile
-    depends_on:
-      database:
-        condition: service_healthy
-
-  frontend:
-    image: jobesta-frontend
-    container_name: jobesta-frontend
-    env_file: ./client/.env.example
-    ports:
-      - 8080:80
-    build: 
-      context: ./client
-      dockerfile: ./Dockerfile
+    frontend:
+        image: jobesta-frontend
+        container_name: jobesta-frontend
+        ports:
+            - 8080:80
+        build:
+            context: ./client
+            dockerfile: ./Dockerfile
+        env_file: ./client/.env.example
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost"]
+            interval: 10s
+            retries: 5
+            start_period: 30s
+            timeout: 5s
 
 volumes:
-  jobesta-data:
-    name: "jobesta-data"
+    jobesta-data:
+        name: "jobesta-data"

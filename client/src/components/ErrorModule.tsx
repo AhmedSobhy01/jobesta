@@ -1,4 +1,6 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 interface GlobalErrorPopupProps {
   errorMessage?: string;
@@ -18,22 +20,9 @@ const GlobalErrorPopup: React.FC<GlobalErrorPopupProps> = ({
           <h3 className="text-lg font-medium text-red-600">Error</h3>
           <button
             onClick={onClose}
-            className="rounded-full bg-red-50 p-1.5 text-red-500 hover:bg-red-100 focus:outline-none"
+            className="rounded-full bg-red-50 text-red-500 hover:bg-red-100 focus:outline-none w-8 h-8 flex items-center justify-center"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            <FontAwesomeIcon icon={faTimes} />
           </button>
         </div>
         <div className="mt-4">

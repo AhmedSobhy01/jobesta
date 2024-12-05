@@ -25,7 +25,7 @@ function SignUp() {
   console.log(isGlobalError);
   return (
     <div className="justify-items-center">
-      <div className="h-screen flex flex-row md:w-4/5">
+      <div className="h-screen flex items-center justify-center w-full">
         {isGlobalError && (
           <ErrorModule
             errorMessage={errors?.global}
@@ -40,7 +40,7 @@ function SignUp() {
             </h1>
           ) : undefined}
         </div>
-        <div className="-translate-x-3 md:basis-1/2 flex-col flex items-center justify-center">
+        <div className="flex-col flex items-center justify-center w-full md:max-w-lg">
           {selectRole === 'role' ? (
             <RoleForm onSelection={handleUserType} />
           ) : (

@@ -1,18 +1,7 @@
 import { body } from 'express-validator';
 import db from '../db/db.js';
 
-export const loginValidationRules = [
-  body('email')
-    .trim()
-    .notEmpty()
-    .withMessage('Email is required')
-    .isEmail()
-    .withMessage('Invalid email address'),
-
-  body('password').trim().notEmpty().withMessage('Password is required'),
-];
-
-export const registerValidationRules = [
+export const updateAccountValidationRules = [
   body('firstName')
     .trim()
     .notEmpty()
@@ -37,12 +26,14 @@ export const registerValidationRules = [
     .withMessage('Username is required')
     .isLength({ min: 3 })
     .withMessage('Username must be at least 3 characters long')
+    .isLength({ max: 255 })
+    .withMessage('Username must not exceed 255 characters')
     .isAlphanumeric()
     .withMessage('Username must contain only letters and numbers')
-    .custom(async (value) => {
+    .custom(async (value, { req }) => {
       const query = await db.query(
-        'SELECT * FROM accounts WHERE username = $1',
-        [value],
+        'SELECT * FROM accounts WHERE username = $1 AND id != $2',
+        [value, req.user!.id],
       );
       if (query.rowCount !== null && query.rowCount > 0) {
         return Promise.reject('Username already in use');
@@ -51,25 +42,24 @@ export const registerValidationRules = [
 
   body('email')
     .trim()
-    .notEmpty()
-    .withMessage('Email is required')
     .isEmail()
-    .withMessage('Invalid email address')
+    .withMessage('Email must be a valid email address')
     .isLength({ max: 255 })
     .withMessage('Email must not exceed 255 characters')
-    .custom(async (value) => {
-      const query = await db.query('SELECT * FROM accounts WHERE email = $1', [
-        value,
-      ]);
+    .custom(async (value, { req }) => {
+      const query = await db.query(
+        'SELECT * FROM accounts WHERE email = $1 AND id != $2',
+        [value, req.user!.id],
+      );
       if (query.rowCount !== null && query.rowCount > 0) {
         return Promise.reject('Email already in use');
       }
     }),
 
   body('password')
+    .optional()
     .trim()
     .notEmpty()
-    .withMessage('Password is required')
     .isLength({ min: 8 })
     .withMessage('Password must be at least 8 characters long')
     .isLength({ max: 255 })
@@ -79,17 +69,14 @@ export const registerValidationRules = [
       'Password must contain at least one uppercase letter, one lowercase letter, and one number',
     ),
 
-  body('role')
+  body('confirmPassword')
+    .optional()
     .trim()
-    .notEmpty()
-    .withMessage('Role is required')
-    .isIn(['client', 'freelancer'])
-    .withMessage('Role must be either client or freelancer'),
-];
+    .custom((value, { req }) => {
+      if (value !== req.body.password) {
+        throw new Error('Passwords do not match');
+      }
 
-export const refreshValidationRules = [
-  body('refreshToken')
-    .trim()
-    .notEmpty()
-    .withMessage('Refresh token is required'),
+      return true;
+    }),
 ];

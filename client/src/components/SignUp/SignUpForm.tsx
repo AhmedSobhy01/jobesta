@@ -17,34 +17,46 @@ const SignUpForm: React.FC = () => {
       <h2 className="text-3xl font-bold text-gray-800 mb-4">
         Create New Account
       </h2>
-      <div className=" flex flex-col max-w-md w-full px-8">
+      <div className="flex flex-col w-full px-8">
         <Form method="post" className=" border-green-700 border-6 border-solid">
-          <div className="flex">
-            <Input label="first-name">First Name</Input>
-            {errors?.firstName && (
-              <p className="mt-1 text-sm text-red-500">{errors.firstName}</p>
-            )}
-            <Input label="last-name">Last Name</Input>
-            {errors?.lastName && (
-              <p className="mt-1 text-sm text-red-500">{errors.lastName}</p>
-            )}
-          </div>
-          <Input label="user-name">User Name</Input>
-          {errors?.username && (
-            <p className="mt-1 text-sm text-red-500">{errors.username}</p>
-          )}
-          <Input label="email">Email</Input>
-          {errors?.email && (
-            <p className="mt-1 text-sm text-red-500">{errors.email}</p>
-          )}
-          <Input minLenght={8} label="password">
-            Password
-          </Input>
-          {errors?.password && (
-            <p className="mt-1 text-sm text-red-500">{errors.password}</p>
-          )}
+          <div className="space-y-2.5">
+            <div className="flex flex-col md:flex-row md:gap-4">
+              <Input
+                className="w-full inline-block"
+                label="first-name"
+                errorMessage={errors?.firstName}
+              >
+                First Name
+              </Input>
 
-          <button className="w-full mt-2 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring focus:ring-green-500">
+              <Input
+                className="w-full inline-block"
+                label="last-name"
+                errorMessage={errors?.lastName}
+              >
+                Last Name
+              </Input>
+            </div>
+
+            <Input label="user-name" errorMessage={errors?.username}>
+              User Name
+            </Input>
+
+            <Input label="email" type="email" errorMessage={errors?.email}>
+              Email
+            </Input>
+
+            <Input
+              minLength={8}
+              label="password"
+              type="password"
+              errorMessage={errors?.password}
+            >
+              Password
+            </Input>
+          </div>
+
+          <button className="w-full mt-4 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring focus:ring-green-500">
             Register
           </button>
         </Form>
@@ -78,15 +90,17 @@ export async function action({ request }: ActionFunctionArgs) {
     profilePicture: null,
   };
 
-  console.log(authData);
   try {
-    const response = await fetch('http://localhost:3000/auth/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      import.meta.env.VITE_API_URL + '/auth/register',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(authData),
       },
-      body: JSON.stringify(authData),
-    });
+    );
 
     const resData = await response.json();
 
@@ -104,7 +118,7 @@ export async function action({ request }: ActionFunctionArgs) {
     const jwtTokenExpiration = new Date();
     jwtTokenExpiration.setHours(jwtTokenExpiration.getHours() + 1);
 
-    //store jwtTokens expirationdate in local storage
+    //store jwtTokens expiration date in local storage
     localStorage.setItem(
       'jwtTokenExpiration',
       jwtTokenExpiration.toISOString(),
@@ -113,7 +127,7 @@ export async function action({ request }: ActionFunctionArgs) {
     const refreshedTokenExpiration = new Date();
     refreshedTokenExpiration.setDate(refreshedTokenExpiration.getDate() + 30);
 
-    //store refreshedToken expirationdate in local storage
+    //store refreshedToken expiration date in local storage
     localStorage.setItem(
       'refreshTokenExpiration',
       refreshedTokenExpiration.toISOString(),
