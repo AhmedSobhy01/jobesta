@@ -62,7 +62,7 @@ function MainNavigationBar() {
                   >
                     <FontAwesomeIcon icon={faCircleUser} />
                   </NavButton>
-                  
+
                   {isDropdownProfileOpen && <ProfileDropdown />}
                 </div>
               </>
@@ -131,7 +131,7 @@ function MainNavigationBar() {
               </div>
             )}
           </div>
-          
+
           <div
             className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
             id="navbar-cta"
