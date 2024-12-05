@@ -15,34 +15,34 @@ import { Logout } from '@/utils/Logout';
 import { action as loginAction } from '@/pages/Login';
 import ProfilePage from './pages/Profile';
 
-function App() {
-  const router = createBrowserRouter([
-    {
-      path: '/',
-      element: <MainLayout />,
-      loader: loadUser,
-      children: [
-        { index: true, element: <Home /> },
-        { path: 'about', element: <About /> },
-        { path: 'jobs', element: <Jobs /> },
-        { path: 'contacts', element: <Contacts /> },
-        { path: 'me', element: <ProfilePage /> },
-      ],
-    },
-    { path: '/login', element: <Login />, action: loginAction },
-    {
-      path: '/signup',
-      element: <SignUp />,
-      action: signupAction,
-      children: [{ path: '', element: <SignUpForm /> }],
-    },
-    { path: '/set-user', element: <SetUserPage /> },
-    {
-      path: '/logout',
-      element: <Logout />,
-    },
-  ]);
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <MainLayout />,
+    loader: loadUser,
+    children: [
+      { index: true, element: <Home /> },
+      { path: 'about', element: <About /> },
+      { path: 'jobs', element: <Jobs /> },
+      { path: 'contacts', element: <Contacts /> },
+      { path: 'me', element: <ProfilePage /> },
+    ],
+  },
+  { path: '/login', element: <Login />, action: loginAction },
+  {
+    path: '/signup',
+    element: <SignUp />,
+    action: signupAction,
+    children: [{ path: '', element: <SignUpForm /> }],
+  },
+  { path: '/set-user', element: <SetUserPage /> },
+  {
+    path: '/logout',
+    element: <Logout />,
+  },
+]);
 
+function App() {
   return (
     <UserContextProvider>
       <RouterProvider router={router} />

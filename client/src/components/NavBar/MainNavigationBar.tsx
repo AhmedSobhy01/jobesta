@@ -83,53 +83,52 @@ function MainNavigationBar() {
                 </Link>
               </div>
             )}
-            <NavButton
-              focus={isDropdownBarOpen}
-              handleClick={handleBarClick}
-              wideHidden={true}
-            >
-              <FontAwesomeIcon icon={faBars} />
-            </NavButton>
-            {isDropdownBarOpen && (
-              <div className="relative">
-                <div className="md:hidden absolute right-2 w-min rounded-xl bg-white shadow-lg z-50">
-                  <ul className="flex flex-col rounded-3xl font-medium p-4 border-t border-gray-100 bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
-                    <li
-                      className="py-2 border-b hover:bg-gray-100 dark:hover:bg-gray-700"
-                      onClick={handleBarClick}
-                    >
-                      <NavBarItem page="/">Home</NavBarItem>
-                    </li>
-                    <li
-                      className="py-2 border-b hover:bg-gray-100 dark:hover:bg-gray-700"
-                      onClick={handleBarClick}
-                    >
-                      <NavBarItem page="/about">About</NavBarItem>
-                    </li>
-                    <li
-                      className="py-2 border-b hover:bg-gray-100 dark:hover:bg-gray-700"
-                      onClick={handleBarClick}
-                    >
-                      <NavBarItem page="/jobs">Jobs</NavBarItem>
-                    </li>
+            <div className="relative">
+              <NavButton
+                focus={isDropdownBarOpen}
+                handleClick={handleBarClick}
+                wideHidden={true}
+              >
+                <FontAwesomeIcon icon={faBars} />
+              </NavButton>
+
+              {isDropdownBarOpen && (
+                <ul className=" md:hidden absolute right-2 w-min rounded-xl bg-white shadow-lg z-50 flex flex-col font-medium p-4 border-t border-gray-100 dark:bg-gray-800 dark:border-gray-700">
+                  <li
+                    className="py-2 border-b hover:bg-gray-100 dark:hover:bg-gray-700"
+                    onClick={handleBarClick}
+                  >
+                    <NavBarItem page="/">Home</NavBarItem>
+                  </li>
+                  <li
+                    className="py-2 border-b hover:bg-gray-100 dark:hover:bg-gray-700"
+                    onClick={handleBarClick}
+                  >
+                    <NavBarItem page="/about">About</NavBarItem>
+                  </li>
+                  <li
+                    className="py-2 border-b hover:bg-gray-100 dark:hover:bg-gray-700"
+                    onClick={handleBarClick}
+                  >
+                    <NavBarItem page="/jobs">Jobs</NavBarItem>
+                  </li>
+                  <li
+                    className="py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    onClick={handleBarClick}
+                  >
+                    <NavBarItem page="/contacts">Contacts</NavBarItem>
+                  </li>
+                  {role === 'client' && (
                     <li
                       className="py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
                       onClick={handleBarClick}
                     >
-                      <NavBarItem page="/contacts">Contacts</NavBarItem>
+                      <NavBarItem page="/create-job">Create Job</NavBarItem>
                     </li>
-                    {role === 'client' && (
-                      <li
-                        className="py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-                        onClick={handleBarClick}
-                      >
-                        <NavBarItem page="/create-job">Create Job</NavBarItem>
-                      </li>
-                    )}
-                  </ul>
-                </div>
-              </div>
-            )}
+                  )}
+                </ul>
+              )}
+            </div>
           </div>
 
           <div

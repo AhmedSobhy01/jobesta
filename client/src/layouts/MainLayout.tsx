@@ -1,4 +1,4 @@
-import { Outlet, redirect, useLoaderData } from 'react-router-dom';
+import { Outlet, useLoaderData } from 'react-router-dom';
 import MainNavigationBar from '@/components/NavBar/MainNavigationBar';
 import { useContext, useEffect, useState } from 'react';
 import UserContext from '@/store/userContext';
@@ -17,32 +17,21 @@ function MainLayout() {
       setIsError(true);
     }
 
-    if (userData?.user && userData.user !== myUser) {
-      let me = { freelancerId: null, balance: null, bio: null };
-      if (userData.user.role === 'freelancer') {
-        me = {
-          freelancerId: userData.user.freelancer.id,
-          balance: userData.user.freelancer.balance,
-          bio: userData.user.freelancer.bio,
-        };
-      }
+    if (userData?.user && userData.user.accountId == myUser.accountId) {
       myUser.setUser({
         accountId: userData.user.id,
-        freelancerId: me.freelancerId,
-        balance: me.balance,
         firstName: userData.user.firstName,
         lastName: userData.user.lastName,
         userName: userData.user.username,
         email: userData.user.email,
         role: userData.user.role,
         isBanned: userData.user.isBanned,
-        bio: me.bio,
         profilePicture: userData.user.profilePicture,
         jwtToken: getAuthJwtToken(),
         refreshToken: getAuthRefreshToken(),
       });
     }
-  }, [userData]);
+  }, [userData, myUser]);
 
   return (
     <>
@@ -66,7 +55,7 @@ export async function loader() {
   let jwtToken = getAuthJwtToken();
   const refreshToken = getAuthRefreshToken();
 
-  if (refreshToken || refreshToken !== 'EXPIRED') {
+  if (refreshToken && refreshToken !== 'EXPIRED') {
     if (!jwtToken || jwtToken === 'EXPIRED') {
       localStorage.removeItem('jwtToken');
       try {
@@ -100,6 +89,13 @@ export async function loader() {
     if (jwtToken) {
       localStorage.setItem('jwtToken', jwtToken);
 
+      const jwtTokenExpiration = new Date();
+      jwtTokenExpiration.setHours(jwtTokenExpiration.getHours() + 1);
+      localStorage.setItem(
+        'jwtTokenExpiration',
+        jwtTokenExpiration.toISOString(),
+      );
+
       try {
         const response = await fetch(
           import.meta.env.VITE_API_URL + '/account/me',
@@ -123,7 +119,13 @@ export async function loader() {
         return { user: null, message: 'Error fetching user data' };
       }
     }
-  } else {
-    return redirect('/login');
+
+    return { user: null, message: 'Error fetching user data' };
+  } else if (refreshToken === 'EXPIRED') {
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('jwtToken');
+    localStorage.removeItem('jwtTokenExpiration');
+
+    return { user: null };
   }
 }

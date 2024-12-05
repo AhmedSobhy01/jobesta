@@ -1,23 +1,25 @@
 export function getJwtTokenDuration() {
-  const storedExpirationDate = localStorage.getItem('jwtTokenExpiration');
-  if (!storedExpirationDate) {
-    return -1; // or throw an error if you prefer
+  const tokenExpiration = localStorage.getItem('jwtTokenExpiration');
+
+  if (!tokenExpiration) {
+    return -1;
   }
-  const expirationDate = new Date(storedExpirationDate);
-  const now = new Date();
-  const duration = expirationDate.getTime() - now.getTime();
-  return duration;
+
+  const expiration = new Date(tokenExpiration).getTime() - Date.now();
+
+  return expiration;
 }
 
 export function getRefreshTokenDuration() {
-  const storedExpirationDate = localStorage.getItem('refreshTokenExpiration');
-  if (!storedExpirationDate) {
+  const tokenExpiration = localStorage.getItem('refreshTokenExpiration');
+
+  if (!tokenExpiration) {
     return -1;
   }
-  const expirationDate = new Date(storedExpirationDate);
-  const now = new Date();
-  const duration = expirationDate.getTime() - now.getTime();
-  return duration;
+
+  const expiration = new Date(tokenExpiration).getTime() - Date.now();
+
+  return expiration;
 }
 
 export function getAuthJwtToken() {

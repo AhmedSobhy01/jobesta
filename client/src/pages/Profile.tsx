@@ -56,7 +56,6 @@ const ProfilePage: React.FC = () => {
                 {userData.userName}
               </span>
             </h1>
-            <p className="text-gray-600">{userData.bio}</p>
           </div>
         </div>
 
@@ -92,14 +91,6 @@ const ProfilePage: React.FC = () => {
           <h2 className="text-2xl font-bold text-gray-800">0</h2>
           <p className="text-gray-600">Reviews</p>
         </div>
-        {userData.role === 'freelancer' && (
-          <div className="text-center">
-            <h2 className="text-2xl font-bold text-gray-800">
-              {userData.balance}
-            </h2>
-            <p className="text-gray-600">Balance</p>
-          </div>
-        )}
       </div>
 
       {userData.role === 'client' && (
@@ -213,62 +204,3 @@ const ProfilePage: React.FC = () => {
 };
 
 export default ProfilePage;
-
-{
-  /* {
-  <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
-      <ProfileSideBar
-        isSidebarOpen={isSidebarOpen}
-        toggleSidebar={toggleSidebar}
-      />
-
-      <div
-        className={`flex-grow transition-transform duration-300 ${
-          isSidebarOpen ? 'translate-x-64 md:translate-x-0' : ''
-        }`}
-      >
-        <div className="mx-4 my-10 bg-white shadow-xl rounded-lg text-gray-900">
-          <div className="rounded-t-lg h-32 overflow-hidden">
-            <img
-              className="object-cover object-top w-full h-full"
-              src="https://images.unsplash.com/photo-1549880338-65ddcdfd017b?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&fit=max&ixid=eyJhcHBfaWQiOjE0NTg5fQ"
-              alt="Mountain"
-            />
-          </div>
-
-          <div className="mx-auto w-32 h-32 relative -mt-16 border-4 border-white rounded-full overflow-hidden">
-            <img
-              className="object-cover w-full h-full"
-              src={userProfile}
-              alt="Profile"
-            />
-          </div>
-
-          <div className="text-center mt-2">
-            <h2 className="font-semibold text-lg">Sarah Smith</h2>
-            <p className="text-gray-500">Freelance Web Designer</p>
-          </div>
-
-          <ul className="py-4 mt-2 text-gray-700 flex items-center justify-around">
-            {[
-              { count: '2k', label: 'Stars' },
-              { count: '10k', label: 'Followers' },
-              { count: '15', label: 'Projects' },
-            ].map((stat, index) => (
-              <li key={index} className="flex flex-col items-center">
-                <span className="font-bold text-lg">{stat.count}</span>
-                <span className="text-sm">{stat.label}</span>
-              </li>
-            ))}
-          </ul>
-
-          <div className="p-4 border-t mx-4 mt-2">
-            <button className="w-1/2 block mx-auto rounded-full bg-gray-900 hover:bg-gray-700 hover:shadow-lg font-semibold text-white px-6 py-2">
-              Follow
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-} */
-}
