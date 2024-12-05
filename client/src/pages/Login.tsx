@@ -66,7 +66,7 @@ function Login() {
               {errors?.email && (
                 <p className="mt-1 text-sm text-red-500">{errors.email}</p>
               )}
-              <Input minLenght={8} label="password">
+              <Input minLength={8} label="password">
                 Password
               </Input>
               {errors?.password && (
@@ -137,7 +137,7 @@ export async function action({ request }: ActionFunctionArgs) {
     const jwtTokenExpiration = new Date();
     jwtTokenExpiration.setHours(jwtTokenExpiration.getHours() + 1);
 
-    //store jwtTokens expirationdate in local storage
+    //store jwtTokens expiration date in local storage
     localStorage.setItem(
       'jwtTokenExpiration',
       jwtTokenExpiration.toISOString(),
@@ -145,7 +145,7 @@ export async function action({ request }: ActionFunctionArgs) {
     const refreshedTokenExpiration = new Date();
     refreshedTokenExpiration.setDate(refreshedTokenExpiration.getDate() + 30);
 
-    //store refreshedToken expirationdate in local storage
+    //store refreshedToken expiration date in local storage
     localStorage.setItem(
       'refreshTokenExpiration',
       refreshedTokenExpiration.toISOString(),

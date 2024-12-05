@@ -22,7 +22,7 @@ function SignUp() {
     setSelectRole(type);
     navigate(`/signup?role=${type}`);
   }
-  console.log(isGlobalError);
+
   return (
     <div className="justify-items-center">
       <div className="h-screen flex flex-row md:w-4/5">

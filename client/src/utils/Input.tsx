@@ -3,7 +3,7 @@ import React from 'react';
 const Input: React.FC<{
   label: string;
   children: React.ReactNode;
-  minLenght?: number;
+  minLength?: number;
 }> = (props) => {
   let css =
     'px-3 py-2 border border-gray-300 rounded-md focus:ring focus:outline-none focus:ring-green-500 focus:border-green-500';
@@ -35,7 +35,7 @@ const Input: React.FC<{
         className={css}
         name={props.label}
         required
-        minLength={props.minLenght}
+        minLength={props.minLength}
         placeholder={`Enter your ${props.label}`}
       />
     </div>
