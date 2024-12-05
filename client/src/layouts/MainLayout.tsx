@@ -103,7 +103,7 @@ export async function loader() {
 
       try {
         const response = await fetch(
-          import.meta.env.VITE_API_URL + '/auth/me',
+          import.meta.env.VITE_API_URL + '/account/me',
           {
             headers: {
               'Content-Type': 'application/json',
