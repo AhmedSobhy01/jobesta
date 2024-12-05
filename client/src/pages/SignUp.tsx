@@ -1,18 +1,37 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import signinpic from '@/assets/signinpic.png';
 import SignUpForm from '@/components/SignUp/SignUpForm';
 import RoleForm from '@/components/SignUp/RoleForm';
+import { useActionData, useNavigate } from 'react-router-dom';
+import ErrorModule from '@/components/ErrorModule';
 
 function SignUp() {
   const [selectRole, setSelectRole] = useState('role');
+  const errors = useActionData();
+  const [isGlobalError, setIsGlobalError] = useState(!!errors?.global);
+
+  useEffect(() => {
+    setIsGlobalError(!!errors?.global);
+  }, [errors]);
+
+  const handleCloseError = () => setIsGlobalError(false);
+
+  const navigate = useNavigate();
 
   function handleUserType(type: string) {
     setSelectRole(type);
+    navigate(`/signup?role=${type}`);
   }
 
   return (
     <div className="justify-items-center">
-      <div className="h-screen flex flex-row md:w-4/5">
+      <div className="h-screen flex items-center justify-center w-full">
+        {isGlobalError && (
+          <ErrorModule
+            errorMessage={errors?.global}
+            onClose={handleCloseError}
+          />
+        )}
         <div className="hidden md:basis-1/2 md:w-full md:h-full md:grid content-center justify-items-center">
           <img className="md:w-2/3" src={signinpic} />
           {selectRole !== 'role' ? (
@@ -21,11 +40,11 @@ function SignUp() {
             </h1>
           ) : undefined}
         </div>
-        <div className="-translate-x-3 md:basis-1/2 flex-col flex items-center justify-center">
+        <div className="flex-col flex items-center justify-center w-full md:max-w-lg">
           {selectRole === 'role' ? (
             <RoleForm onSelection={handleUserType} />
           ) : (
-            <SignUpForm role={selectRole} />
+            <SignUpForm />
           )}
         </div>
       </div>
