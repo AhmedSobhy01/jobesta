@@ -5,6 +5,7 @@ const Input: React.FC<{
   children: React.ReactNode;
   minLength?: number;
   type?: string;
+  errorMessage?: string;
 }> = (props) => {
   let css =
     'px-3 py-2 border border-gray-300 rounded-md focus:ring focus:outline-none focus:ring-green-500 focus:border-green-500';
@@ -39,6 +40,10 @@ const Input: React.FC<{
         minLength={props.minLength}
         placeholder={`Enter your ${props.label}`}
       />
+
+      {props.errorMessage && (
+        <p className="mt-1 text-sm text-red-500">{props.errorMessage}</p>
+      )}
     </div>
   );
 };

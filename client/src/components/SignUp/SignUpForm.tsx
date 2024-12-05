@@ -16,36 +16,38 @@ const SignUpForm: React.FC = () => {
       <h2 className="text-3xl font-bold text-gray-800 mb-4">
         Create New Account
       </h2>
-      <div className=" flex flex-col max-w-md w-full px-8">
+      <div className="flex flex-col max-w-lg w-full px-8">
         <Form method="post" className=" border-green-700 border-6 border-solid">
-          <div className="flex">
-            <Input label="first-name">First Name</Input>
-            {errors?.firstName && (
-              <p className="mt-1 text-sm text-red-500">{errors.firstName}</p>
-            )}
-            <Input label="last-name">Last Name</Input>
-            {errors?.lastName && (
-              <p className="mt-1 text-sm text-red-500">{errors.lastName}</p>
-            )}
-          </div>
-          <Input label="user-name">User Name</Input>
-          {errors?.username && (
-            <p className="mt-1 text-sm text-red-500">{errors.username}</p>
-          )}
-          <Input label="email" type="email">
-            Email
-          </Input>
-          {errors?.email && (
-            <p className="mt-1 text-sm text-red-500">{errors.email}</p>
-          )}
-          <Input minLength={8} label="password" type="password">
-            Password
-          </Input>
-          {errors?.password && (
-            <p className="mt-1 text-sm text-red-500">{errors.password}</p>
-          )}
+          <div className="space-y-2.5">
+            <div className="flex">
+              <Input label="first-name" errorMessage={errors?.firstName}>
+                First Name
+              </Input>
 
-          <button className="w-full mt-2 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring focus:ring-green-500">
+              <Input label="last-name" errorMessage={errors?.lastName}>
+                Last Name
+              </Input>
+            </div>
+
+            <Input label="user-name" errorMessage={errors?.username}>
+              User Name
+            </Input>
+
+            <Input label="email" type="email" errorMessage={errors?.email}>
+              Email
+            </Input>
+
+            <Input
+              minLength={8}
+              label="password"
+              type="password"
+              errorMessage={errors?.password}
+            >
+              Password
+            </Input>
+          </div>
+
+          <button className="w-full mt-4 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring focus:ring-green-500">
             Register
           </button>
         </Form>

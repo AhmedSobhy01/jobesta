@@ -62,23 +62,26 @@ function Login() {
           </h2>
           <div className="flex flex-col max-w-md w-full px-8">
             <Form method="post">
-              <Input label="email" type="email">
-                Email
-              </Input>
-              {errors?.email && (
-                <p className="mt-1 text-sm text-red-500">{errors.email}</p>
-              )}
-              <Input minLength={8} label="password" type="password">
-                Password
-              </Input>
-              {errors?.password && (
-                <p className="mt-1 text-sm text-red-500">{errors.password}</p>
-              )}
-              <div className="mb-4 flex items-center justify-between">
+              <div className="space-y-2.5">
+                <Input label="email" type="email" errorMessage={errors?.email}>
+                  Email
+                </Input>
+                <Input
+                  minLength={8}
+                  label="password"
+                  type="password"
+                  errorMessage={errors?.password}
+                >
+                  Password
+                </Input>
+              </div>
+
+              <div className="my-3 flex items-center justify-between">
                 <a href="#" className="text-green-600 hover:underline">
                   Forgot Password?
                 </a>
               </div>
+
               <button
                 type="submit"
                 className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring focus:ring-green-500"
