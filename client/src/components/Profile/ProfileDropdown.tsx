@@ -18,10 +18,14 @@ const ProfileDropdown: React.FC = () => {
           <div className="border-t border-gray-200"></div>
           <ul className="py-1">
             <li>
-              <NavBarItem page={'/me'}>Profile</NavBarItem>
+              <NavBarItem className="!text-gray-800" page={'/me'}>
+                Profile
+              </NavBarItem>
             </li>
             <li>
-              <NavBarItem page={'/logout'}>Logout</NavBarItem>
+              <NavBarItem className="!text-gray-800" page={'/logout'}>
+                Logout
+              </NavBarItem>
             </li>
           </ul>
         </div>

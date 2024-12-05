@@ -1,9 +1,11 @@
 import { NavLink } from 'react-router';
 import React from 'react';
 
-const NavBarItem: React.FC<{ page: string; children: React.ReactNode }> = (
-  props,
-) => {
+const NavBarItem: React.FC<{
+  page: string;
+  className?: string;
+  children: React.ReactNode;
+}> = (props) => {
   const activeCss =
     'block w-full text-center px-4 py-2 text-sm text-green-700 md:bg-transparent whitespace-nowrap';
 
@@ -14,7 +16,9 @@ const NavBarItem: React.FC<{ page: string; children: React.ReactNode }> = (
     <>
       <NavLink
         to={props.page}
-        className={({ isActive }) => (isActive ? activeCss : notActiveCss)}
+        className={({ isActive }) =>
+          (isActive ? activeCss : notActiveCss) + ' ' + (props.className ?? '')
+        }
         aria-current="page"
       >
         {props.children}
