@@ -1,7 +1,6 @@
 import { Form, Link, redirect, useActionData } from 'react-router-dom';
 import { ActionFunctionArgs } from 'react-router-dom';
 import Input from '@/utils/Input';
-//type ErrorsState = Record<string, string>;
 
 const SignUpForm: React.FC = () => {
   const errors = useActionData();

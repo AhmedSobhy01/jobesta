@@ -1,6 +1,5 @@
 import UserContext from '@/store/userContext';
 import React, { useContext } from 'react';
-//import { Link } from 'react-router';
 import NavBarItem from '@/components/NavBar/NavBarItem';
 
 const ProfileDropdown: React.FC = () => {

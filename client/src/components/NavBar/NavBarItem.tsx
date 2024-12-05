@@ -24,6 +24,3 @@ const NavBarItem: React.FC<{ page: string; children: React.ReactNode }> = (
 };
 
 export default NavBarItem;
-
-//block py-2 px-3 md:p-0 text-white bg-green-700 rounded md:bg-transparent md:text-green-700 md:dark:text-green-500
-//block py-2 px-3 md:p-0 text-gray-900 rounded hover:text-white hover:bg-green-700 md:hover:bg-transparent md:hover:text-green-700 md:dark:hover:text-green-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700
