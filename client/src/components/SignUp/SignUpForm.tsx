@@ -21,12 +21,12 @@ const SignUpForm: React.FC = () => {
         <Form method="post" className=" border-green-700 border-6 border-solid">
           <div className="flex">
             <Input label="first-name">First Name</Input>
-            {errors?.first_name && (
-              <p className="mt-1 text-sm text-red-500">{errors.first_name}</p>
+            {errors?.firstName && (
+              <p className="mt-1 text-sm text-red-500">{errors.firstName}</p>
             )}
             <Input label="last-name">Last Name</Input>
-            {errors?.last_name && (
-              <p className="mt-1 text-sm text-red-500">{errors.last_name}</p>
+            {errors?.lastName && (
+              <p className="mt-1 text-sm text-red-500">{errors.lastName}</p>
             )}
           </div>
           <Input label="user-name">User Name</Input>
@@ -69,13 +69,13 @@ export async function action({ request }: ActionFunctionArgs) {
   const role = url.searchParams.get('role');
 
   const authData = {
-    first_name: data.get('first-name'),
-    last_name: data.get('last-name'),
+    firstName: data.get('first-name'),
+    lastName: data.get('last-name'),
     username: data.get('user-name'),
     email: data.get('email'),
     password: data.get('password'),
     role: role,
-    profile_picture: null,
+    profilePicture: null,
   };
 
   try {
