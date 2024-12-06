@@ -98,7 +98,7 @@ function MainLayout() {
 
 export default MainLayout;
 
-export async function loader() {
+MainLayout.loader = async function loader() {
   const jwtToken = getAuthJwtToken();
   const refreshToken = getAuthRefreshToken();
 
@@ -186,4 +186,4 @@ export async function loader() {
   } catch {
     return { message: 'An error occurred while fetching user data' };
   }
-}
+};
