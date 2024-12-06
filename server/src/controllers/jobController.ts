@@ -52,10 +52,10 @@ export async function getJobs(req: Request, res: Response): Promise<void> {
         },
         createAt: job.created_at,
         client: {
-          first_name: job.first_name,
-          last_name: job.last_name,
+          firstName: job.first_name,
+          lastName: job.last_name,
           username: job.username,
-          profile_picture: job.profile_picture,
+          profilePicture: job.profile_picture,
         },
       };
     });
@@ -96,10 +96,10 @@ export async function getJobById(req: Request, res: Response) {
       },
       createAt: jobQuery.rows[0].created_at,
       client: {
-        first_name: jobQuery.rows[0].first_name,
-        last_name: jobQuery.rows[0].last_name,
+        firstName: jobQuery.rows[0].first_name,
+        lastName: jobQuery.rows[0].last_name,
         username: jobQuery.rows[0].username,
-        profile_picture: jobQuery.rows[0].profile_picture,
+        profilePicture: jobQuery.rows[0].profile_picture,
       },
     };
 
