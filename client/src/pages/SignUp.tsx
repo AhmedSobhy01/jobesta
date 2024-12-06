@@ -22,7 +22,6 @@ function SignUp() {
     setSelectRole(type);
     navigate(`/signup?role=${type}`);
   }
-
   return (
     <div className="justify-items-center">
       <div className="h-screen flex items-center justify-center w-full">

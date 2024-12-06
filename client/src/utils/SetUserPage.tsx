@@ -1,17 +1,12 @@
 import { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import UserContext from '@/store/userContext';
+import TokensContext from '@/store/userContext';
 
-export function Logout() {
-  const { setUser } = useContext(UserContext);
+export function SetUserPage() {
+  const { setUser } = useContext(TokensContext);
   const navigate = useNavigate();
 
   useEffect(() => {
-    localStorage.removeItem('jwtToken');
-    localStorage.removeItem('jwtTokenExpiration');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('refreshTokenExpiration');
-
     const accountId = null;
     const firstName = null;
     const lastName = null;
@@ -20,8 +15,8 @@ export function Logout() {
     const role = null;
     const isBanned = null;
     const profilePicture = null;
-    const jwtToken = null;
-    const refreshToken = null;
+    const jwtToken = localStorage.getItem('jwtToken') || '';
+    const refreshToken = localStorage.getItem('refreshToken') || '';
 
     setUser({
       accountId,
