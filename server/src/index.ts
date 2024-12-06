@@ -4,6 +4,8 @@ import { configDotenv } from 'dotenv';
 import accountRoutes from './routes/accountRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import freelancerRoutes from './routes/freelancerRoutes.js';
+import jobRoutes from './routes/jobRoutes.js';
+import { getCategories } from './controllers/categoriesController.js';
 import { FileUploadError } from './utils/errors.js';
 import { MulterError } from 'multer';
 
@@ -38,6 +40,10 @@ app.use('/uploads', express.static('uploads'));
 app.use('/account', accountRoutes);
 app.use('/freelancer', freelancerRoutes);
 app.use('/auth', authRoutes);
+app.use('/jobs', jobRoutes);
+
+// custom route for getting all the available categories
+app.get('/categories', getCategories);
 
 // Default Route: Sends a welcome message to the user (for health-checks)
 app.get('/', (req: Request, res: Response) => {

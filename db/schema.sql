@@ -100,6 +100,7 @@ CREATE TABLE "jobs" (
   "title" VARCHAR(255) NOT NULL,
   "description" TEXT NOT NULL,
   "category_id" INTEGER,
+  "client_id" INTEGER NOT NULL,
   "created_at" TIMESTAMP DEFAULT (now())
 );
 
@@ -222,3 +223,5 @@ ALTER TABLE "payments" ADD FOREIGN KEY ("client_id") REFERENCES "accounts" ("id"
 ALTER TABLE "withdrawals" ADD FOREIGN KEY ("freelancer_id") REFERENCES "freelancers" ("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 ALTER TABLE "jobs" ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+ALTER TABLE "jobs" ADD FOREIGN KEY ("client_id") REFERENCES "accounts" ("id") ON DELETE RESTRICT ON UPDATE CASCADE;
