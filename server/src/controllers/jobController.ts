@@ -42,7 +42,7 @@ export async function getJobs(req: Request, res: Response): Promise<void> {
         budget: job.budget,
         duration: job.duration,
         title: job.title,
-        descriptoin: job.description,
+        description: job.description,
         categoryId: job.category_id,
         createAt: job.created_at,
         clientId: job.client_id,
