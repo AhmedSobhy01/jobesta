@@ -53,7 +53,7 @@ const ProfilePage: React.FC = () => {
             <h1 className="text-2xl flex font-bold text-gray-800">
               {userData.firstName} {userData.lastName}{' '}
               <span className="bg-purple-500  text-white text-sm font-medium mx-2 px-2 py-1 rounded-2xl">
-                {userData.userName}
+                {userData.username}
               </span>
             </h1>
           </div>

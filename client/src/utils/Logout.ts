@@ -22,11 +22,11 @@ export function Logout() {
     const skills = undefined;
     const firstName = null;
     const lastName = null;
-    const userName = null;
+    const username = null;
     const email = null;
     const role = null;
     const isBanned = null;
-    const profilePicture = null;
+    const profilePicture = undefined;
     const jwtToken = null;
     const refreshToken = null;
 
@@ -42,7 +42,7 @@ export function Logout() {
       accountId,
       firstName,
       lastName,
-      userName,
+      username,
       email,
       role,
       isBanned,
@@ -52,7 +52,7 @@ export function Logout() {
     });
 
     navigate('/');
-  }, [setUser, navigate]);
+  }, [setUser, navigate, setFreelancer]);
 
   return null;
 }

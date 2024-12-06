@@ -6,22 +6,18 @@ interface IPreviousWork {
   url?: string;
 }
 
-interface Skills {
-  name: string;
-}
-
 interface FreelancerContextType {
   freelancerId?: string;
   balance?: number;
   bio?: string;
-  previousWork?: IPreviousWork;
-  skills?: Skills;
+  previousWork?: [IPreviousWork];
+  skills?: [string];
   setFreelancer: (newFreelancer: {
     freelancerId?: string;
     balance?: number;
     bio?: string;
-    previousWork?: IPreviousWork;
-    skills?: Skills;
+    previousWork?: [IPreviousWork];
+    skills?: [string];
   }) => void;
 }
 
@@ -42,8 +38,8 @@ export const FreelancerContextProvider: React.FC<{
     freelancerId?: string;
     balance?: number;
     bio?: string;
-    previousWork?: IPreviousWork;
-    skills?: Skills;
+    previousWork?: [IPreviousWork];
+    skills?: [string];
   }>({
     freelancerId: undefined,
     balance: undefined,
@@ -57,8 +53,8 @@ export const FreelancerContextProvider: React.FC<{
       freelancerId?: string;
       balance?: number;
       bio?: string;
-      previousWork?: IPreviousWork;
-      skills?: Skills;
+      previousWork?: [IPreviousWork];
+      skills?: [string];
     }) => {
       setFreelancerState(newFreelancer);
     },

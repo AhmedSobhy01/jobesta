@@ -66,7 +66,7 @@ function MainLayout() {
         accountId: id,
         firstName,
         lastName,
-        userName: username,
+        username: username,
         email,
         role,
         isBanned,
