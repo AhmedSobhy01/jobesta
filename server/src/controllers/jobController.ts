@@ -50,7 +50,7 @@ export async function getJobs(req: Request, res: Response): Promise<void> {
           name: job.name,
           description: job.category_description,
         },
-        createAt: job.created_at,
+        createdAt: job.created_at,
         client: {
           firstName: job.first_name,
           lastName: job.last_name,
@@ -94,7 +94,7 @@ export async function getJobById(req: Request, res: Response) {
         name: jobQuery.rows[0].name,
         description: jobQuery.rows[0].category_description,
       },
-      createAt: jobQuery.rows[0].created_at,
+      createdAt: jobQuery.rows[0].created_at,
       client: {
         firstName: jobQuery.rows[0].first_name,
         lastName: jobQuery.rows[0].last_name,
