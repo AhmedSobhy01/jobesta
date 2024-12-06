@@ -1,8 +1,9 @@
 import { authenticate } from '../middlewares/authMiddleware.js';
 import {
-  getCurrentFreelancer,
+  // getCurrentFreelancer,
   updateFreelancer,
   getFreelancerByUsername,
+  getFreelancerBalance,
 } from '../controllers/freelancerController.js';
 import { updateFreelancerValidationRules } from '../validations/freelancerValidations.js';
 import { validateRequest } from '../middlewares/validationMiddleware.js';
@@ -12,10 +13,10 @@ import { checkIfFreelancer } from '../middlewares/freelancerMiddleware.js';
 const freelancerRouter = router();
 
 freelancerRouter.get(
-  '/me',
+  '/balance',
   authenticate,
   checkIfFreelancer,
-  getCurrentFreelancer,
+  getFreelancerBalance,
 );
 
 freelancerRouter.get('/:username', getFreelancerByUsername);

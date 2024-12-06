@@ -30,6 +30,15 @@ export const updateAccountValidationRules = [
     .withMessage('Username must not exceed 255 characters')
     .isAlphanumeric()
     .withMessage('Username must contain only letters and numbers')
+    .custom(async (value) => {
+      if (value === 'me') {
+        return Promise.reject('Username cannot be "me"');
+      }
+      if (value === 'balance') {
+        return Promise.reject('Username cannot be "balance"');
+      }
+      return true;
+    })
     .custom(async (value, { req }) => {
       const query = await db.query(
         'SELECT * FROM accounts WHERE username = $1 AND id != $2',
