@@ -10,7 +10,7 @@ const NavBarItem: React.FC<{
     'block w-full text-left px-4 py-2 text-sm text-green-700 md:bg-transparent whitespace-nowrap';
 
   const notActiveCss =
-    'block w-full text-left px-4 py-2 text-sm text-gray-200 hover:text-green-700 whitespace-nowrap';
+    'block w-full text-left px-4 py-2 text-sm text-gray-500 dark:text-gray-200 hover:text-green-700 whitespace-nowrap';
 
   return (
     <>

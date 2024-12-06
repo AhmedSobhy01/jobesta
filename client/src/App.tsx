@@ -14,6 +14,7 @@ import { SetUserPage } from './utils/SetUserPage';
 import { Logout } from '@/utils/Logout';
 import { action as loginAction } from '@/pages/Login';
 import ProfilePage from './pages/Profile';
+import { FreelancerContextProvider } from './store/freelancerContext';
 
 const router = createBrowserRouter([
   {
@@ -45,7 +46,9 @@ const router = createBrowserRouter([
 function App() {
   return (
     <UserContextProvider>
-      <RouterProvider router={router} />
+      <FreelancerContextProvider>
+        <RouterProvider router={router} />
+      </FreelancerContextProvider>
     </UserContextProvider>
   );
 }

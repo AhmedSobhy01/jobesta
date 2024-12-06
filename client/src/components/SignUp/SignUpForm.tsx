@@ -86,7 +86,6 @@ export async function action({ request }: ActionFunctionArgs) {
     email: data.get('email'),
     password: data.get('password'),
     role: role,
-    profilePicture: null,
   };
 
   try {

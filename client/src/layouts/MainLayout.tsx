@@ -4,90 +4,136 @@ import { useContext, useEffect, useState } from 'react';
 import UserContext from '@/store/userContext';
 import { getAuthJwtToken, getAuthRefreshToken } from '@/utils/auth';
 import ErrorModule from '@/components/ErrorModule';
+import FreelancerContext from '@/store/freelancerContext';
 
 function MainLayout() {
   const myUser = useContext(UserContext);
+  const myFreelancerUser = useContext(FreelancerContext);
   const [isError, setIsError] = useState(false);
+  const [dropdownOpen, setDropdownOpenMenu] = useState({
+    isDropdownBarOpen: false,
+    isDropdownProfileOpen: false,
+  });
   const userData = useLoaderData();
 
   const handleCloseError = () => setIsError(false);
+
+  // Reset dropdowns only when clicking outside of navigation
+  const handleClick = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+
+    const isNavClick = target.closest('nav');
+
+    const isButtonClick = target.closest('button');
+
+    if (!isNavClick || (isNavClick && !isButtonClick)) {
+      setDropdownOpenMenu({
+        isDropdownBarOpen: false,
+        isDropdownProfileOpen: false,
+      });
+    }
+  };
 
   useEffect(() => {
     if (userData?.message) {
       setIsError(true);
     }
 
-    if (userData?.user && userData.user.accountId == myUser.accountId) {
+    if (userData?.user && userData.user.id !== myUser.accountId) {
+      if (userData.user.role === 'freelancer') {
+        const { id, balance, bio, previousWork, skills } = userData.freelancer;
+
+        myFreelancerUser.setFreelancer({
+          freelancerId: id,
+          balance,
+          bio,
+          previousWork,
+          skills,
+        });
+      }
+
+      const {
+        id,
+        firstName,
+        lastName,
+        username,
+        email,
+        role,
+        isBanned,
+        profilePicture,
+      } = userData.user;
       myUser.setUser({
-        accountId: userData.user.id,
-        firstName: userData.user.firstName,
-        lastName: userData.user.lastName,
-        userName: userData.user.username,
-        email: userData.user.email,
-        role: userData.user.role,
-        isBanned: userData.user.isBanned,
-        profilePicture: userData.user.profilePicture,
+        accountId: id,
+        firstName,
+        lastName,
+        userName: username,
+        email,
+        role,
+        isBanned,
+        profilePicture,
         jwtToken: getAuthJwtToken(),
         refreshToken: getAuthRefreshToken(),
       });
     }
-  }, [userData, myUser]);
+  }, [userData, myUser, myFreelancerUser]);
 
   return (
-    <>
+    <div onClick={handleClick}>
       {isError && (
         <ErrorModule
           errorMessage={userData?.message}
           onClose={handleCloseError}
         />
       )}
-      <MainNavigationBar />
+      <MainNavigationBar
+        dropdownOpen={dropdownOpen}
+        setDropdownOpenMenu={setDropdownOpenMenu}
+      />
       <main>
         <Outlet />
       </main>
-    </>
+    </div>
   );
 }
 
 export default MainLayout;
 
 export async function loader() {
-  let jwtToken = getAuthJwtToken();
+  const jwtToken = getAuthJwtToken();
   const refreshToken = getAuthRefreshToken();
 
-  if (refreshToken && refreshToken !== 'EXPIRED') {
+  if (!refreshToken || refreshToken === 'EXPIRED') {
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('jwtToken');
+    localStorage.removeItem('jwtTokenExpiration');
+    return { user: null };
+  }
+
+  try {
+    let newJwtToken = jwtToken;
+
+    // Refresh JWT token if expired
     if (!jwtToken || jwtToken === 'EXPIRED') {
       localStorage.removeItem('jwtToken');
-      try {
-        const authData = {
-          refreshToken: refreshToken,
-        };
 
-        const response = await fetch(
-          import.meta.env.VITE_API_URL + '/auth/refresh',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(authData),
-          },
-        );
+      const authData = { refreshToken };
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/auth/refresh`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(authData),
+        },
+      );
 
-        const resData = await response.json();
+      const resData = await response.json();
 
-        if (!response.ok) {
-          return { message: resData.message };
-        }
-
-        jwtToken = resData.data.jwtToken;
-      } catch {
-        return { user: null, message: 'Error refreshing user token' };
+      if (!response.ok) {
+        return { message: resData.message };
       }
-    }
 
-    if (jwtToken) {
-      localStorage.setItem('jwtToken', jwtToken);
+      newJwtToken = resData.data.jwtToken;
+      if (newJwtToken) localStorage.setItem('jwtToken', newJwtToken);
 
       const jwtTokenExpiration = new Date();
       jwtTokenExpiration.setHours(jwtTokenExpiration.getHours() + 1);
@@ -95,37 +141,49 @@ export async function loader() {
         'jwtTokenExpiration',
         jwtTokenExpiration.toISOString(),
       );
-
-      try {
-        const response = await fetch(
-          import.meta.env.VITE_API_URL + '/account/me',
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: 'Bearer ' + jwtToken,
-            },
-          },
-        );
-        const resData = await response.json();
-
-        if (!response.ok) {
-          return { user: null, message: resData.message };
-        }
-
-        return {
-          user: resData.data,
-        };
-      } catch {
-        return { user: null, message: 'Error fetching user data' };
-      }
     }
 
-    return { user: null, message: 'Error fetching user data' };
-  } else if (refreshToken === 'EXPIRED') {
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('jwtToken');
-    localStorage.removeItem('jwtTokenExpiration');
+    // Fetch user data with the (refreshed) JWT token
+    const userResponse = await fetch(
+      `${import.meta.env.VITE_API_URL}/account/me`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${newJwtToken}`,
+        },
+      },
+    );
 
-    return { user: null };
+    const userData = await userResponse.json();
+    if (!userResponse.ok) {
+      return { message: userData.message };
+    }
+
+    // If user is a freelancer, fetch freelancer-specific data
+    if (userData.data.role === 'freelancer') {
+      const freelancerResponse = await fetch(
+        `${import.meta.env.VITE_API_URL}/freelancer/me`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${newJwtToken}`,
+          },
+        },
+      );
+
+      const freelancerData = await freelancerResponse.json();
+      if (!freelancerResponse.ok) {
+        return { message: freelancerData.message };
+      }
+
+      return {
+        user: userData.data,
+        freelancer: freelancerData.data,
+      };
+    }
+
+    return { user: userData.data };
+  } catch {
+    return { message: 'An error occurred while fetching user data' };
   }
 }

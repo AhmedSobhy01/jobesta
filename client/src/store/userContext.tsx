@@ -12,7 +12,7 @@ interface UserContextType {
   profilePicture: string | null;
   jwtToken: string | null;
   refreshToken: string | null;
-  setUser: (newTokens: {
+  setUser: (newUser: {
     accountId: string | null;
     firstName: string | null;
     lastName: string | null;

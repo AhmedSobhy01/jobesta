@@ -5,26 +5,41 @@ import { faBell, faCircleUser } from '@fortawesome/free-regular-svg-icons';
 import NavBarItem from '@/components/NavBar/NavBarItem';
 import NavButton from '@/components/NavBar/NavButton';
 import jobestaLogo from '@/assets/jobesta-logo.png';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import UserContext from '@/store/userContext';
 import ProfileDropdown from '@/components/Profile/ProfileDropdown';
 
-function MainNavigationBar() {
+const MainNavigationBar: React.FC<{
+  dropdownOpen: {
+    isDropdownBarOpen: boolean;
+    isDropdownProfileOpen: boolean;
+  };
+  setDropdownOpenMenu: (newFreelancer: {
+    isDropdownBarOpen: boolean;
+    isDropdownProfileOpen: boolean;
+  }) => void;
+}> = ({ dropdownOpen, setDropdownOpenMenu }) => {
   const { refreshToken, role } = useContext(UserContext);
-  const [isDropdownBarOpen, setIsDropdownBarMenu] = useState(false);
-  const [isDropdownProfileOpen, setIsDropdownProfileMenu] = useState(false);
+  const { isDropdownBarOpen, isDropdownProfileOpen } = dropdownOpen;
 
   function handleBarClick() {
-    setIsDropdownBarMenu((prevState) => !prevState);
-    setIsDropdownProfileMenu(false);
+    setDropdownOpenMenu({
+      isDropdownBarOpen: !isDropdownBarOpen,
+      isDropdownProfileOpen: false,
+    });
   }
+
   function handleProfileClick() {
-    setIsDropdownProfileMenu((prevState) => !prevState);
-    setIsDropdownBarMenu(false);
+    setDropdownOpenMenu({
+      isDropdownBarOpen: false,
+      isDropdownProfileOpen: !isDropdownProfileOpen,
+    });
   }
   function handleBellClick() {
-    setIsDropdownProfileMenu(false);
-    setIsDropdownBarMenu(false);
+    setDropdownOpenMenu({
+      isDropdownBarOpen: false,
+      isDropdownProfileOpen: false,
+    });
   }
 
   return (
@@ -149,6 +164,6 @@ function MainNavigationBar() {
       </nav>
     </>
   );
-}
+};
 
 export default MainNavigationBar;

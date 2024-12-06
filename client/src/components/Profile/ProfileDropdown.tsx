@@ -1,9 +1,11 @@
 import UserContext from '@/store/userContext';
 import React, { useContext } from 'react';
 import NavBarItem from '@/components/NavBar/NavBarItem';
+import FreelancerContext from '@/store/freelancerContext';
 
 const ProfileDropdown: React.FC = () => {
   const user = useContext(UserContext);
+  const freelancer = useContext(FreelancerContext);
 
   return (
     <div className="relative">
@@ -14,16 +16,21 @@ const ProfileDropdown: React.FC = () => {
               {user.userName}
             </p>
             <p className="text-sm text-gray-500">{user.email}</p>
+            {freelancer.freelancerId && (
+              <p className="text-sm text-gray-500">
+                Balance: {freelancer.balance}$
+              </p>
+            )}
           </div>
           <div className="border-t border-gray-200"></div>
           <ul className="py-1">
             <li>
-              <NavBarItem className="!text-gray-800" page={'/me'}>
+              <NavBarItem className="!text-gray-800" page="/me">
                 Profile
               </NavBarItem>
             </li>
             <li>
-              <NavBarItem className="!text-gray-800" page={'/logout'}>
+              <NavBarItem className="!text-gray-800" page="/logout">
                 Logout
               </NavBarItem>
             </li>
