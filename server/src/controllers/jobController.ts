@@ -9,8 +9,7 @@ export async function createJob(req: Request, res: Response): Promise<void> {
       [title, description, category, budget, duration, req.user!.id],
     );
     res.status(201).json({ status: true, message: 'Job created' });
-  } catch (err) {
-    console.log(err);
+  } catch {
     res.status(500).json({ status: false, message: 'Error creating job' });
   }
 }
@@ -36,11 +35,25 @@ export async function getJobs(req: Request, res: Response): Promise<void> {
 
     const jobsQuery = await db.query(queryString);
 
+    const jobs = jobsQuery.rows.map((job) => {
+      return {
+        id: job.id,
+        status: job.status,
+        budget: job.budget,
+        duration: job.duration,
+        title: job.title,
+        descriptoin: job.description,
+        categoryId: job.category_id,
+        createAt: job.created_at,
+        clientId: job.client_id,
+      };
+    });
+
     res.json({
       status: true,
       message: 'Jobs retrieved',
       data: {
-        jobs: jobsQuery.rows,
+        jobs,
       },
     });
   } catch (err) {

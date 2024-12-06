@@ -6,13 +6,19 @@ export async function getCategories(
   res: Response,
 ): Promise<void> {
   try {
-    const categories = await db.query('SELECT * FROM categories');
-    console.log(categories.rows);
+    const categoriesQuery = await db.query('SELECT * FROM categories');
+    const categories = categoriesQuery.rows.map((category) => {
+      return {
+        id: category.id,
+        name: category.name,
+        description: category.description,
+      };
+    });
     res.json({
       success: true,
       message: 'Categories retrieved',
       data: {
-        categories: categories.rows,
+        categories,
       },
     });
   } catch {
