@@ -12,8 +12,6 @@ import { upload } from '../middlewares/imageUploadMiddleware.js';
 
 const accountRouter = router();
 
-accountRouter.get('/:username', getUserByUsername);
-
 accountRouter.get('/me', authenticate, getAccount);
 
 accountRouter.put(
@@ -30,5 +28,7 @@ accountRouter.put(
   upload.single('file'),
   updateProfilePicture,
 );
+
+accountRouter.get('/:username', getUserByUsername);
 
 export default accountRouter;
