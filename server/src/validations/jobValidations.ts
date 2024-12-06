@@ -22,15 +22,13 @@ export const createJobsValidationRules = [
 
   body('category')
     .trim()
-    .isString()
-    .withMessage('Category must be a string')
+    .isNumeric()
+    .withMessage('Category must be a number')
     .notEmpty()
     .withMessage('Category must not be empty')
-    .isLength({ max: 255 })
-    .withMessage('Category must not exceed 255 characters')
     .custom(async (category) => {
       const categoryQuery = await db.query(
-        'SELECT * FROM categories WHERE name = $1',
+        'SELECT * FROM categories WHERE id = $1',
         [category],
       );
 
@@ -57,13 +55,14 @@ export const createJobsValidationRules = [
 export const getJobsValidationRules = [
   query('category')
     .optional()
-    .isString()
-    .withMessage('Category must be a string')
-    .isLength({ max: 255 })
-    .withMessage('Category must not exceed 255 characters')
+    .trim()
+    .isNumeric()
+    .withMessage('Category must be a number')
+    .notEmpty()
+    .withMessage('Category must not be empty')
     .custom(async (category) => {
       const categoryQuery = await db.query(
-        'SELECT * FROM categories WHERE name = $1',
+        'SELECT * FROM categories WHERE id = $1',
         [category],
       );
 
