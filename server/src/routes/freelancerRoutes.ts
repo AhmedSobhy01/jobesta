@@ -11,14 +11,14 @@ import { checkIfFreelancer } from '../middlewares/freelancerMiddleware.js';
 
 const freelancerRouter = router();
 
-freelancerRouter.get('/:username', getFreelancerByUsername);
-
 freelancerRouter.get(
   '/me',
   authenticate,
   checkIfFreelancer,
   getCurrentFreelancer,
 );
+
+freelancerRouter.get('/:username', getFreelancerByUsername);
 
 freelancerRouter.put(
   '/me',
