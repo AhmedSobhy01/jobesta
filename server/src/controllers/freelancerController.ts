@@ -36,16 +36,10 @@ export async function getFreelancerByUsername(req: Request, res: Response) {
       [freelancerData.id],
     );
 
-    const completedJobsQueryString = `SELECT j.id, j.status, j.budget, j.duration, j.title, j.description, j.created_at, client.first_name, client.last_name, client.username, client.profile_picture,c.id category_id,c.name ,c.description category_description 
-FROM jobs j 
-JOIN categories c ON c.id = j.category_id 
-JOIN accounts client ON client.id = j.client_id 
-JOIN proposals p ON p.job_id = j.id
-WHERE j.status = 'completed' AND p.freelancer_id = $1`;
-
-    const conpletedJobsQuery = await db.query(completedJobsQueryString, [
-      freelancerData.id,
-    ]);
+    const conpletedJobsQuery = await db.query(
+      "SELECT * FROM jobs_with_category_and_client JOIN proposals p ON p.job_id = id WHERE status = 'completed' AND p.freelancer_id = $1",
+      [freelancerData.id],
+    );
 
     const completedJobs = conpletedJobsQuery.rows.map((job) => ({
       id: job.id,

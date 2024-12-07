@@ -225,3 +225,9 @@ ALTER TABLE "withdrawals" ADD FOREIGN KEY ("freelancer_id") REFERENCES "freelanc
 ALTER TABLE "jobs" ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 ALTER TABLE "jobs" ADD FOREIGN KEY ("client_id") REFERENCES "accounts" ("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+CREATE VIEW jobs_with_category_and_client AS
+SELECT j.id, j.status, j.budget, j.duration, j.title, j.description, j.created_at, client.first_name, client.last_name, client.username, client.profile_picture,c.id category_id,c.name ,c.description category_description 
+FROM jobs j 
+JOIN categories c ON c.id = j.category_id 
+JOIN accounts client ON client.id = j.client_id;
