@@ -22,3 +22,22 @@ export interface IFreelancer {
   balance: number;
   bio: string;
 }
+
+export interface IMilestone {
+  job_id?: string;
+  freelancer_id?: string;
+  status?: string;
+  order: number;
+  name: string;
+  duration: number;
+  amount: number;
+}
+
+export interface IProposal {
+  jobId: string;
+  freelancer_id?: string;
+  coverLetter: string;
+  status: string;
+  createdAt: Date;
+  milestones?: Array<IMilestone>;
+}
