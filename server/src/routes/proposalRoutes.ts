@@ -4,6 +4,7 @@ import { checkIfFreelancer } from '../middlewares/freelancerMiddleware.js';
 import { checkIfClient } from '../middlewares/clientMiddleware.js';
 import {
   createProposal,
+  deleteProposal,
   getMyProposals,
   getProposalsByJobId,
   updateProposal,
@@ -11,6 +12,7 @@ import {
 import {
   createProposalValidationRules,
   updateProposalValidationRules,
+  deleteProposalValidationRules,
 } from '../validations/proposalValidation.js';
 import { validateRequest } from '../middlewares/validationMiddleware.js';
 
@@ -22,9 +24,10 @@ proposalRouter.get('/me', checkIfFreelancer, getMyProposals);
 
 proposalRouter.get('/:jobId', checkIfClient, getProposalsByJobId);
 
+proposalRouter.use(checkIfFreelancer);
+
 proposalRouter.post(
   '/:jobId',
-  checkIfFreelancer,
   createProposalValidationRules,
   validateRequest,
   createProposal,
@@ -32,10 +35,16 @@ proposalRouter.post(
 
 proposalRouter.put(
   '/:jobId',
-  checkIfFreelancer,
   updateProposalValidationRules,
   validateRequest,
   updateProposal,
+);
+
+proposalRouter.delete(
+  '/:jobId',
+  deleteProposalValidationRules,
+  validateRequest,
+  deleteProposal,
 );
 
 export default proposalRouter;

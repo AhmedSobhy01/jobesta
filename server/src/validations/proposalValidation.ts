@@ -29,8 +29,9 @@ const validProposal = [
     .withMessage('Cover letter is required')
     .isLength({ max: 1000 })
     .withMessage('Cover letter must not exceed 1000 characters'),
+
   body('milestones')
-    .isArray()
+    .isArray({ min: 1 })
     .withMessage('Milestones must be an array')
     .custom((milestones) => {
       if (
@@ -109,17 +110,6 @@ export const updateProposalValidationRules = [
     .withMessage('Job ID must be a number')
     .notEmpty()
     .withMessage('Job ID must not be empty')
-    .custom(async (jobId) => {
-      const jobQuery = await db.query('SELECT * FROM jobs WHERE id = $1', [
-        jobId,
-      ]);
-
-      if (jobQuery.rows.length === 0) {
-        throw new Error('Job does not exist');
-      }
-
-      return true;
-    })
     .custom(async (jobId, { req }) => {
       const proposalQuery = await db.query(
         'SELECT * FROM proposals WHERE job_id = $1 AND freelancer_id = $2',
@@ -127,10 +117,30 @@ export const updateProposalValidationRules = [
       );
 
       if (proposalQuery.rows.length === 0) {
-        throw new Error('Proposal doesnot exists');
+        throw new Error('Proposal does not exists');
       }
 
       return true;
     }),
   ...validProposal,
+];
+
+export const deleteProposalValidationRules = [
+  param('jobId')
+    .isNumeric()
+    .withMessage('Job ID must be a number')
+    .notEmpty()
+    .withMessage('Job ID must not be empty')
+    .custom(async (jobId, { req }) => {
+      const proposalQuery = await db.query(
+        'SELECT * FROM proposals WHERE job_id = $1 AND freelancer_id = $2',
+        [jobId, req.user!.freelancer!.id],
+      );
+
+      if (proposalQuery.rows.length === 0) {
+        throw new Error('Proposal does not exist');
+      }
+
+      return true;
+    }),
 ];
