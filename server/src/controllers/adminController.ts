@@ -10,9 +10,10 @@ export async function getCategories(req: Request, res: Response) {
       data: { categories: categories.rows },
     });
   } catch {
-    res
-      .status(500)
-      .json({ message: 'An error occurred while fetching categories' });
+    res.status(500).json({
+      status: false,
+      message: 'An error occurred while fetching categories',
+    });
   }
 }
 
@@ -26,9 +27,10 @@ export async function createCategory(req: Request, res: Response) {
     );
     res.json({ status: true, message: 'Category created' });
   } catch {
-    res
-      .status(500)
-      .json({ message: 'An error occurred while creating category' });
+    res.status(500).json({
+      status: false,
+      message: 'An error occurred while creating category',
+    });
   }
 }
 
@@ -39,9 +41,10 @@ export async function deleteCategory(req: Request, res: Response) {
     await db.query('DELETE FROM categories WHERE id = $1', [id]);
     res.json({ status: true, message: 'Category deleted' });
   } catch {
-    res
-      .status(500)
-      .json({ message: 'An error occurred while deleting category' });
+    res.status(500).json({
+      status: false,
+      message: 'An error occurred while deleting category',
+    });
   }
 }
 
@@ -54,9 +57,10 @@ export async function getBadges(req: Request, res: Response) {
       data: { badges: badges.rows },
     });
   } catch {
-    res
-      .status(500)
-      .json({ message: 'An error occurred while fetching badges' });
+    res.status(500).json({
+      status: false,
+      message: 'An error occurred while fetching badges',
+    });
   }
 }
 
@@ -67,6 +71,9 @@ export async function deleteBadge(req: Request, res: Response) {
     await db.query('DELETE FROM badges WHERE id = $1', [id]);
     res.json({ status: true, message: 'Badge deleted' });
   } catch {
-    res.status(500).json({ message: 'An error occurred while deleting badge' });
+    res.status(500).json({
+      status: false,
+      message: 'An error occurred while deleting badge',
+    });
   }
 }

@@ -11,6 +11,7 @@ import { checkIfAdmin } from '../middlewares/adminMiddleware.js';
 import {
   createCategoryValidationRules,
   deleteCategoryValidationRules,
+  deleteBadgeValidationRules,
 } from '../validations/adminValidations.js';
 import { validateRequest } from '../middlewares/validationMiddleware.js';
 const adminRoutes = router();
@@ -35,6 +36,11 @@ adminRoutes.delete(
 
 adminRoutes.get('/badges', getBadges);
 
-adminRoutes.delete('/badges/:id', deleteBadge);
+adminRoutes.delete(
+  '/badges/:id',
+  deleteBadgeValidationRules,
+  validateRequest,
+  deleteBadge,
+);
 
 export default adminRoutes;

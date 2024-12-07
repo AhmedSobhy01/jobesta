@@ -39,3 +39,21 @@ export const deleteCategoryValidationRules = [
       return true;
     }),
 ];
+
+export const deleteBadgeValidationRules = [
+  param('id')
+    .trim()
+    .notEmpty()
+    .withMessage('Badge ID is required')
+    .isNumeric()
+    .withMessage('Badge ID must be a number')
+    .custom(async (value) => {
+      const badge = await db.query('SELECT * FROM badges WHERE id = $1', [
+        value,
+      ]);
+      if (badge.rows.length === 0) {
+        throw new Error('Badge not found');
+      }
+      return true;
+    }),
+];
