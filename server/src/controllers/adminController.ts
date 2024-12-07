@@ -20,10 +20,10 @@ export async function createCategory(req: Request, res: Response) {
   const { name, description } = req.body;
 
   try {
-    await db.query('INSERT INTO categories (name,description) VALUES ($1)', [
-      name,
-      description,
-    ]);
+    await db.query(
+      'INSERT INTO categories (name, description) VALUES ($1, $2)',
+      [name, description],
+    );
     res.json({ status: true, message: 'Category created' });
   } catch {
     res

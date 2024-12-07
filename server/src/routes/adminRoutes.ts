@@ -8,7 +8,10 @@ import {
   deleteBadge,
 } from '../controllers/adminController.js';
 import { checkIfAdmin } from '../middlewares/adminMiddleware.js';
-import { createCategoryValidationRules } from '../validations/adminValidations.js';
+import {
+  createCategoryValidationRules,
+  deleteCategoryValidationRules,
+} from '../validations/adminValidations.js';
 import { validateRequest } from '../middlewares/validationMiddleware.js';
 const adminRoutes = router();
 
@@ -23,7 +26,12 @@ adminRoutes.post(
   createCategory,
 );
 
-adminRoutes.delete('/categories/:id', deleteCategory);
+adminRoutes.delete(
+  '/categories/:id',
+  deleteCategoryValidationRules,
+  validateRequest,
+  deleteCategory,
+);
 
 adminRoutes.get('/badges', getBadges);
 
