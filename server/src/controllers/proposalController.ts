@@ -114,7 +114,9 @@ export async function getMyProposals(req: Request, res: Response) {
       `SELECT p.job_id, p.status as status, p.cover_letter, p.created_at, m.order, m.status milestone_status, m.duration, m.amount, m.name 
 	  FROM proposals p 
 	  JOIN milestones m ON m.job_id = p.job_id AND m.freelancer_id = p.freelancer_id
-	  WHERE p.freelancer_id = $1`,
+	  WHERE p.freelancer_id = $1
+	  ORDER BY p.job_id, m.order ASC
+	  `,
       [req.user!.freelancer!.id],
     );
 
