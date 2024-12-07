@@ -108,7 +108,7 @@ const MainNavigationBar: React.FC<{
               </NavButton>
 
               {isDropdownBarOpen && (
-                <ul className=" md:hidden absolute right-2 w-min rounded-xl bg-white shadow-lg z-50 flex flex-col font-medium p-4 border-t border-gray-100 dark:bg-gray-800 dark:border-gray-700">
+                <ul className=" md:hidden absolute top-auto right-2 w-min rounded-xl bg-white shadow-lg z-50 flex flex-col font-medium p-4 border-t border-gray-100 dark:bg-gray-800 dark:border-gray-700">
                   <li
                     className="py-2 border-b hover:bg-gray-100 dark:hover:bg-gray-700"
                     onClick={handleBarClick}

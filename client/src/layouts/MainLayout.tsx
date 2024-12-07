@@ -78,7 +78,7 @@ function MainLayout() {
   }, [userData, myUser, myFreelancerUser]);
 
   return (
-    <div onClick={handleClick}>
+    <div className="h-screen dark:bg-gray-800 bg-white" onClick={handleClick}>
       {isError && (
         <ErrorModule
           errorMessage={userData?.message}
@@ -162,7 +162,7 @@ MainLayout.loader = async function loader() {
     // If user is a freelancer, fetch freelancer-specific data
     if (userData.data.role === 'freelancer') {
       const freelancerResponse = await fetch(
-        `${import.meta.env.VITE_API_URL}/freelancer/me`,
+        `${import.meta.env.VITE_API_URL}/freelancer/${userData.data.username}`,
         {
           headers: {
             'Content-Type': 'application/json',

@@ -10,30 +10,29 @@ const ProfileDropdown: React.FC = () => {
   return (
     <div className="relative">
       {
-        <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+        <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-900 dark:border-gray-700 border border-gray-200 rounded-lg shadow-lg z-10">
           <div className="px-4 py-3">
             <p className="text-sm font-medium text-green-700">
               {userData.username}
             </p>
-            <p className="text-sm text-gray-500">{userData.email}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-200">
+              {userData.email}
+            </p>
             {freelancer.freelancerId && (
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 Balance: {freelancer.balance}$
               </p>
             )}
           </div>
-          <div className="border-t border-gray-200"></div>
+          <div className="border-t dark:border-gray-700 border-gray-200"></div>
           <ul className="py-1">
             <li>
-              <NavBarItem
-                className="!text-gray-800"
-                page={`/users/${userData.username}`}
-              >
+              <NavBarItem className="" page={`/users/${userData.username}`}>
                 Profile
               </NavBarItem>
             </li>
             <li>
-              <NavBarItem className="!text-gray-800" page="/logout">
+              <NavBarItem className="" page="/logout">
                 Logout
               </NavBarItem>
             </li>

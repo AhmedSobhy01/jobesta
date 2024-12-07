@@ -7,11 +7,11 @@ import Contacts from '@/pages/Contacts';
 import Login from '@/pages/Login';
 import SignUp from '@/pages/SignUp';
 import SignUpForm from '@/components/SignUp/SignUpForm';
-import { UserContextProvider } from './store/userContext';
-import { SetUserPage } from './utils/SetUserPage';
+import { UserContextProvider } from '@/store/userContext';
+import { SetUserPage } from '@/utils/SetUserPage';
 import { Logout } from '@/utils/Logout';
-import ProfilePage from './pages/Profile';
-import { FreelancerContextProvider } from './store/freelancerContext';
+import ProfilePage from '@/pages/Profile';
+import { FreelancerContextProvider } from '@/store/freelancerContext';
 
 const router = createBrowserRouter([
   {
@@ -26,6 +26,7 @@ const router = createBrowserRouter([
       {
         path: 'users/:username',
         element: <ProfilePage />,
+        loader: ProfilePage.loader,
       },
     ],
   },
