@@ -2,6 +2,7 @@ import { authenticate } from '../middlewares/authMiddleware.js';
 import {
   getCurrentFreelancer,
   updateFreelancer,
+  getFreelancerByUsername,
 } from '../controllers/freelancerController.js';
 import { updateFreelancerValidationRules } from '../validations/freelancerValidations.js';
 import { validateRequest } from '../middlewares/validationMiddleware.js';
@@ -16,6 +17,8 @@ freelancerRouter.get(
   checkIfFreelancer,
   getCurrentFreelancer,
 );
+
+freelancerRouter.get('/:username', getFreelancerByUsername);
 
 freelancerRouter.put(
   '/me',

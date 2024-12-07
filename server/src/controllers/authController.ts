@@ -104,8 +104,7 @@ export async function generateRefreshToken(
     res
       .status(200)
       .json({ status: true, message: 'Token refreshed', data: { jwtToken } });
-  } catch (err) {
-    console.log(err);
+  } catch {
     res.status(403).json({ status: false, message: 'Invalid token' });
   }
 }

@@ -1,29 +1,53 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import MainLayout from '@/layouts/MainLayout';
+import MainLayout, { loader as loadUser } from '@/layouts/MainLayout';
 import Home from '@/pages/Home';
 import About from '@/pages/About';
 import Jobs from '@/pages/Jobs';
 import Contacts from '@/pages/Contacts';
 import Login from '@/pages/Login';
 import SignUp from '@/pages/SignUp';
+import SignUpForm, {
+  action as signupAction,
+} from '@/components/SignUp/SignUpForm';
+import { UserContextProvider } from './store/userContext';
+import { SetUserPage } from './utils/SetUserPage';
+import { Logout } from '@/utils/Logout';
+import { action as loginAction } from '@/pages/Login';
+import ProfilePage from './pages/Profile';
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <MainLayout />,
+    loader: loadUser,
+    children: [
+      { index: true, element: <Home /> },
+      { path: 'about', element: <About /> },
+      { path: 'jobs', element: <Jobs /> },
+      { path: 'contacts', element: <Contacts /> },
+      { path: 'me', element: <ProfilePage /> },
+    ],
+  },
+  { path: '/login', element: <Login />, action: loginAction },
+  {
+    path: '/signup',
+    element: <SignUp />,
+    action: signupAction,
+    children: [{ path: '', element: <SignUpForm /> }],
+  },
+  { path: '/set-user', element: <SetUserPage /> },
+  {
+    path: '/logout',
+    element: <Logout />,
+  },
+]);
 
 function App() {
-  const router = createBrowserRouter([
-    {
-      path: '/',
-      element: <MainLayout />,
-      children: [
-        { index: true, element: <Home /> },
-        { path: 'about', element: <About /> },
-        { path: 'jobs', element: <Jobs /> },
-        { path: 'contacts', element: <Contacts /> },
-      ],
-    },
-    { path: '/login', element: <Login /> },
-    { path: '/signup', element: <SignUp /> },
-  ]);
-
-  return <RouterProvider router={router} />;
+  return (
+    <UserContextProvider>
+      <RouterProvider router={router} />
+    </UserContextProvider>
+  );
 }
 
 export default App;
