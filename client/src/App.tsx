@@ -14,7 +14,6 @@ import { Logout } from '@/utils/Logout';
 import ProfilePage from '@/pages/Profile';
 import { FreelancerContextProvider } from '@/store/freelancerContext';
 
-
 const router = createBrowserRouter([
   {
     path: '/',
