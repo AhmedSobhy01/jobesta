@@ -15,11 +15,13 @@ const ProfileDropdown: React.FC = () => {
             <p className="text-sm font-medium text-green-700">
               {userData.username}
             </p>
+
             <p className="text-sm text-gray-500 dark:text-gray-200">
               {userData.email}
             </p>
             {freelancer.freelancerId && (
               <p className="text-sm text-gray-500 dark:text-gray-400">
+
                 Balance: {freelancer.balance}$
               </p>
             )}
@@ -27,12 +29,14 @@ const ProfileDropdown: React.FC = () => {
           <div className="border-t dark:border-gray-700 border-gray-200"></div>
           <ul className="py-1">
             <li>
+
               <NavBarItem className="" page={`/users/${userData.username}`}>
                 Profile
               </NavBarItem>
             </li>
             <li>
               <NavBarItem className="" page="/logout">
+
                 Logout
               </NavBarItem>
             </li>

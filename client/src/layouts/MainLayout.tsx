@@ -78,7 +78,7 @@ function MainLayout() {
   }, [userData, myUser, myFreelancerUser]);
 
   return (
-    <div className="h-screen dark:bg-gray-800 bg-white" onClick={handleClick}>
+    <div className="h-screen dark:bg-gray-900 bg-white" onClick={handleClick}>
       {isError && (
         <ErrorModule
           errorMessage={userData?.message}

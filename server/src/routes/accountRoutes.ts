@@ -4,6 +4,7 @@ import {
   getAccount,
   updateAccount,
   updateProfilePicture,
+  getUserByUsername,
 } from '../controllers/accountController.js';
 import { updateAccountValidationRules } from '../validations/accountValidations.js';
 import { validateRequest } from '../middlewares/validationMiddleware.js';
@@ -27,5 +28,7 @@ accountRouter.put(
   upload.single('file'),
   updateProfilePicture,
 );
+
+accountRouter.get('/:username', getUserByUsername);
 
 export default accountRouter;
