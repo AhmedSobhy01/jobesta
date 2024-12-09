@@ -117,7 +117,10 @@ export const updateProposalValidationRules = [
       );
 
       if (proposalQuery.rows.length === 0) {
-        throw new Error('Proposal does not exists');
+        throw new Error('Proposal does not exists for this job');
+      }
+      if (proposalQuery.rows[0].status !== 'pending') {
+        throw new Error('Proposal cannot be updated for this job');
       }
 
       return true;
