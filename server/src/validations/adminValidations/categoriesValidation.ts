@@ -1,5 +1,5 @@
 import { body, param } from 'express-validator';
-import db from '../db/db.js';
+import db from '../../db/db.js';
 
 export const createCategoryValidationRules = [
   body('name')
@@ -34,25 +34,7 @@ export const deleteCategoryValidationRules = [
         [value],
       );
       if (category.rows.length === 0) {
-        throw new Error('Category not found');
-      }
-      return true;
-    }),
-];
-
-export const deleteBadgeValidationRules = [
-  param('id')
-    .trim()
-    .notEmpty()
-    .withMessage('Badge ID is required')
-    .isNumeric()
-    .withMessage('Badge ID must be a number')
-    .custom(async (value) => {
-      const badge = await db.query('SELECT * FROM badges WHERE id = $1', [
-        value,
-      ]);
-      if (badge.rows.length === 0) {
-        throw new Error('Badge not found');
+        throw new Error('No category found with this id');
       }
       return true;
     }),
