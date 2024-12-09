@@ -99,7 +99,7 @@ CREATE TABLE "jobs" (
   "duration" INTEGER NOT NULL,
   "title" VARCHAR(255) NOT NULL,
   "description" TEXT NOT NULL,
-  "category_id" INTEGER NOT NULL,
+  "category_id" INTEGER,
   "client_id" INTEGER NOT NULL,
   "created_at" TIMESTAMP NOT NULL DEFAULT (now())
 );
