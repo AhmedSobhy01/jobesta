@@ -4,11 +4,9 @@ import { useContext, useEffect, useState } from 'react';
 import UserContext from '@/store/userContext';
 import { getAuthJwtToken, getAuthRefreshToken } from '@/utils/auth';
 import ErrorModule from '@/components/ErrorModule';
-import FreelancerContext from '@/store/freelancerContext';
 
 function MainLayout() {
   const myUser = useContext(UserContext);
-  const myFreelancerUser = useContext(FreelancerContext);
   const [isError, setIsError] = useState(false);
   const [dropdownOpen, setDropdownOpenMenu] = useState({
     isDropdownBarOpen: false,
@@ -40,18 +38,6 @@ function MainLayout() {
     }
 
     if (userData?.user && userData.user.id !== myUser.accountId) {
-      if (userData.user.role === 'freelancer') {
-        const { id, balance, bio, previousWork, skills } = userData.freelancer;
-
-        myFreelancerUser.setFreelancer({
-          freelancerId: id,
-          balance,
-          bio,
-          previousWork,
-          skills,
-        });
-      }
-
       const {
         id,
         firstName,
@@ -75,7 +61,7 @@ function MainLayout() {
         refreshToken: getAuthRefreshToken(),
       });
     }
-  }, [userData, myUser, myFreelancerUser]);
+  }, [userData, myUser]);
 
   return (
     <div className="h-screen dark:bg-gray-900 bg-white" onClick={handleClick}>
@@ -155,34 +141,14 @@ MainLayout.loader = async function loader() {
     );
 
     const userData = await userResponse.json();
+
     if (!userResponse.ok) {
       return { message: userData.message };
     }
 
-    // If user is a freelancer, fetch freelancer-specific data
-    if (userData.data.role === 'freelancer') {
-      const freelancerResponse = await fetch(
-        `${import.meta.env.VITE_API_URL}/freelancer/${userData.data.username}`,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${newJwtToken}`,
-          },
-        },
-      );
-
-      const freelancerData = await freelancerResponse.json();
-      if (!freelancerResponse.ok) {
-        return { message: freelancerData.message };
-      }
-
-      return {
-        user: userData.data,
-        freelancer: freelancerData.data,
-      };
-    }
-
-    return { user: userData.data };
+    return {
+      user: userData.data,
+    };
   } catch {
     return { message: 'An error occurred while fetching user data' };
   }

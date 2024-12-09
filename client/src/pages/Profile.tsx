@@ -1,6 +1,5 @@
 import ErrorModule from '@/components/ErrorModule';
 import profilePic from '@/assets/profile-pic.png';
-import FreelancerContext from '@/store/freelancerContext';
 import UserContext from '@/store/userContext';
 import React, { useContext, useState } from 'react';
 import {
@@ -27,7 +26,6 @@ const ProfilePage: React.FC & {
   const navigate = useNavigate();
 
   const userData = useContext(UserContext);
-  const freelancerData = useContext(FreelancerContext);
 
   const param = useParams();
 
@@ -40,22 +38,22 @@ const ProfilePage: React.FC & {
   const anyUserData = useLoaderData();
 
   const accountData = {
-    firstName: anyUserData ? anyUserData.user.firstName : userData.firstName,
-    lastName: anyUserData ? anyUserData.user.lastName : userData.lastName,
-    username: anyUserData ? anyUserData.user.username : userData.username,
-    role: anyUserData ? anyUserData.user.role : userData.role,
-    isBanned: anyUserData ? anyUserData.user.isBanned : userData.isBanned,
-    profilePicture: anyUserData
+    firstName: anyUserData.user
+      ? anyUserData.user.firstName
+      : userData.firstName,
+    lastName: anyUserData.user ? anyUserData.user.lastName : userData.lastName,
+    username: anyUserData.user ? anyUserData.user.username : userData.username,
+    role: anyUserData.user ? anyUserData.user.role : userData.role,
+    isBanned: anyUserData.user ? anyUserData.user.isBanned : userData.isBanned,
+    profilePicture: anyUserData.user
       ? anyUserData.user.profilePicture
       : userData.profilePicture,
   };
 
   const freelancerAccountData = {
-    bio: anyUserData ? anyUserData.freelancer.bio : freelancerData.bio,
-    previousWork: anyUserData
-      ? anyUserData.freelancer.previousWork
-      : freelancerData.previousWork,
-    skills: anyUserData ? anyUserData.freelancer.skills : freelancerData.skills,
+    bio: anyUserData.freelancer?.bio,
+    previousWork: anyUserData.freelancer?.previousWork,
+    skills: anyUserData.freelancer?.skills,
   };
 
   function handleJobsClick(): void {
@@ -86,7 +84,7 @@ const ProfilePage: React.FC & {
     navigate('/');
   };
 
-  if (userData.username != param.username && !anyUserData) {
+  if (userData.username != param.username && anyUserData.message) {
     return (
       <ErrorModule onClose={handleErrorClose} errorMessage="User not found." />
     );

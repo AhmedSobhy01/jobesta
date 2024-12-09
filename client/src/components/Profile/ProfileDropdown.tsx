@@ -19,9 +19,9 @@ const ProfileDropdown: React.FC = () => {
             <p className="text-sm text-gray-500 dark:text-gray-200">
               {userData.email}
             </p>
-            {freelancer.freelancerId && (
+            {userData.role === 'freelancer' && (
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                Balance: {freelancer.balance}$
+                Balance: {freelancer.balance ? freelancer.balance : '0.00'}$
               </p>
             )}
           </div>
