@@ -5,20 +5,17 @@ import db from '../db/db.js';
 
 configDotenv();
 
-export async function authenticate(
+export async function prepareUser(
   req: Request,
   res: Response,
   next: NextFunction,
 ) {
-  const bearerText = req.header('Authorization');
-  if (!bearerText || bearerText.trim() == 'Bearer') {
-    res.status(401).json({ message: 'Unauthorized', status: false });
-    return;
-  }
-
-  const jwtToken = bearerText.split(' ')[1];
-
   try {
+    const bearerText = req.header('Authorization');
+    if (!bearerText || bearerText.trim() == 'Bearer') throw 'No token provided';
+
+    const jwtToken = bearerText.split(' ')[1];
+
     const { id } = jwt.verify(
       jwtToken,
       process.env.JWT_SECRET as string,
@@ -52,10 +49,23 @@ export async function authenticate(
         bio: freelancerQuery.rows[0].bio,
       };
     }
+    next();
   } catch {
-    res.status(401).json({ message: 'Invalid JWT', status: false });
+    next();
     return;
   }
+}
 
-  next();
+export async function authenticate(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  prepareUser(req, res, () => {
+    if (!req.user) {
+      res.status(401).json({ message: 'Unauthorized', status: false });
+      return;
+    }
+    next();
+  });
 }

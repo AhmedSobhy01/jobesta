@@ -22,3 +22,53 @@ export interface IFreelancer {
   balance: number;
   bio: string;
 }
+
+export interface IMilestone {
+  job_id?: string;
+  freelancer_id?: string;
+  status?: string;
+  order: number;
+  name: string;
+  duration: number;
+  amount: number;
+}
+
+export interface IProposal {
+  jobId?: string;
+  freelancer_id?: string;
+  freelancer?: IAccountDisplay;
+  coverLetter: string;
+  status: string;
+  createdAt: Date;
+  milestones?: Array<IMilestone>;
+}
+
+export interface IJob {
+  id: string;
+  status: string;
+  budget: number;
+  duration: number;
+  title: string;
+  description: string;
+  category: {
+    id: string;
+    name: string;
+    description: string;
+  };
+  createdAt: Date;
+  client: {
+    firstName: string;
+    lastName: string;
+    username: string;
+    profilePicture: string;
+  };
+  proposals: Array<IProposal>;
+  myJob: boolean;
+}
+
+export interface IAccountDisplay {
+  firstName: string;
+  lastName: string;
+  username: string;
+  profilePicture?: string;
+}
