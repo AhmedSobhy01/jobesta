@@ -34,10 +34,41 @@ export interface IMilestone {
 }
 
 export interface IProposal {
-  jobId: string;
+  jobId?: string;
   freelancer_id?: string;
+  freelancer?: IAccountDisplay;
   coverLetter: string;
   status: string;
   createdAt: Date;
   milestones?: Array<IMilestone>;
+}
+
+export interface IJob {
+  id: string;
+  status: string;
+  budget: number;
+  duration: number;
+  title: string;
+  description: string;
+  category: {
+    id: string;
+    name: string;
+    description: string;
+  };
+  createdAt: Date;
+  client: {
+    firstName: string;
+    lastName: string;
+    username: string;
+    profilePicture: string;
+  };
+  proposals: Array<IProposal>;
+  myJob: boolean;
+}
+
+export interface IAccountDisplay {
+  firstName: string;
+  lastName: string;
+  username: string;
+  profilePicture?: string;
 }
