@@ -11,15 +11,15 @@ export async function createProposal(req: Request, res: Response) {
     );
 
     const milestones = req.body.milestones as Array<IMilestone>;
+    milestones.sort((a: IMilestone, b: IMilestone) => a.order - b.order);
 
-    for (const milestone of milestones) {
+    for (const [i, milestone] of milestones.entries()) {
       await db.query(
-        `INSERT INTO milestones (job_id, freelancer_id, "order", name, duration, amount)
-         VALUES ($1, $2, $3, $4, $5, $6);`,
+        'INSERT INTO milestones (job_id,freelancer_id,"order",name, duration,amount) VALUES ($1, $2, $3, $4, $5, $6)',
         [
           req.params.jobId,
           req.user!.freelancer!.id,
-          milestone.order,
+          i + 1,
           milestone.name,
           milestone.duration,
           milestone.amount,
@@ -47,19 +47,21 @@ export async function updateProposal(req: Request, res: Response) {
 
     const milestones = req.body.milestones as Array<IMilestone>;
 
-    milestones.forEach(async (milestone) => {
+    milestones.sort((a: IMilestone, b: IMilestone) => a.order - b.order);
+
+    for (const [i, milestone] of milestones.entries()) {
       await db.query(
         'INSERT INTO milestones (job_id,freelancer_id,"order",name, duration,amount) VALUES ($1, $2, $3, $4, $5, $6)',
         [
           req.params.jobId,
           req.user!.freelancer!.id,
-          milestone.order,
+          i + 1,
           milestone.name,
           milestone.duration,
           milestone.amount,
         ],
       );
-    });
+    }
 
     res.json({ status: true, message: 'Proposal updated' });
   } catch {
