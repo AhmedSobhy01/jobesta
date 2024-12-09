@@ -1,12 +1,10 @@
 import { Router } from 'express';
 import { authenticate } from '../middlewares/authMiddleware.js';
 import { checkIfFreelancer } from '../middlewares/freelancerMiddleware.js';
-import { checkIfClient } from '../middlewares/clientMiddleware.js';
 import {
   createProposal,
   deleteProposal,
   getMyProposals,
-  getProposalsByJobId,
   updateProposal,
 } from '../controllers/proposalController.js';
 import {
@@ -18,13 +16,9 @@ import { validateRequest } from '../middlewares/validationMiddleware.js';
 
 const proposalRouter = Router();
 
-proposalRouter.use(authenticate);
+proposalRouter.use(authenticate, checkIfFreelancer);
 
-proposalRouter.get('/me', checkIfFreelancer, getMyProposals);
-
-proposalRouter.get('/:jobId', checkIfClient, getProposalsByJobId);
-
-proposalRouter.use(checkIfFreelancer);
+proposalRouter.get('/me', getMyProposals);
 
 proposalRouter.post(
   '/:jobId',
