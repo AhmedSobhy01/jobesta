@@ -4,7 +4,7 @@ import {
   getJobById,
   getJobs,
 } from '../controllers/jobController.js';
-import { authenticate } from '../middlewares/authMiddleware.js';
+import { authenticate, prepareUser } from '../middlewares/authMiddleware.js';
 import { checkIfClient } from '../middlewares/clientMiddleware.js';
 import { validateRequest } from '../middlewares/validationMiddleware.js';
 import {
@@ -16,7 +16,7 @@ const jobRouter = Router();
 
 jobRouter.get('/', getJobsValidationRules, validateRequest, getJobs);
 
-jobRouter.get('/:id', getJobById);
+jobRouter.get('/:id', prepareUser, getJobById);
 
 jobRouter.post(
   '/',

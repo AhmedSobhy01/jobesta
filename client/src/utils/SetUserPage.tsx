@@ -1,20 +1,20 @@
 import { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import TokensContext from '@/store/userContext';
+import UserContext from '@/store/userContext';
 
 export function SetUserPage() {
-  const { setUser } = useContext(TokensContext);
+  const { setUser } = useContext(UserContext);
   const navigate = useNavigate();
 
   useEffect(() => {
     const accountId = null;
     const firstName = null;
     const lastName = null;
-    const userName = null;
+    const username = null;
     const email = null;
     const role = null;
     const isBanned = null;
-    const profilePicture = null;
+    const profilePicture = undefined;
     const jwtToken = localStorage.getItem('jwtToken') || '';
     const refreshToken = localStorage.getItem('refreshToken') || '';
 
@@ -22,7 +22,7 @@ export function SetUserPage() {
       accountId,
       firstName,
       lastName,
-      userName,
+      username,
       email,
       role,
       isBanned,

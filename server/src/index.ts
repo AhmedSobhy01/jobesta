@@ -6,6 +6,7 @@ import authRoutes from './routes/authRoutes.js';
 import freelancerRoutes from './routes/freelancerRoutes.js';
 import jobRoutes from './routes/jobRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
+import proposalRoutes from './routes/proposalRoutes.js';
 import { getCategories } from './controllers/categoriesController.js';
 import { FileUploadError } from './utils/errors.js';
 import { MulterError } from 'multer';
@@ -43,6 +44,7 @@ app.use('/freelancer', freelancerRoutes);
 app.use('/auth', authRoutes);
 app.use('/admin', adminRoutes);
 app.use('/jobs', jobRoutes);
+app.use('/proposals', proposalRoutes);
 
 // custom route for getting all the available categories
 app.get('/categories', getCategories);

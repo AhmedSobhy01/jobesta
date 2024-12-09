@@ -104,7 +104,7 @@ function Login() {
 
 export default Login;
 
-export async function action({ request }: ActionFunctionArgs) {
+Login.action = async function action({ request }: ActionFunctionArgs) {
   const data = await request.formData();
 
   const authData = {
@@ -163,4 +163,4 @@ export async function action({ request }: ActionFunctionArgs) {
       global: 'A network error occurred. Please try again later.',
     };
   }
-}
+};
