@@ -2,49 +2,6 @@ import { Request, Response } from 'express';
 import db from '../db/db.js';
 import { IMilestone, IProposal } from '../models/model.js';
 
-export async function getProposalsByJobId(req: Request, res: Response) {
-  try {
-    const proposalsQuery = await db.query(
-      'SELECT p.job_id, p.status, p.cover_letter, p.created_at, a.first_name, a.last_name, a.username, a.profile_picture FROM proposals p JOIN freelancers f ON f.id = p.freelancer_id JOIN accounts a ON a.id = f.account_id WHERE p.job_id = $1',
-      [req.params.jobId],
-    );
-
-    if (proposalsQuery.rowCount === 0) {
-      res.status(404).json({
-        status: false,
-        message: 'No proposals found for this job',
-      });
-      return;
-    }
-
-    const proposals = proposalsQuery.rows.map((proposal) => {
-      return {
-        status: proposal.status,
-        coverLetter: proposal.cover_letter,
-        createdAt: proposal.created_at,
-        freelancer: {
-          firstName: proposal.first_name,
-          lastName: proposal.last_name,
-          username: proposal.username,
-          profilePicture: proposal.profile_picture,
-        },
-      };
-    });
-
-    res.json({
-      status: true,
-      message: 'Proposals retrieved',
-      data: {
-        proposals,
-      },
-    });
-  } catch {
-    res
-      .status(500)
-      .json({ status: false, message: 'Error retrieving proposals' });
-  }
-}
-
 export async function createProposal(req: Request, res: Response) {
   try {
     await db.query(
@@ -122,42 +79,29 @@ export async function getMyProposals(req: Request, res: Response) {
       [req.user!.freelancer!.id],
     );
 
-    if (proposalsQuery.rowCount === 0) {
-      res.status(404).json({
-        status: false,
-        message: 'No proposals found for this freelancer',
-      });
-      return;
-    }
-
-    const proposalsObject: Record<number, IProposal> = {};
-    proposalsQuery.rows.forEach((proposal) => {
-      if (proposalsObject[proposal.job_id]) {
-        proposalsObject[proposal.job_id].milestones!.push({
-          order: proposal.order,
-          status: proposal.milestone_status,
-          duration: proposal.duration,
-          amount: proposal.amount,
-          name: proposal.name,
-        });
-      } else {
-        proposalsObject[proposal.job_id] = {
+    const proposalsObject = proposalsQuery.rows.reduce<
+      Record<string, IProposal>
+    >((acc, proposal) => {
+      if (!acc[proposal.job_id]) {
+        acc[proposal.job_id] = {
           jobId: proposal.job_id,
           status: proposal.status,
           coverLetter: proposal.cover_letter,
           createdAt: proposal.created_at,
-          milestones: [
-            {
-              order: proposal.order,
-              status: proposal.milestone_status,
-              duration: proposal.duration,
-              amount: proposal.amount,
-              name: proposal.name,
-            },
-          ],
+          milestones: [],
         };
       }
-    });
+
+      acc[proposal.job_id].milestones!.push({
+        order: proposal.order,
+        status: proposal.milestone_status,
+        duration: proposal.duration,
+        amount: proposal.amount,
+        name: proposal.name,
+      });
+
+      return acc;
+    }, {});
 
     const proposals = Object.values(proposalsObject);
 
@@ -168,7 +112,8 @@ export async function getMyProposals(req: Request, res: Response) {
         proposals,
       },
     });
-  } catch {
+  } catch (err) {
+    console.log(err);
     res
       .status(500)
       .json({ status: false, message: 'Error retrieving proposals' });
