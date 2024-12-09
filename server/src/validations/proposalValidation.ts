@@ -2,26 +2,6 @@ import { body, param } from 'express-validator';
 import { IMilestone } from '../models/model';
 import db from '../db/db.js';
 
-export const getProposalValidationRules = [
-  param('jobId')
-    .isNumeric()
-    .withMessage('Job ID must be a number')
-    .notEmpty()
-    .withMessage('Job ID must not be empty')
-    .custom(async (jobId, { req }) => {
-      const jobQuery = await db.query(
-        'SELECT * FROM jobs JOIN accounts a ON a WHERE id = $1 AND jobs.client_id = $2',
-        [jobId, req.user!.id],
-      );
-
-      if (jobQuery.rows.length === 0) {
-        throw new Error('Job does not exist');
-      }
-
-      return true;
-    }),
-];
-
 const validProposal = [
   body('coverLetter')
     .trim()
