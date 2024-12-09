@@ -1,9 +1,9 @@
 import { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import TokensContext from '@/store/userContext';
+import UserContext from '@/store/userContext';
 
 export function SetUserPage() {
-  const { setUser } = useContext(TokensContext);
+  const { setUser } = useContext(UserContext);
   const navigate = useNavigate();
 
   useEffect(() => {
