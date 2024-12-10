@@ -17,9 +17,9 @@ export async function createJob(req: Request, res: Response): Promise<void> {
 
 export async function getJobs(req: Request, res: Response): Promise<void> {
   let queryString =
-    "SELECT j.id, j.status, j.budget, j.duration, j.title, j.description, j.created_at, client.first_name, client.last_name, client.username, client.profile_picture,c.id category_id,c.name ,c.description category_description FROM jobs j JOIN categories c ON c.id = j.category_id JOIN accounts client ON client.id = j.client_id WHERE status = 'open' ";
+    "SELECT j.id, j.status, j.budget, j.duration, j.title, j.description, j.created_at, client.first_name, client.last_name, client.username, client.profile_picture,c.id category_id,c.name ,c.description category_description FROM jobs j LEFT JOIN categories c ON c.id = j.category_id INNER JOIN accounts client ON client.id = j.client_id WHERE status = 'open' ";
 
-  let countQuery = "SELECT COUNT(*) FROM jobs WHERE status = 'open' ";
+  let countQuery = "SELECT COUNT(*) FROM jobs j WHERE status = 'open' ";
 
   if (Array.isArray(req.query.categories) && req.query.categories.length) {
     queryString += `AND category_id IN (${req.query.categories.join(',')}) `;
@@ -37,11 +37,11 @@ export async function getJobs(req: Request, res: Response): Promise<void> {
   }
 
   if (req.query.sortBy) {
-    queryString += `ORDER BY ${req.query.sortBy} `;
+    queryString += `ORDER BY j.${req.query.sortBy} `;
 
     if (req.query.sortOrder) queryString += `${req.query.sortOrder} `;
   } else {
-    queryString += 'ORDER BY created_at DESC ';
+    queryString += 'ORDER BY j.created_at DESC ';
   }
 
   const limit = parseInt(process.env.PAGE_LIMIT || '10');
@@ -111,7 +111,7 @@ export async function getJobs(req: Request, res: Response): Promise<void> {
 export async function getJobById(req: Request, res: Response) {
   try {
     const jobQuery = await db.query(
-      'SELECT j.id, j.status, j.budget, j.duration, j.title, j.description, j.created_at,j.client_id, client.first_name, client.last_name, client.username, client.profile_picture,c.id category_id,c.name ,c.description category_description FROM jobs j JOIN categories c ON c.id = j.category_id JOIN accounts client ON client.id = j.client_id WHERE j.id = $1 ',
+      'SELECT j.id, j.status, j.budget, j.duration, j.title, j.description, j.created_at,j.client_id, client.first_name, client.last_name, client.username, client.profile_picture,c.id category_id,c.name ,c.description category_description FROM jobs j LEFT JOIN categories c ON c.id = j.category_id JOIN accounts client ON client.id = j.client_id WHERE j.id = $1 ',
       [req.params.id],
     );
 
