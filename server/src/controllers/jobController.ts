@@ -35,19 +35,24 @@ export async function getJobs(req: Request, res: Response): Promise<void> {
   }
 
   const limit = parseInt(process.env.PAGE_LIMIT || '10');
-  const page = parseInt(req.query.page as string) || 1;
+
+  const totalItemsQuery = await db.query(
+    "SELECT COUNT(*) FROM jobs WHERE status = 'open'",
+  );
+  const totalItems = parseInt(totalItemsQuery.rows[0].count);
+  const totalPages = Math.ceil(totalItems / limit);
+
+  const page =
+    parseInt(req.query.page as string) > 0 &&
+    parseInt(req.query.page as string) <= totalPages
+      ? parseInt(req.query.page as string)
+      : 1;
   const offset = (page - 1) * limit;
 
   queryString += `LIMIT ${limit} OFFSET ${offset}`;
 
   try {
     const jobsQuery = await db.query(queryString);
-
-    const totalItemsQuery = await db.query(
-      "SELECT COUNT(*) FROM jobs WHERE status = 'open'",
-    );
-    const totalItems = parseInt(totalItemsQuery.rows[0].count);
-    const totalPages = Math.ceil(totalItems / limit);
 
     const jobs = jobsQuery.rows.map((job) => {
       return {
