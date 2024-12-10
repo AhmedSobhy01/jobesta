@@ -1,3 +1,17 @@
+interface PaginationData {
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+  perPage: number;
+}
+
+interface JobCategory {
+  id: number;
+  name: string;
+  description: string;
+  jobsCount?: number;
+}
+
 interface Job {
   id: number;
   status: string;
@@ -5,11 +19,7 @@ interface Job {
   duration: number;
   title: string;
   description: string;
-  category: {
-    id: number;
-    name: string;
-    description: string;
-  };
+  category: JobCategory;
   createdAt: string;
   client: {
     firstName: string;

@@ -43,6 +43,12 @@ export async function getJobs(req: Request, res: Response): Promise<void> {
   try {
     const jobsQuery = await db.query(queryString);
 
+    const totalItemsQuery = await db.query(
+      "SELECT COUNT(*) FROM jobs WHERE status = 'open'",
+    );
+    const totalItems = parseInt(totalItemsQuery.rows[0].count);
+    const totalPages = Math.ceil(totalItems / limit);
+
     const jobs = jobsQuery.rows.map((job) => {
       return {
         id: job.id,
@@ -72,9 +78,10 @@ export async function getJobs(req: Request, res: Response): Promise<void> {
       data: {
         jobs,
         pagination: {
-          total: jobsQuery.rowCount,
-          limit,
-          page,
+          currentPage: page,
+          totalItems,
+          totalPages,
+          perPage: limit,
         },
       },
     });
