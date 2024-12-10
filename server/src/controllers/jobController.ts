@@ -72,7 +72,12 @@ export async function getJobs(req: Request, res: Response): Promise<void> {
           firstName: job.first_name,
           lastName: job.last_name,
           username: job.username,
-          profilePicture: job.profile_picture,
+          profilePicture:
+            job.profile_picture ||
+            'https://ui-avatars.com/api/?name=' +
+              job.first_name +
+              '+' +
+              job.last_name,
         },
       };
     });
@@ -124,7 +129,12 @@ export async function getJobById(req: Request, res: Response) {
         firstName: jobQuery.rows[0].first_name,
         lastName: jobQuery.rows[0].last_name,
         username: jobQuery.rows[0].username,
-        profilePicture: jobQuery.rows[0].profile_picture,
+        profilePicture:
+          jobQuery.rows[0].profile_picture ||
+          'https://ui-avatars.com/api/?name=' +
+            jobQuery.rows[0].first_name +
+            '+' +
+            jobQuery.rows[0].last_name,
       },
       myJob: false,
       proposals: [],
@@ -159,7 +169,12 @@ export async function getJobById(req: Request, res: Response) {
               username: proposal.username,
               firstName: proposal.first_name,
               lastName: proposal.last_name,
-              profilePicture: proposal.profile_picture,
+              profilePicture:
+                proposal.profile_picture ||
+                'https://ui-avatars.com/api/?name=' +
+                  proposal.first_name +
+                  '+' +
+                  proposal.last_name,
             },
             milestones: [],
           };
