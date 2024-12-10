@@ -1,6 +1,5 @@
-import { authenticate } from '../middlewares/authMiddleware.js';
+import { authenticate, prepareUser } from '../middlewares/authMiddleware.js';
 import {
-  // getCurrentFreelancer,
   updateFreelancer,
   getFreelancerByUsername,
   getFreelancerBalance,
@@ -19,7 +18,7 @@ freelancerRouter.get(
   getFreelancerBalance,
 );
 
-freelancerRouter.get('/:username', getFreelancerByUsername);
+freelancerRouter.get('/:username', prepareUser, getFreelancerByUsername);
 
 freelancerRouter.put(
   '/me',

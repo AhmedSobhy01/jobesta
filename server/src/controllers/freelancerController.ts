@@ -27,24 +27,27 @@ export async function getFreelancerByUsername(req: Request, res: Response) {
     );
 
     const previousWorkQuery = await db.query(
-      'SELECT * FROM previous_works WHERE freelancer_id = $1 ORDER BY order ASC',
+      'SELECT * FROM previous_works WHERE freelancer_id = $1 ORDER BY "order" ASC',
       [freelancerData.id],
     );
 
     const badgesQuery = await db.query(
-      'SELECT name,description,icon FROM badges WHERE freelancer_id = $1',
+      'SELECT name,description,icon,earned_at FROM badges JOIN badge_freelancer bf ON bf.badge_id = badges.id WHERE freelancer_id = $1',
       [freelancerData.id],
     );
 
-    const jobsQuery = await db.query(
-      `SELECT j.id, j.status, j.budget, j.duration, j.title, j.description, j.created_at, client.first_name, client.last_name, client.username, client.profile_picture, c.id category_id, c.name category_name ,c.description category_description 
+    let jobsQueryString = `SELECT j.id, j.status, j.budget, j.duration, j.title, j.description, j.created_at, client.first_name, client.last_name, client.username, client.profile_picture, c.id category_id, c.name category_name ,c.description category_description 
       FROM jobs j 
       JOIN categories c ON c.id = j.category_id 
       JOIN accounts client ON client.id = j.client_id
-      JOIN proposals p ON p.job_id = j.job_id
-      WHERE p.freelancer_id = $1`,
-      [freelancerData.id],
-    );
+      JOIN proposals p ON p.job_id = j.id
+      WHERE p.freelancer_id = $1`;
+
+    if (!req.user || req.user.username !== username) {
+      jobsQueryString += " AND j.status = 'completed'";
+    }
+
+    const jobsQuery = await db.query(jobsQueryString, [freelancerData.id]);
 
     const jobs = jobsQuery.rows.map((job) => ({
       id: job.id,
