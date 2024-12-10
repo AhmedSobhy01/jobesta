@@ -4,8 +4,13 @@ import db from '../../db/db.js';
 
 export async function getAccounts(req: Request, res: Response) {
   try {
-    const accountsQuery = await db.query('SELECT * from accounts');
-    const accounts = accountsQuery.rows.map((account) => {
+    let accountsQuery = 'SELECT * from accounts';
+
+    if (req.query.role) accountsQuery += ` WHERE role = '${req.query.role}'`;
+
+    const result = await db.query(accountsQuery);
+
+    const accounts = result.rows.map((account) => {
       return {
         id: account.id,
         firstName: account.first_name,
@@ -61,12 +66,22 @@ export async function updateAccount(req: Request, res: Response) {
 
   try {
     await db.query(
-      'UPDATE accounts SET first_name = $1, last_name = $2, username = $3, email = $4, password = $5 WHERE id = $6',
-      [firstName, lastName, username, email, password, accountId],
+      'UPDATE accounts SET first_name = $1, last_name = $2, username = $3, email = $4 WHERE id = $5',
+      [firstName, lastName, username, email, accountId],
     );
+
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+
+      await db.query('UPDATE accounts SET password = $1 WHERE id = $2', [
+        hashedPassword,
+        accountId,
+      ]);
+    }
+
     res.status(200).json({ message: 'Account updated', status: true });
-  } catch (err) {
-    console.log(err);
+  } catch {
     res
       .status(500)
       .json({ message: 'Failed to update account', status: false });

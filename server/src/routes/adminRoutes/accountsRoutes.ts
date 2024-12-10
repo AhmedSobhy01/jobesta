@@ -8,6 +8,7 @@ import {
   unbanAccount,
 } from '../../controllers/adminControllers/accountsController.js';
 import {
+  getAccountsValidationRules,
   createAccountValidationRules,
   updateAccountValidationRules,
   deleteAccountValidationRules,
@@ -18,7 +19,13 @@ import { validateRequest } from '../../middlewares/validationMiddleware.js';
 
 const accountsRouter = Router();
 
-accountsRouter.get('/', getAccounts);
+accountsRouter.get(
+  '/',
+  getAccountsValidationRules,
+  validateRequest,
+  getAccounts,
+);
+
 accountsRouter.post(
   '/',
   createAccountValidationRules,
