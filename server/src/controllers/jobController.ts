@@ -16,8 +16,11 @@ export async function createJob(req: Request, res: Response): Promise<void> {
 }
 
 export async function getJobs(req: Request, res: Response): Promise<void> {
-  let queryString =
-    "SELECT * FROM jobs_with_category_and_client WHERE status = 'open' ";
+  let queryString = `SELECT j.id, j.status, j.budget, j.duration, j.title, j.description, j.created_at, client.first_name, client.last_name, client.username, client.profile_picture, c.id category_id, c.name category_name ,c.description category_description 
+      FROM jobs j 
+      JOIN categories c ON c.id = j.category_id 
+      JOIN accounts client ON client.id = j.client_id 
+      WHERE j.status = 'open' `;
 
   if (req.query.category) {
     queryString += `AND category_id = ${req.query.category} `;

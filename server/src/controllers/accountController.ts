@@ -86,31 +86,38 @@ export async function getUserByUsername(
 ): Promise<void> {
   const { username } = req.params;
 
-  const userDataQuery = await db.query(
-    'SELECT * FROM accounts WHERE username = $1',
-    [username],
-  );
+  try {
+    const userDataQuery = await db.query(
+      'SELECT * FROM accounts WHERE username = $1',
+      [username],
+    );
 
-  if (userDataQuery.rowCount === 0) {
-    res.status(404).json({
-      status: false,
-      message: 'User not found',
+    if (userDataQuery.rowCount === 0) {
+      res.status(404).json({
+        status: false,
+        message: 'User not found',
+      });
+      return;
+    }
+
+    const userData = userDataQuery.rows[0];
+
+    res.status(200).json({
+      status: true,
+      message: 'User Found',
+      data: {
+        firstName: userData!.first_name,
+        lastName: userData!.last_name,
+        username: userData!.username,
+        role: userData!.role,
+        isBanned: userData!.is_banned,
+        profilePicture: userData!.profile_picture,
+      },
     });
-    return;
+  } catch {
+    res.status(500).json({
+      status: false,
+      message: 'Error retrieving user',
+    });
   }
-
-  const userData = userDataQuery.rows[0];
-
-  res.status(200).json({
-    status: true,
-    message: 'User Found',
-    data: {
-      firstName: userData!.first_name,
-      lastName: userData!.last_name,
-      username: userData!.username,
-      role: userData!.role,
-      isBanned: userData!.is_banned,
-      profilePicture: userData!.profile_picture,
-    },
-  });
 }
