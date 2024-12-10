@@ -5,17 +5,17 @@ const MultiRangeSlider: React.FC<{
   min: number;
   max: number;
   step?: number;
+  initialMin: number;
+  initialMax: number;
   onChange: (value: { min: number; max: number }) => void;
-}> = ({ className, min, max, step = 1, onChange }) => {
-  const [minVal, setMinVal] = useState(min);
-  const [maxVal, setMaxVal] = useState(max);
+}> = ({ className, min, max, step = 1, initialMin, initialMax, onChange }) => {
+  const [minVal, setMinVal] = useState(initialMin);
+  const [maxVal, setMaxVal] = useState(initialMax);
 
   const minValRef = useRef<HTMLInputElement>(null);
   const maxValRef = useRef<HTMLInputElement>(null);
   const range = useRef<HTMLDivElement>(null);
-
-  const [isDraggingMin, setIsDraggingMin] = useState(false);
-  const [isDraggingMax, setIsDraggingMax] = useState(false);
+  const isFirstRender = useRef(true);
 
   const getPercent = useCallback(
     (value: number) => Math.round(((value - min) / (max - min)) * 100),
@@ -37,64 +37,52 @@ const MultiRangeSlider: React.FC<{
   }, [minVal, maxVal, updateRangeStyle]);
 
   useEffect(() => {
-    onChange({ min: minVal, max: maxVal });
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      onChange({ min: minVal, max: maxVal });
+    }, 100);
+
+    return () => clearTimeout(timeout);
   }, [minVal, maxVal, onChange]);
 
   const handleMinChange = (value: number) => {
-    const clampedValue = Math.min(value, maxVal - step);
-    setMinVal(clampedValue);
+    if (value !== minVal) setMinVal(Math.min(value, maxVal - step));
   };
 
   const handleMaxChange = (value: number) => {
-    const clampedValue = Math.max(value, minVal + step);
-    setMaxVal(clampedValue);
+    if (value !== maxVal) setMaxVal(Math.max(value, minVal + step));
   };
 
-  const handleMouseDown = (type: 'min' | 'max') => {
-    if (type === 'min') {
-      setIsDraggingMin(true);
-    } else {
-      setIsDraggingMax(true);
-    }
-  };
+  const handleDrag = (e: React.MouseEvent, isMin: boolean) => {
+    e.preventDefault();
+    const moveHandler = (e: MouseEvent) => {
+      const rect = (e.target as HTMLElement)
+        .closest('.relative')
+        ?.getBoundingClientRect();
+      if (!rect) return;
 
-  const handleMouseMove = useCallback(
-    (e: MouseEvent) => {
-      if (isDraggingMin || isDraggingMax) {
-        const rangeRect = range.current?.getBoundingClientRect();
-        if (rangeRect) {
-          const mouseX = e.clientX;
-          const offset = mouseX - rangeRect.left;
-          const newPercent = (offset / rangeRect.width) * 100;
-          const newValue = Math.min(
-            max,
-            Math.max(min, min + (newPercent / 100) * (max - min)),
-          );
+      const offsetX = (e.clientX - rect.left) / rect.width;
+      const newValue = min + offsetX * (max - min);
 
-          if (isDraggingMin) {
-            setMinVal(newValue);
-          } else if (isDraggingMax) {
-            setMaxVal(newValue);
-          }
-        }
+      if (isMin) {
+        handleMinChange(Math.min(Math.max(min, newValue), maxVal - step));
+      } else {
+        handleMaxChange(Math.max(Math.min(max, newValue), minVal + step));
       }
-    },
-    [isDraggingMin, isDraggingMax, max, min],
-  );
-
-  const handleMouseUp = () => {
-    setIsDraggingMin(false);
-    setIsDraggingMax(false);
-  };
-
-  useEffect(() => {
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isDraggingMin, isDraggingMax, handleMouseMove]);
+
+    const upHandler = () => {
+      document.removeEventListener('mousemove', moveHandler);
+      document.removeEventListener('mouseup', upHandler);
+    };
+
+    document.addEventListener('mousemove', moveHandler);
+    document.addEventListener('mouseup', upHandler);
+  };
 
   return (
     <div className={`relative ${className || ''}`}>
@@ -122,19 +110,22 @@ const MultiRangeSlider: React.FC<{
 
       <div className="relative z-10 h-2">
         <div className="absolute z-10 left-0 right-0 top-0 bottom-0 rounded-md bg-gray-200"></div>
+
         <div
           ref={range}
           className="absolute z-20 top-0 bottom-0 rounded-md bg-green-300"
         ></div>
+
         <div
           style={{ left: `${getPercent(minVal)}%` }}
-          className="absolute z-30 w-4 h-4 top-0 bg-green-300 rounded-full -mt-1 -ml-2 cursor-pointer"
-          onMouseDown={() => handleMouseDown('min')}
+          className="absolute z-50 w-4 h-4 top-0 bg-green-300 rounded-full -mt-1 -ml-1 cursor-pointer"
+          onMouseDown={(e) => handleDrag(e, true)}
         ></div>
+
         <div
           style={{ left: `${getPercent(maxVal)}%` }}
-          className="absolute z-30 w-4 h-4 top-0 bg-green-300 rounded-full -mt-1 -ml-2 cursor-pointer"
-          onMouseDown={() => handleMouseDown('max')}
+          className="absolute z-30 w-4 h-4 top-0 bg-green-300 rounded-full -mt-1 -ml-3 cursor-pointer"
+          onMouseDown={(e) => handleDrag(e, false)}
         ></div>
       </div>
 
