@@ -6,14 +6,22 @@ export async function getCategories(
   res: Response,
 ): Promise<void> {
   try {
-    const categoriesQuery = await db.query('SELECT * FROM categories');
+    const categoriesQuery = await db.query(`
+      SELECT c.id, c.name, c.description, COUNT(j.id) as jobs_count
+      FROM categories c
+      LEFT JOIN jobs j ON c.id = j.category_id
+      GROUP BY c.id, c.name, c.description
+    `);
+
     const categories = categoriesQuery.rows.map((category) => {
       return {
         id: category.id,
         name: category.name,
         description: category.description,
+        jobsCount: category.jobs_count,
       };
     });
+
     res.json({
       success: true,
       message: 'Categories retrieved',
