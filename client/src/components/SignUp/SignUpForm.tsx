@@ -2,7 +2,9 @@ import { Form, Link, redirect, useActionData } from 'react-router-dom';
 import { ActionFunctionArgs } from 'react-router-dom';
 import Input from '@/utils/Input';
 
-const SignUpForm: React.FC = () => {
+const SignUpForm: React.FC & {
+  action?: (args: ActionFunctionArgs) => Promise<unknown>;
+} = () => {
   const errors = useActionData();
 
   return (
@@ -72,7 +74,7 @@ const SignUpForm: React.FC = () => {
 
 export default SignUpForm;
 
-export async function action({ request }: ActionFunctionArgs) {
+SignUpForm.action = async function action({ request }: ActionFunctionArgs) {
   const data = await request.formData();
 
   //get the role from the url parameters
@@ -86,7 +88,6 @@ export async function action({ request }: ActionFunctionArgs) {
     email: data.get('email'),
     password: data.get('password'),
     role: role,
-    profilePicture: null,
   };
 
   try {
@@ -136,4 +137,4 @@ export async function action({ request }: ActionFunctionArgs) {
   } catch {
     return { global: 'A network error occurred. Please try again later.' };
   }
-}
+};
