@@ -44,7 +44,7 @@ export async function getJobs(req: Request, res: Response): Promise<void> {
     queryString += 'ORDER BY j.created_at DESC ';
   }
 
-  const limit = parseInt(process.env.PAGE_LIMIT || '10');
+  const limit = parseInt(process.env.PAGINATION_LIMIT || '10');
 
   const totalItemsQuery = await db.query(countQuery);
   const totalItems = parseInt(totalItemsQuery.rows[0].count);
