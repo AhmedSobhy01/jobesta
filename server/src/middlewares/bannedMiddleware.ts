@@ -8,7 +8,7 @@ export async function checkBanned(
   if (req.user!.is_banned) {
     res.status(403).json({
       status: false,
-      message: 'You Account is banned',
+      message: 'You are banned from the platform',
     });
 
     return;
