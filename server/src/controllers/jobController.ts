@@ -19,8 +19,8 @@ export async function getJobs(req: Request, res: Response): Promise<void> {
   let queryString =
     "SELECT j.id, j.status, j.budget, j.duration, j.title, j.description, j.created_at, client.first_name, client.last_name, client.username, client.profile_picture,c.id category_id,c.name ,c.description category_description FROM jobs j JOIN categories c ON c.id = j.category_id JOIN accounts client ON client.id = j.client_id WHERE status = 'open' ";
 
-  if (req.query.category)
-    queryString += `AND category_id = ${req.query.category} `;
+  if (Array.isArray(req.query.categories) && req.query.categories.length)
+    queryString += `AND category_id IN (${req.query.categories.join(',')}) `;
 
   if (req.query.minBudget)
     queryString += `AND budget >=  ${req.query.minBudget} `;
