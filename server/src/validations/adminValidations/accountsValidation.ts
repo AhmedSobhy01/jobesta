@@ -1,7 +1,7 @@
 import { body, param } from 'express-validator';
 import db from '../../db/db.js';
 
-export const createAccountValidationRules = [
+export const createOrUpdateAccountValidationRules = [
   body('firstName')
     .trim()
     .notEmpty()
@@ -109,14 +109,15 @@ export const banAccountValidationRules = [
     .withMessage('Account id must be a number')
     .custom(async (accountId, { req }) => {
       const accountsQuery = await db.query(
-        'SELECT id, is_banned from accounts WHERE id = $1',
+        'SELECT id, is_banned, role from accounts WHERE id = $1',
         [accountId],
       );
       if (accountsQuery.rowCount === 0) throw 'No account found with this id';
-      console.log(req.user.id);
       if (accountsQuery.rows[0].id === req.user.id)
         throw 'You cannot ban your own account';
       if (accountsQuery.rows[0].is_banned) throw 'Account is already banned';
+      if (accountsQuery.rows[0].role === 'admin')
+        throw 'You cannot ban an admin account';
       return true;
     }),
 ];
