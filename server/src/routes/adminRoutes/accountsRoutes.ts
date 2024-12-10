@@ -2,12 +2,14 @@ import { Router } from 'express';
 import {
   getAccounts,
   createAccount,
+  updateAccount,
   deleteAccount,
   banAccount,
   unbanAccount,
 } from '../../controllers/adminControllers/accountsController.js';
 import {
   createAccountValidationRules,
+  updateAccountValidationRules,
   deleteAccountValidationRules,
   banAccountValidationRules,
   unbanAccountValidationRules,
@@ -22,6 +24,13 @@ accountsRouter.post(
   createAccountValidationRules,
   validateRequest,
   createAccount,
+);
+
+accountsRouter.put(
+  '/:accountId',
+  updateAccountValidationRules,
+  validateRequest,
+  updateAccount,
 );
 
 accountsRouter.delete(

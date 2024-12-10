@@ -55,6 +55,24 @@ export async function createAccount(req: Request, res: Response) {
   }
 }
 
+export async function updateAccount(req: Request, res: Response) {
+  const { accountId } = req.params;
+  const { firstName, lastName, username, email, password } = req.body;
+
+  try {
+    await db.query(
+      'UPDATE accounts SET first_name = $1, last_name = $2, username = $3, email = $4, password = $5 WHERE id = $6',
+      [firstName, lastName, username, email, password, accountId],
+    );
+    res.status(200).json({ message: 'Account updated', status: true });
+  } catch (err) {
+    console.log(err);
+    res
+      .status(500)
+      .json({ message: 'Failed to update account', status: false });
+  }
+}
+
 export async function deleteAccount(req: Request, res: Response) {
   const { accountId } = req.params;
 

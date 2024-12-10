@@ -1,7 +1,7 @@
 import { body, param } from 'express-validator';
 import db from '../../db/db.js';
 
-export const createOrUpdateAccountValidationRules = [
+export const updateAccountValidationRules = [
   body('firstName')
     .trim()
     .notEmpty()
@@ -34,8 +34,9 @@ export const createOrUpdateAccountValidationRules = [
         [value],
       );
       if (query.rowCount !== null && query.rowCount > 0) {
-        return Promise.reject('Username already in use');
+        throw 'Username already in use';
       }
+      return true;
     }),
 
   body('email')
@@ -51,8 +52,9 @@ export const createOrUpdateAccountValidationRules = [
         value,
       ]);
       if (query.rowCount !== null && query.rowCount > 0) {
-        return Promise.reject('Email already in use');
+        throw 'Email already in use';
       }
+      return true;
     }),
 
   body('password')
@@ -67,13 +69,17 @@ export const createOrUpdateAccountValidationRules = [
     .withMessage(
       'Password must contain at least one uppercase letter, one lowercase letter, and one number',
     ),
+];
+
+export const createAccountValidationRules = [
+  ...updateAccountValidationRules,
 
   body('role')
     .trim()
     .notEmpty()
     .withMessage('Role is required')
     .isIn(['client', 'freelancer', 'admin'])
-    .withMessage('Role must be either client or freelancer'),
+    .withMessage('Role must be either client or freelancer or admin'),
 ];
 
 export const deleteAccountValidationRules = [
