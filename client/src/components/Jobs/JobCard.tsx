@@ -27,10 +27,7 @@ const JobCard: React.FC<{
           </div>
           <div className="hidden items-center justify-between gap-px mt-4  md:flex md:mt-0 md:flex-col md:items-end">
             <span className="text-xl">{job.budget}$</span>
-            <time
-              date-time="2023-02-20T07:12:44.113Z"
-              className="text-sm text-gray-400"
-            >
+            <time date-time={job.createdAt} className="text-sm text-gray-400">
               Posted {humanReadable(job.createdAt)}
             </time>
           </div>
