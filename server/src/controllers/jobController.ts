@@ -19,26 +19,34 @@ export async function getJobs(req: Request, res: Response): Promise<void> {
   let queryString =
     "SELECT j.id, j.status, j.budget, j.duration, j.title, j.description, j.created_at, client.first_name, client.last_name, client.username, client.profile_picture,c.id category_id,c.name ,c.description category_description FROM jobs j JOIN categories c ON c.id = j.category_id JOIN accounts client ON client.id = j.client_id WHERE status = 'open' ";
 
-  if (Array.isArray(req.query.categories) && req.query.categories.length)
+  let countQuery = "SELECT COUNT(*) FROM jobs WHERE status = 'open' ";
+
+  if (Array.isArray(req.query.categories) && req.query.categories.length) {
     queryString += `AND category_id IN (${req.query.categories.join(',')}) `;
+    countQuery += `AND category_id IN (${req.query.categories.join(',')}) `;
+  }
 
-  if (req.query.minBudget)
+  if (req.query.minBudget) {
     queryString += `AND budget >=  ${req.query.minBudget} `;
+    countQuery += `AND budget >=  ${req.query.minBudget} `;
+  }
 
-  if (req.query.maxBudget)
+  if (req.query.maxBudget) {
     queryString += `AND budget <=  ${req.query.maxBudget} `;
+    countQuery += `AND budget <=  ${req.query.maxBudget} `;
+  }
 
   if (req.query.sortBy) {
     queryString += `ORDER BY ${req.query.sortBy} `;
 
     if (req.query.sortOrder) queryString += `${req.query.sortOrder} `;
+  } else {
+    queryString += 'ORDER BY created_at DESC ';
   }
 
   const limit = parseInt(process.env.PAGE_LIMIT || '10');
 
-  const totalItemsQuery = await db.query(
-    "SELECT COUNT(*) FROM jobs WHERE status = 'open'",
-  );
+  const totalItemsQuery = await db.query(countQuery);
   const totalItems = parseInt(totalItemsQuery.rows[0].count);
   const totalPages = Math.ceil(totalItems / limit);
 
