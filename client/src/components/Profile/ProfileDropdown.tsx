@@ -15,6 +15,7 @@ const ProfileDropdown: React.FC = () => {
             <p className="text-sm font-medium text-green-700">
               {userData.username}
             </p>
+
             <p className="text-sm text-gray-500 dark:text-gray-200">
               {userData.email}
             </p>
