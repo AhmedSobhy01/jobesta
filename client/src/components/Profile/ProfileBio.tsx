@@ -60,7 +60,11 @@ const ProfileBio: React.FC<ProfileBioData> = ({
   const [isEditingBio, setIsEditingBio] = useState(false);
 
   useEffect(() => {
-    setNewBio(anyUserData.freelancer.bio);
+    if (anyUserData.freelancer.bio) {
+      setNewBio(anyUserData.freelancer.bio);
+    } else {
+      setNewBio('');
+    }
   }, [anyUserData]);
 
   const handleChangeBio = () => {
