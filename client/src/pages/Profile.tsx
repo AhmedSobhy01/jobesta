@@ -1,5 +1,4 @@
 import ErrorModule from '@/components/ErrorModule';
-//import profilePic from '@/assets/profile-pic.png';
 import FreelancerContext from '@/store/freelancerContext';
 import UserContext from '@/store/userContext';
 import React, { useContext, useEffect, useState } from 'react';
@@ -44,6 +43,8 @@ const ProfilePage: React.FC & {
   //some states needed
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+
   const [activeComp, setActiveComp] = useState({
     jobsActive: true,
     previousWorkActive: false,
@@ -84,6 +85,7 @@ const ProfilePage: React.FC & {
     previousWork: anyUserData.freelancer?.previousWork,
     skills: anyUserData.freelancer?.skills,
   };
+
 
   useEffect(() => {
     if (
@@ -267,6 +269,7 @@ const ProfilePage: React.FC & {
     });
   }
 
+
   const handleEditErrorClose = () => {
     setError(false);
   };
@@ -303,6 +306,7 @@ const ProfilePage: React.FC & {
           setError={setError}
           setErrorMessage={setErrorMessage}
         />
+
       )}
       <div className="max-w-6xl h-screen mx-auto mt-6 p-4">
         <div className="relative w-full bg-gradient-to-t from-green-200 to-green-500 h-48 rounded-lg shadow-lg">
@@ -312,6 +316,7 @@ const ProfilePage: React.FC & {
             setErrorMessage={setErrorMessage}
           />
         </div>
+
 
         <div className="mt-12 bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md flex flex-col md:flex-row gap-6 items-center">
           <div className="w-full md:w-1/3 text-left">
