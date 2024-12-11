@@ -1,8 +1,9 @@
 import { createContext, useCallback, useState } from 'react';
 
 interface IPreviousWork {
-  title: string;
-  description: number;
+  order?: number;
+  title?: string;
+  description?: string;
   url?: string;
 }
 
@@ -10,14 +11,14 @@ interface FreelancerContextType {
   freelancerId?: string;
   balance?: number;
   bio?: string;
-  previousWork?: [IPreviousWork];
-  skills?: [string];
+  previousWork?: IPreviousWork[];
+  skills?: string[];
   setFreelancer: (newFreelancer: {
     freelancerId?: string;
     balance?: number;
     bio?: string;
-    previousWork?: [IPreviousWork];
-    skills?: [string];
+    previousWork?: IPreviousWork[];
+    skills?: string[];
   }) => void;
 }
 
@@ -38,8 +39,8 @@ export const FreelancerContextProvider: React.FC<{
     freelancerId?: string;
     balance?: number;
     bio?: string;
-    previousWork?: [IPreviousWork];
-    skills?: [string];
+    previousWork?: IPreviousWork[];
+    skills?: string[];
   }>({
     freelancerId: undefined,
     balance: undefined,
@@ -53,8 +54,8 @@ export const FreelancerContextProvider: React.FC<{
       freelancerId?: string;
       balance?: number;
       bio?: string;
-      previousWork?: [IPreviousWork];
-      skills?: [string];
+      previousWork?: IPreviousWork[];
+      skills?: string[];
     }) => {
       setFreelancerState(newFreelancer);
     },

@@ -5,7 +5,7 @@ interface UserContextType {
   accountId: string | null;
   firstName: string | null;
   lastName: string | null;
-  username: string | null;
+  username?: string;
   email: string | null;
   role: string | null;
   isBanned: string | null;
@@ -16,7 +16,7 @@ interface UserContextType {
     accountId: string | null;
     firstName: string | null;
     lastName: string | null;
-    username: string | null;
+    username?: string;
     email: string | null;
     role: string | null;
     isBanned: string | null;
@@ -31,7 +31,7 @@ const UserContext = createContext<UserContextType>({
   accountId: null,
   firstName: null,
   lastName: null,
-  username: null,
+  username: undefined,
   email: null,
   role: null,
   isBanned: null,
@@ -48,7 +48,7 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
     accountId: string | null;
     firstName: string | null;
     lastName: string | null;
-    username: string | null;
+    username?: string;
     email: string | null;
     role: string | null;
     isBanned: string | null;
@@ -59,7 +59,7 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
     accountId: null,
     firstName: null,
     lastName: null,
-    username: null,
+    username: undefined,
     email: null,
     role: null,
     isBanned: null,
@@ -73,7 +73,7 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
       accountId: string | null;
       firstName: string | null;
       lastName: string | null;
-      username: string | null;
+      username?: string;
       email: string | null;
       role: string | null;
       isBanned: string | null;

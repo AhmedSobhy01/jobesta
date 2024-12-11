@@ -1,0 +1,189 @@
+import { getAuthJwtToken, getAuthRefreshToken } from '@/utils/auth';
+import { FormEventHandler, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+interface IPreviousWork {
+  order: number;
+  title: string;
+  description: string;
+  url?: string;
+}
+
+interface ProfilePictureData {
+  anyUserData: {
+    user: {
+      accountId: string | null;
+      firstName: string | null;
+      lastName: string | null;
+      username?: string;
+      email: string | null;
+      role: string | null;
+      isBanned: string | null;
+      profilePicture?: string;
+      jwtToken: string | null;
+      refreshToken: string | null;
+    };
+    freelancer: {
+      balance?: number;
+      bio?: string;
+      previousWork?: IPreviousWork[];
+      skills?: string[];
+    };
+  };
+  setError: React.Dispatch<React.SetStateAction<boolean>>;
+  setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const ProfilePicture: React.FC<ProfilePictureData> = ({
+  anyUserData,
+  setError,
+  setErrorMessage,
+}) => {
+  const navigate = useNavigate();
+  const [isEditingPic, setIsEditingPic] = useState(false);
+  const [pic, setPic] = useState<File | null>(null);
+
+  const handleSubmit: FormEventHandler<HTMLFormElement> = (
+    e: React.FormEvent<HTMLFormElement>,
+  ) => {
+    e.preventDefault();
+
+    handleProfilePicChange();
+  };
+
+  const handleProfilePicChange = async () => {
+    setIsEditingPic(false);
+    const file = pic;
+
+    console.log(file);
+    if (file) {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const jwtToken = getAuthJwtToken();
+      const refreshToken = getAuthRefreshToken();
+
+      if (!refreshToken || refreshToken === 'EXPIRED') {
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('refreshTokenExpiration');
+        localStorage.removeItem('jwtToken');
+        localStorage.removeItem('jwtTokenExpiration');
+        navigate('/login');
+      }
+
+      try {
+        let newJwtToken = jwtToken;
+        if (!jwtToken || jwtToken === 'EXPIRED') {
+          localStorage.removeItem('jwtToken');
+          localStorage.removeItem('jwtTokenExpiration');
+
+          const authData = { refreshToken };
+          const response = await fetch(
+            `${import.meta.env.VITE_API_URL}/auth/refresh`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(authData),
+            },
+          );
+
+          const resData = await response.json();
+
+          if (!response.ok) {
+            setError(true);
+            setErrorMessage(resData.message);
+            return;
+          }
+
+          newJwtToken = resData.data.jwtToken;
+          if (newJwtToken) localStorage.setItem('jwtToken', newJwtToken);
+
+          const jwtTokenExpiration = new Date();
+          jwtTokenExpiration.setHours(jwtTokenExpiration.getHours() + 1);
+          localStorage.setItem(
+            'jwtTokenExpiration',
+            jwtTokenExpiration.toISOString(),
+          );
+        }
+
+        const response = await fetch(
+          import.meta.env.VITE_API_URL + '/account/me/profile-picture',
+          {
+            method: 'PUT',
+            headers: {
+              Authorization: 'Bearer ' + newJwtToken,
+            },
+            body: formData,
+          },
+        );
+
+        const resData = await response.json();
+
+        if (!resData.status) {
+          setError(true);
+          setErrorMessage(resData.message);
+          return;
+        }
+
+        navigate('/');
+      } catch {
+        setError(true);
+        setErrorMessage('A network error occurred. Please try again later.');
+      }
+    }
+    //setNewProfilePic('');
+    navigate('/');
+  };
+
+  return (
+    <>
+      <div className="absolute top-20 left-10 w-40 h-40 rounded-full overflow-hidden border-4 border-white dark:border-gray-900 group">
+        <img
+          src={
+            import.meta.env.VITE_API_URL + '/' + anyUserData.user.profilePicture
+          }
+          alt="Profile Picture"
+          className="w-full h-full object-cover cursor-pointer"
+        />
+
+        <div
+          onClick={() => setIsEditingPic(true)}
+          className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300 cursor-pointer"
+        >
+          <p className="text-white font-semibold">Edit Picture</p>
+        </div>
+      </div>
+
+      {isEditingPic && (
+        <div className="absolute bottom-2 left-0 w-fit bg-white bg-opacity-80 p-2 rounded-lg flex justify-center">
+          <form
+            action="put"
+            encType="multipart/form-data"
+            onSubmit={handleSubmit}
+          >
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setPic(e.target.files![0])}
+              className="cursor-pointer"
+            />
+            <button
+              type="submit"
+              className="ml-4 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+            >
+              Submit
+            </button>
+            <button
+              onClick={() => setIsEditingPic(false)}
+              className="ml-4 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+            >
+              Cancel
+            </button>
+          </form>
+        </div>
+      )}
+    </>
+  );
+};
+
+export default ProfilePicture;
