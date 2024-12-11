@@ -35,7 +35,7 @@ export const updateAccountValidationRules = [
         throw 'Username cannot be "me"';
       }
       if (value === 'balance') {
-       throw 'Username cannot be "balance"';
+        throw 'Username cannot be "balance"';
       }
       return true;
     })
