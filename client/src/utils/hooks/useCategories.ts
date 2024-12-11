@@ -36,7 +36,6 @@ const useCategories = () => {
     fetchData();
 
     return () => {
-      console.log('Aborting fetch');
       controller.abort();
     };
   }, []);
