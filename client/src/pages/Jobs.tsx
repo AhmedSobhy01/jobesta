@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLoaderData, useNavigate, useSearchParams } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faSliders } from '@fortawesome/free-solid-svg-icons';
@@ -6,41 +6,67 @@ import MultiRangeSlider from '@/components/Common/MultiRangeSlider';
 import ErrorModule from '@/components/ErrorModule';
 import JobCard from '@/components/Jobs/JobCard';
 import Pagination from '@/components/Common/Pagination';
+import { useCategories } from '@/utils/hooks/useCategories';
+import CategoryLoadingSkeleton from '@/components/Skeletons/CategoryLoadingSkeleton';
 
 const MAX_BUDGET = 10000;
 
 function Jobs() {
   const [isFiltersDropdownOpen, setIsFiltersDropdownOpen] = useState(false);
 
-  const navigate = useNavigate();
-  const loaderData = useLoaderData();
+  const {
+    jobs: { jobs, pagination },
+  } = useLoaderData() as {
+    jobs: { jobs: Job[]; pagination: PaginationData };
+  };
 
+  const {
+    categories,
+    loading: categoriesLoading,
+    error: categoriesError,
+  } = useCategories();
+
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   const selectedSortOption = useRef('newest');
-  const filters = useRef({
-    page: searchParams.get('page') || '1',
-    categories: searchParams.get('categories') || '',
+  const [filters, setFilters] = useState({
+    categories: (searchParams.get('categories') || '')
+      .split(',')
+      .filter(Boolean)
+      .join(','),
     minBudget: parseInt(searchParams.get('minBudget') || '0'),
     maxBudget: parseInt(searchParams.get('maxBudget') || MAX_BUDGET.toString()),
     sortBy: searchParams.get('sortBy') || 'created_at',
     sortOrder: searchParams.get('sortOrder') || 'desc',
   });
 
+  useEffect(() => {
+    setFilters({
+      categories: searchParams.get('categories') || '',
+      minBudget: parseInt(searchParams.get('minBudget') || '0'),
+      maxBudget: parseInt(
+        searchParams.get('maxBudget') || MAX_BUDGET.toString(),
+      ),
+      sortBy: searchParams.get('sortBy') || 'created_at',
+      sortOrder: searchParams.get('sortOrder') || 'desc',
+    });
+  }, [searchParams]);
+
   const handleFiltersChange = useCallback(
     (newFilters: Record<string, string | number | undefined>) => {
-      const updatedFilters = { ...filters.current, ...newFilters };
+      const updatedFilters = { ...filters, ...newFilters };
 
       if (
         Object.keys(updatedFilters).every(
           (key) =>
             updatedFilters[key as keyof typeof updatedFilters] ===
-            filters.current[key as keyof typeof updatedFilters],
+            filters[key as keyof typeof updatedFilters],
         )
       )
         return;
 
-      filters.current = updatedFilters;
+      setFilters(updatedFilters);
 
       const updatedSearchParams = new URLSearchParams({
         page: '1',
@@ -51,9 +77,7 @@ function Jobs() {
         sortOrder: updatedFilters.sortOrder,
       });
 
-      navigate(`/jobs?${updatedSearchParams.toString()}`, {
-        replace: true,
-      });
+      navigate(`/jobs?${updatedSearchParams.toString()}`);
     },
     [filters, navigate],
   );
@@ -78,13 +102,12 @@ function Jobs() {
     }
 
     selectedSortOption.current = sortOption;
-    handleFiltersChange({ sortBy, sortOrder, page: '1' });
+    handleFiltersChange({ sortBy, sortOrder });
   };
 
   const handleCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const category = event.target.id.split('-')[1];
-
-    const updatedCategories = filters.current.categories.split(',');
+    const updatedCategories = filters.categories.split(',').filter(Boolean);
 
     if (updatedCategories.includes(category)) {
       updatedCategories.splice(updatedCategories.indexOf(category), 1);
@@ -94,7 +117,6 @@ function Jobs() {
 
     handleFiltersChange({
       categories: updatedCategories.join(','),
-      page: '1',
     });
   };
 
@@ -103,31 +125,19 @@ function Jobs() {
       handleFiltersChange({
         minBudget: value.min,
         maxBudget: value.max,
-        page: '1',
       });
     },
     [handleFiltersChange],
   );
 
-  if (loaderData.status === false) {
+  if (categoriesError) {
     return (
       <ErrorModule
         onClose={() => navigate('/')}
-        errorMessage={loaderData.error}
+        errorMessage={categoriesError}
       />
     );
   }
-
-  const {
-    jobs: { jobs, pagination },
-    categories,
-  } = loaderData as {
-    jobs: {
-      jobs: Job[];
-      pagination: PaginationData;
-    };
-    categories: JobCategory[];
-  };
 
   return (
     <div className="py-10">
@@ -163,7 +173,10 @@ function Jobs() {
 
                 <div>
                   <h3 className="text-xl font-medium ">Category</h3>
+
                   <ul className="grid gap-3 mt-6">
+                    {categoriesLoading && <CategoryLoadingSkeleton />}
+
                     {categories.map((category) => (
                       <li className="text-gray-500" key={category.id}>
                         <label
@@ -175,9 +188,9 @@ function Jobs() {
                             id={`category-${category.id}`}
                             className="w-5 h-5 border-gray-300 rounded form-checkbox text-emerald-500 focus:ring focus:ring-offset-0 focus:ring-opacity-50"
                             onChange={handleCategoryChange}
-                            checked={filters.current.categories.includes(
-                              category.id.toString(),
-                            )}
+                            checked={filters.categories
+                              .split(',')
+                              .includes(category.id.toString())}
                           />
                           <div>
                             {category.name}
@@ -196,8 +209,8 @@ function Jobs() {
                   <MultiRangeSlider
                     min={0}
                     max={10000}
-                    initialMin={filters.current.minBudget}
-                    initialMax={filters.current.maxBudget}
+                    initialMin={filters.minBudget}
+                    initialMax={filters.maxBudget}
                     onChange={onBudgetChange}
                     className="mt-4"
                   />
@@ -265,25 +278,16 @@ Jobs.loader = async ({ request }: { request: Request }) => {
       `${import.meta.env.VITE_API_URL}/jobs?${filteringSearchParams.toString()}`,
     );
 
-    const categoriesResponse = await fetch(
-      import.meta.env.VITE_API_URL + '/categories',
-    );
-
-    if (!jobsResponse.ok || !categoriesResponse.ok) {
+    if (!jobsResponse.ok) {
       return {
         status: false,
-        error:
-          (await jobsResponse.json())['message'] ||
-          (await categoriesResponse.json())['message'],
+        error: (await jobsResponse.json()).message || 'Error fetching jobs',
       };
     }
 
     const jobsData = await jobsResponse.json();
-    const categoriesData = await categoriesResponse.json();
-
     return {
       jobs: jobsData.data,
-      categories: categoriesData.data.categories,
     };
   } catch {
     return {
