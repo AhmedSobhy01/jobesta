@@ -40,6 +40,15 @@ export const registerValidationRules = [
     .isAlphanumeric()
     .withMessage('Username must contain only letters and numbers')
     .custom(async (value) => {
+      if (value === 'me') {
+        return Promise.reject('Username cannot be "me"');
+      }
+      if (value === 'balance') {
+        return Promise.reject('Username cannot be "balance"');
+      }
+      return true;
+    })
+    .custom(async (value) => {
       const query = await db.query(
         'SELECT * FROM accounts WHERE username = $1',
         [value],
