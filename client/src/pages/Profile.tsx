@@ -114,8 +114,6 @@ const ProfilePage: React.FC & {
       return;
     }
 
-    console.log(newPreviousWork);
-
     handleUpdateFreelancerData({ newPreviousWork });
 
     setError(false);
@@ -123,6 +121,7 @@ const ProfilePage: React.FC & {
 
   async function handleUpdateFreelancerData(data: {
     newBio?: string;
+    updatingBio?: boolean;
     newPreviousWork?: IPreviousWork;
     newSkill?: string;
   }) {
@@ -156,10 +155,11 @@ const ProfilePage: React.FC & {
     ];
 
     let newbio = freelancerData.bio;
-    if (data.newBio === '') {
+
+    if (data.updatingBio && data.newBio === '') {
       newbio = '';
     }
-    if (data.newBio !== '') {
+    if (data.updatingBio && data.newBio !== '') {
       newbio = data.newBio;
     }
 

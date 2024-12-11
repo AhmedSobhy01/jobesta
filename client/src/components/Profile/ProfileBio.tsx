@@ -39,6 +39,7 @@ interface ProfileBioData {
   setError: React.Dispatch<React.SetStateAction<boolean>>;
   handleUpdateFreelancerData: (data: {
     newBio?: string;
+    updatingBio?: boolean;
     newPreviousWork?: IPreviousWork;
     newSkill?: string;
   }) => Promise<void>;
@@ -63,7 +64,8 @@ const ProfileBio: React.FC<ProfileBioData> = ({
   }, [anyUserData]);
 
   const handleChangeBio = () => {
-    handleUpdateFreelancerData({ newBio });
+    const updatingBio = true;
+    handleUpdateFreelancerData({ newBio, updatingBio });
     setIsEditingBio(false);
     setError(false);
   };
