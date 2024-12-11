@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useLoaderData, useNavigate, useSearchParams } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faSliders } from '@fortawesome/free-solid-svg-icons';
@@ -15,31 +15,47 @@ function Jobs() {
   const navigate = useNavigate();
   const loaderData = useLoaderData();
 
-  const selectedSortOption = useRef('newest');
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
-  const isFirstRender = useRef(true);
+  const selectedSortOption = useRef('newest');
+  const filters = useRef({
+    page: searchParams.get('page') || '1',
+    categories: searchParams.get('categories') || '',
+    minBudget: parseInt(searchParams.get('minBudget') || '0'),
+    maxBudget: parseInt(searchParams.get('maxBudget') || MAX_BUDGET.toString()),
+    sortBy: searchParams.get('sortBy') || 'created_at',
+    sortOrder: searchParams.get('sortOrder') || 'desc',
+  });
 
   const handleFiltersChange = useCallback(
     (newFilters: Record<string, string | number | undefined>) => {
-      const oldFilters = new URLSearchParams(searchParams);
-      const updatedParams = new URLSearchParams(searchParams);
+      const updatedFilters = { ...filters.current, ...newFilters };
 
-      Object.entries(newFilters).forEach(([key, value]) => {
-        const currentValue = updatedParams.get(key);
-        if (value === undefined || value === '') {
-          if (currentValue !== null) {
-            updatedParams.delete(key);
-          }
-        } else if (currentValue !== value.toString()) {
-          updatedParams.set(key, value.toString());
-        }
+      if (
+        Object.keys(updatedFilters).every(
+          (key) =>
+            updatedFilters[key as keyof typeof updatedFilters] ===
+            filters.current[key as keyof typeof updatedFilters],
+        )
+      )
+        return;
+
+      filters.current = updatedFilters;
+
+      const updatedSearchParams = new URLSearchParams({
+        page: '1',
+        categories: updatedFilters.categories,
+        minBudget: updatedFilters.minBudget.toString(),
+        maxBudget: updatedFilters.maxBudget.toString(),
+        sortBy: updatedFilters.sortBy,
+        sortOrder: updatedFilters.sortOrder,
       });
 
-      if (oldFilters.toString() !== updatedParams.toString())
-        setSearchParams(updatedParams);
+      navigate(`/jobs?${updatedSearchParams.toString()}`, {
+        replace: true,
+      });
     },
-    [searchParams, setSearchParams],
+    [filters, navigate],
   );
 
   const handleSortChange = (sortOption: string) => {
@@ -62,21 +78,28 @@ function Jobs() {
     }
 
     selectedSortOption.current = sortOption;
+    handleFiltersChange({ sortBy, sortOrder, page: '1' });
+  };
+
+  const handleCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const category = event.target.id.split('-')[1];
+
+    const updatedCategories = filters.current.categories.split(',');
+
+    if (updatedCategories.includes(category)) {
+      updatedCategories.splice(updatedCategories.indexOf(category), 1);
+    } else {
+      updatedCategories.push(category);
+    }
 
     handleFiltersChange({
-      sortBy,
-      sortOrder,
+      categories: updatedCategories.join(','),
       page: '1',
     });
   };
 
   const onBudgetChange = useCallback(
     (value: { min: number; max: number }) => {
-      if (isFirstRender.current) {
-        isFirstRender.current = false;
-        return;
-      }
-
       handleFiltersChange({
         minBudget: value.min,
         maxBudget: value.max,
@@ -85,12 +108,6 @@ function Jobs() {
     },
     [handleFiltersChange],
   );
-
-  useEffect(() => {
-    return () => {
-      isFirstRender.current = true;
-    };
-  }, []);
 
   if (loaderData.status === false) {
     return (
@@ -157,32 +174,10 @@ function Jobs() {
                             type="checkbox"
                             id={`category-${category.id}`}
                             className="w-5 h-5 border-gray-300 rounded form-checkbox text-emerald-500 focus:ring focus:ring-offset-0 focus:ring-opacity-50"
-                            onChange={(e) => {
-                              const selectedCategories =
-                                searchParams.get('categories')?.split(',') ||
-                                [];
-                              const updatedCategories: string[] = e.target
-                                .checked
-                                ? [
-                                    ...selectedCategories,
-                                    category.id.toString(),
-                                  ]
-                                : selectedCategories.filter(
-                                    (id: string) =>
-                                      id !== category.id.toString(),
-                                  );
-                              handleFiltersChange({
-                                categories: updatedCategories.length
-                                  ? updatedCategories.join(',')
-                                  : undefined,
-                              });
-                            }}
-                            checked={
-                              searchParams
-                                .get('categories')
-                                ?.split(',')
-                                .includes(category.id.toString()) || false
-                            }
+                            onChange={handleCategoryChange}
+                            checked={filters.current.categories.includes(
+                              category.id.toString(),
+                            )}
                           />
                           <div>
                             {category.name}
@@ -201,10 +196,8 @@ function Jobs() {
                   <MultiRangeSlider
                     min={0}
                     max={10000}
-                    initialMin={parseInt(searchParams.get('minBudget') || '0')}
-                    initialMax={parseInt(
-                      searchParams.get('maxBudget') || MAX_BUDGET.toString(),
-                    )}
+                    initialMin={filters.current.minBudget}
+                    initialMax={filters.current.maxBudget}
                     onChange={onBudgetChange}
                     className="mt-4"
                   />
