@@ -37,7 +37,9 @@ export async function updateAccount(
       [firstName, lastName, username, email, userId],
     );
 
-    res.status(201).json({ status: true, message: 'Updated account' });
+    res
+      .status(201)
+      .json({ status: true, message: 'Updated account', data: { username } });
   } catch {
     res.status(500).json({
       status: false,
