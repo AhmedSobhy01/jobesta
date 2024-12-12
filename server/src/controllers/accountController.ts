@@ -53,7 +53,9 @@ export async function updateAccount(
       ]);
     }
 
-    res.status(201).json({ status: true, message: 'Updated account' });
+    res
+      .status(201)
+      .json({ status: true, message: 'Updated account', data: { username } });
   } catch {
     res.status(500).json({
       status: false,
@@ -102,36 +104,40 @@ export async function getUserByUsername(
 ): Promise<void> {
   const { username } = req.params;
 
-  const userDataQuery = await db.query(
-    'SELECT * FROM accounts WHERE username = $1',
-    [username],
-  );
+  try {
+    const userDataQuery = await db.query(
+      'SELECT * FROM accounts WHERE username = $1',
+      [username],
+    );
 
-  if (userDataQuery.rowCount === 0) {
-    res.status(404).json({
-      status: false,
-      message: 'User not found',
+    if (userDataQuery.rowCount === 0) {
+      res.status(404).json({
+        status: false,
+        message: 'User not found',
+      });
+      return;
+    }
+
+    const userData = userDataQuery.rows[0];
+
+    res.status(200).json({
+      status: true,
+      message: 'User Found',
+      data: {
+        firstName: userData!.first_name,
+        lastName: userData!.last_name,
+        username: userData!.username,
+        role: userData!.role,
+        isBanned: userData!.is_banned,
+        profilePicture:
+          userData!.profile_picture ||
+          'https://ui-avatars.com/api/?name=' +
+            userData!.first_name +
+            '+' +
+            userData!.last_name,
+      },
     });
-    return;
+  } catch {
+    res.status(500).json({ status: false, message: 'Error fetching user' });
   }
-
-  const userData = userDataQuery.rows[0];
-
-  res.status(200).json({
-    status: true,
-    message: 'User Found',
-    data: {
-      firstName: userData!.first_name,
-      lastName: userData!.last_name,
-      username: userData!.username,
-      role: userData!.role,
-      isBanned: userData!.is_banned,
-      profilePicture:
-        userData!.profile_picture ||
-        'https://ui-avatars.com/api/?name=' +
-          userData!.first_name +
-          '+' +
-          userData!.last_name,
-    },
-  });
 }

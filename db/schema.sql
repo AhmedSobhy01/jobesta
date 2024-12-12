@@ -227,6 +227,7 @@ ALTER TABLE "jobs" ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id"
 
 ALTER TABLE "jobs" ADD FOREIGN KEY ("client_id") REFERENCES "accounts" ("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
+
 INSERT INTO "accounts" ("first_name", "last_name", "username", "email", "password", "role") 
 VALUES ('admin','1','admin','admin@example.com','$2b$10$xNb2FgHuAHY/AiaHdsdpVevhaQwYFbhbnNrXICSqCjDSE71fbnUgK','admin');
 

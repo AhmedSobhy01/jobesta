@@ -30,13 +30,22 @@ export const updateAccountValidationRules = [
     .withMessage('Username must not exceed 255 characters')
     .isAlphanumeric()
     .withMessage('Username must contain only letters and numbers')
+    .custom(async (value) => {
+      if (value === 'me') {
+        throw 'Username cannot be "me"';
+      }
+      if (value === 'balance') {
+        throw 'Username cannot be "balance"';
+      }
+      return true;
+    })
     .custom(async (value, { req }) => {
       const query = await db.query(
         'SELECT * FROM accounts WHERE username = $1 AND id != $2',
         [value, req.user!.id],
       );
       if (query.rowCount !== null && query.rowCount > 0) {
-        return Promise.reject('Username already in use');
+        throw 'Username already in use';
       }
     }),
 
@@ -52,7 +61,7 @@ export const updateAccountValidationRules = [
         [value, req.user!.id],
       );
       if (query.rowCount !== null && query.rowCount > 0) {
-        return Promise.reject('Email already in use');
+        throw 'Email already in use';
       }
     }),
 
