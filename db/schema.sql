@@ -8,16 +8,13 @@ CREATE TYPE "job_status" AS ENUM (
   'open',
   'in_progress',
   'completed',
-  'closed',
-  'cancelled'
+  'closed'
 );
 
 CREATE TYPE "proposal_status" AS ENUM (
   'pending',
-  'in_progress',
-  'rejected',
-  'completed',
-  'cancelled'
+  'accepted',
+  'rejected'
 );
 
 CREATE TYPE "milestone_status" AS ENUM (
