@@ -35,7 +35,7 @@ export interface IMilestone {
 
 export interface IProposal {
   jobId?: string;
-  freelancer_id?: string;
+  freelancerId?: string;
   freelancer?: IAccountDisplay;
   coverLetter: string;
   status: string;
@@ -71,4 +71,5 @@ export interface IAccountDisplay {
   lastName: string;
   username: string;
   profilePicture?: string;
+  freelancerId?: string;
 }

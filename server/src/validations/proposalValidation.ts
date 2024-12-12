@@ -65,6 +65,9 @@ export const createProposalValidationRules = [
       if (jobQuery.rows.length === 0) {
         throw new Error('Job does not exist');
       }
+      if (jobQuery.rows[0].status !== 'open') {
+        throw new Error('Job is not open');
+      }
 
       return true;
     })
@@ -122,6 +125,10 @@ export const deleteProposalValidationRules = [
 
       if (proposalQuery.rows.length === 0) {
         throw new Error('Proposal does not exist');
+      }
+
+      if (proposalQuery.rows[0].status === 'accepted') {
+        throw new Error('Proposal cannot be deleted');
       }
 
       return true;

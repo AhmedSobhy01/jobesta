@@ -1,4 +1,4 @@
-import { body, query } from 'express-validator';
+import { body, param, query } from 'express-validator';
 import db from '../db/db.js';
 
 export const createJobsValidationRules = [
@@ -108,3 +108,39 @@ export const getJobsValidationRules = [
       return true;
     }),
 ];
+
+export const acceptProposalValidationRules = [
+  param('id')
+    .notEmpty()
+    .isNumeric()
+    .withMessage('Job id must be a number')
+    .custom(async (id, { req }) => {
+      const jobQuery = await db.query(
+        'SELECT * FROM jobs WHERE id = $1 AND client_id = $2 AND status = $3',
+        [id, req.user!.id, 'open'],
+      );
+
+      if (jobQuery.rows.length === 0) {
+        throw new Error('Job does not exist');
+      }
+      return true;
+    }),
+
+  param('freelancerId')
+    .notEmpty()
+    .isNumeric()
+    .withMessage('Freelancer id must be a number')
+    .custom(async (freelancerId, { req }) => {
+      const jobQuery = await db.query(
+        'SELECT * FROM proposals WHERE job_id = $1 AND freelancer_id = $2 AND status = $3',
+        [req.params!.id, freelancerId, 'pending'],
+      );
+
+      if (jobQuery.rows.length === 0) {
+        throw new Error('Proposal does not exist');
+      }
+      return true;
+    }),
+];
+
+export const rejectProposalValidationRules = [...acceptProposalValidationRules];

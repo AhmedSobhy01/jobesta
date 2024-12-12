@@ -156,7 +156,8 @@ export async function getJobById(req: Request, res: Response) {
       job.myJob = true;
 
       const proposalQuery = await db.query(
-        `SELECT p.job_id, p.freelancer_id, p.status, p.cover_letter, p.created_at, a.username, a.first_name, a.last_name, a.profile_picture, m.order milestone_order, m.status milestone_status, m.name, m.duration,m.amount  FROM proposals p 
+        `SELECT p.job_id, p.freelancer_id, p.status, p.cover_letter, p.created_at, a.username, a.first_name, a.last_name, a.profile_picture, m.order milestone_order, m.status milestone_status, m.name, m.duration,m.amount  
+        FROM proposals p 
         JOIN jobs j ON p.job_id = j.id 
         JOIN freelancers f ON p.freelancer_id = f.id
         JOIN milestones m ON m.job_id = j.id and m.freelancer_id = f.id 
@@ -177,6 +178,7 @@ export async function getJobById(req: Request, res: Response) {
               username: proposal.username,
               firstName: proposal.first_name,
               lastName: proposal.last_name,
+              freelancerId: proposal.freelancer_id,
               profilePicture:
                 proposal.profile_picture ||
                 'https://ui-avatars.com/api/?name=' +
@@ -211,5 +213,49 @@ export async function getJobById(req: Request, res: Response) {
     });
   } catch {
     res.status(500).json({ status: false, message: 'Error retrieving job' });
+  }
+}
+
+export async function acceptProposal(req: Request, res: Response) {
+  const jobId = req.params.id;
+  const freelancerId = req.params.freelancerId;
+  try {
+    await db.query('UPDATE jobs SET status = $1 WHERE id = $2', [
+      'in_progress',
+      jobId,
+    ]);
+
+    await db.query(
+      'UPDATE proposals SET status = $1 WHERE job_id = $2 AND freelancer_id = $3',
+      ['accepted', jobId, freelancerId],
+    );
+
+    await db.query(
+      'UPDATE proposals SET status = $1 WHERE job_id = $2 AND freelancer_id != $3',
+      ['rejected', jobId, freelancerId],
+    );
+
+    res.json({ status: true, message: 'Proposal accepted' });
+  } catch {
+    res
+      .status(500)
+      .json({ status: false, message: 'Error accepting proposal' });
+  }
+}
+
+export async function rejectProposal(req: Request, res: Response) {
+  const jobId = req.params.id;
+  const freelancerId = req.params.freelancerId;
+  try {
+    await db.query(
+      'UPDATE proposals SET status = $1 WHERE job_id = $2 AND freelancer_id = $3',
+      ['rejected', jobId, freelancerId],
+    );
+
+    res.json({ status: true, message: 'Proposal rejected' });
+  } catch {
+    res
+      .status(500)
+      .json({ status: false, message: 'Error rejecting proposal' });
   }
 }
