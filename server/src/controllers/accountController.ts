@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
 import { promises as fs } from 'fs';
 import db from '../db/db.js';
+import bcrypt from 'bcrypt';
 
 export async function getAccount(req: Request, res: Response): Promise<void> {
   const userData = req.user;
@@ -42,9 +43,20 @@ export async function updateAccount(
       [firstName, lastName, username, email, userId],
     );
 
-    res
+    if (req.body.password) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(req.body.password, salt);
+
+      await db.query('UPDATE accounts SET password = $1 WHERE id = $2', [
+        hashedPassword,
+        userId,
+      ]);
+    }
+
+     res
       .status(201)
       .json({ status: true, message: 'Updated account', data: { username } });
+    
   } catch {
     res.status(500).json({
       status: false,

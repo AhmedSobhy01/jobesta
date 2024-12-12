@@ -203,7 +203,7 @@ ALTER TABLE "previous_works" ADD FOREIGN KEY ("freelancer_id") REFERENCES "freel
 
 ALTER TABLE "notifications" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
-ALTER TABLE "freelancers" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "freelancers" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE "proposals" ADD FOREIGN KEY ("job_id") REFERENCES "jobs" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
