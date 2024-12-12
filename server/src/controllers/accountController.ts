@@ -138,6 +138,6 @@ export async function getUserByUsername(
       },
     });
   } catch {
-    res.status(500).json({ status: false, message: 'Error updating user' });
+    res.status(500).json({ status: false, message: 'Error fetching user' });
   }
 }
