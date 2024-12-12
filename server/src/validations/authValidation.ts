@@ -88,6 +88,17 @@ export const registerValidationRules = [
       'Password must contain at least one uppercase letter, one lowercase letter, and one number',
     ),
 
+  body('confirmPassword')
+    .optional()
+    .trim()
+    .custom((value, { req }) => {
+      if (value !== req.body.password) {
+        throw new Error('Passwords do not match');
+      }
+
+      return true;
+    }),
+
   body('role')
     .trim()
     .notEmpty()
