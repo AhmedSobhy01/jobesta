@@ -16,7 +16,12 @@ export async function getAccount(req: Request, res: Response): Promise<void> {
       email: userData!.email,
       role: userData!.role,
       isBanned: userData!.is_banned,
-      profilePicture: userData!.profile_picture,
+      profilePicture:
+        userData!.profile_picture ||
+        'https://ui-avatars.com/api/?name=' +
+          userData!.first_name +
+          '+' +
+          userData!.last_name,
     },
   });
 }
@@ -104,22 +109,21 @@ export async function getUserByUsername(
 
     const userData = userDataQuery.rows[0];
 
-    res.status(200).json({
-      status: true,
-      message: 'User Found',
-      data: {
-        firstName: userData!.first_name,
-        lastName: userData!.last_name,
-        username: userData!.username,
-        role: userData!.role,
-        isBanned: userData!.is_banned,
-        profilePicture: userData!.profile_picture,
-      },
-    });
-  } catch {
-    res.status(500).json({
-      status: false,
-      message: 'Error retrieving user',
-    });
-  }
+  res.status(200).json({
+    status: true,
+    message: 'User Found',
+    data: {
+      firstName: userData!.first_name,
+      lastName: userData!.last_name,
+      username: userData!.username,
+      role: userData!.role,
+      isBanned: userData!.is_banned,
+      profilePicture:
+        userData!.profile_picture ||
+        'https://ui-avatars.com/api/?name=' +
+          userData!.first_name +
+          '+' +
+          userData!.last_name,
+    },
+  });
 }

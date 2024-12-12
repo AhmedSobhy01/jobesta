@@ -114,8 +114,7 @@ export async function getMyProposals(req: Request, res: Response) {
         proposals,
       },
     });
-  } catch (err) {
-    console.log(err);
+  } catch {
     res
       .status(500)
       .json({ status: false, message: 'Error retrieving proposals' });

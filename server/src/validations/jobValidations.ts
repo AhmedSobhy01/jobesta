@@ -53,21 +53,18 @@ export const createJobsValidationRules = [
 ];
 
 export const getJobsValidationRules = [
-  query('category')
+  query('categories')
     .optional()
     .trim()
-    .isNumeric()
-    .withMessage('Category must be a number')
-    .notEmpty()
-    .withMessage('Category must not be empty')
-    .custom(async (category) => {
-      const categoryQuery = await db.query(
-        'SELECT * FROM categories WHERE id = $1',
-        [category],
-      );
-
-      if (categoryQuery.rows.length === 0) {
-        throw new Error('Category does not exist');
+    .customSanitizer((value) => {
+      return value
+        .split(',')
+        .map((category: string) => parseInt(category.trim(), 10))
+        .filter((category: number) => !isNaN(category));
+    })
+    .custom(async (categories) => {
+      if (!Array.isArray(categories)) {
+        throw new Error('Categories must be an array');
       }
 
       return true;

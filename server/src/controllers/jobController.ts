@@ -16,27 +16,48 @@ export async function createJob(req: Request, res: Response): Promise<void> {
 }
 
 export async function getJobs(req: Request, res: Response): Promise<void> {
-  let queryString = `SELECT j.id, j.status, j.budget, j.duration, j.title, j.description, j.created_at, client.first_name, client.last_name, client.username, client.profile_picture, c.id category_id, c.name category_name ,c.description category_description 
-      FROM jobs j 
-      JOIN categories c ON c.id = j.category_id 
-      JOIN accounts client ON client.id = j.client_id 
-      WHERE j.status = 'open' `;
+  let queryString =
+    "SELECT j.id, j.status, j.budget, j.duration, j.title, j.description, j.created_at, client.first_name, client.last_name, client.username, client.profile_picture,c.id category_id,c.name ,c.description category_description FROM jobs j LEFT JOIN categories c ON c.id = j.category_id INNER JOIN accounts client ON client.id = j.client_id WHERE status = 'open' ";
 
-  if (req.query.category) {
-    queryString += `AND category_id = ${req.query.category} `;
+  let countQuery = "SELECT COUNT(*) FROM jobs j WHERE status = 'open' ";
+
+  if (Array.isArray(req.query.categories) && req.query.categories.length) {
+    queryString += `AND category_id IN (${req.query.categories.join(',')}) `;
+    countQuery += `AND category_id IN (${req.query.categories.join(',')}) `;
   }
+
   if (req.query.minBudget) {
     queryString += `AND budget >=  ${req.query.minBudget} `;
+    countQuery += `AND budget >=  ${req.query.minBudget} `;
   }
+
   if (req.query.maxBudget) {
     queryString += `AND budget <=  ${req.query.maxBudget} `;
+    countQuery += `AND budget <=  ${req.query.maxBudget} `;
   }
+
   if (req.query.sortBy) {
-    queryString += `ORDER BY ${req.query.sortBy} `;
-    if (req.query.sortOrder) {
-      queryString += `${req.query.sortOrder} `;
-    }
+    queryString += `ORDER BY j.${req.query.sortBy} `;
+
+    if (req.query.sortOrder) queryString += `${req.query.sortOrder} `;
+  } else {
+    queryString += 'ORDER BY j.created_at DESC ';
   }
+
+  const limit = parseInt(process.env.PAGINATION_LIMIT || '10');
+
+  const totalItemsQuery = await db.query(countQuery);
+  const totalItems = parseInt(totalItemsQuery.rows[0].count);
+  const totalPages = Math.ceil(totalItems / limit);
+
+  const page =
+    parseInt(req.query.page as string) > 0 &&
+    parseInt(req.query.page as string) <= totalPages
+      ? parseInt(req.query.page as string)
+      : 1;
+  const offset = (page - 1) * limit;
+
+  queryString += `LIMIT ${limit} OFFSET ${offset}`;
 
   try {
     const jobsQuery = await db.query(queryString);
@@ -59,7 +80,12 @@ export async function getJobs(req: Request, res: Response): Promise<void> {
           firstName: job.first_name,
           lastName: job.last_name,
           username: job.username,
-          profilePicture: job.profile_picture,
+          profilePicture:
+            job.profile_picture ||
+            'https://ui-avatars.com/api/?name=' +
+              job.first_name +
+              '+' +
+              job.last_name,
         },
       };
     });
@@ -69,6 +95,12 @@ export async function getJobs(req: Request, res: Response): Promise<void> {
       message: 'Jobs retrieved',
       data: {
         jobs,
+        pagination: {
+          currentPage: page,
+          totalItems,
+          totalPages,
+          perPage: limit,
+        },
       },
     });
   } catch {
@@ -79,13 +111,15 @@ export async function getJobs(req: Request, res: Response): Promise<void> {
 export async function getJobById(req: Request, res: Response) {
   try {
     const jobQuery = await db.query(
-      'SELECT j.id, j.status, j.budget, j.duration, j.title, j.description, j.created_at,j.client_id, client.first_name, client.last_name, client.username, client.profile_picture,c.id category_id,c.name ,c.description category_description FROM jobs j JOIN categories c ON c.id = j.category_id JOIN accounts client ON client.id = j.client_id WHERE j.id = $1 ',
+      'SELECT j.id, j.status, j.budget, j.duration, j.title, j.description, j.created_at,j.client_id, client.first_name, client.last_name, client.username, client.profile_picture,c.id category_id,c.name ,c.description category_description FROM jobs j LEFT JOIN categories c ON c.id = j.category_id JOIN accounts client ON client.id = j.client_id WHERE j.id = $1 ',
       [req.params.id],
     );
+
     if (jobQuery.rows.length === 0) {
       res.status(404).json({ status: false, message: 'Job not found' });
       return;
     }
+
     const job: IJob = {
       id: jobQuery.rows[0].id,
       status: jobQuery.rows[0].status,
@@ -103,7 +137,12 @@ export async function getJobById(req: Request, res: Response) {
         firstName: jobQuery.rows[0].first_name,
         lastName: jobQuery.rows[0].last_name,
         username: jobQuery.rows[0].username,
-        profilePicture: jobQuery.rows[0].profile_picture,
+        profilePicture:
+          jobQuery.rows[0].profile_picture ||
+          'https://ui-avatars.com/api/?name=' +
+            jobQuery.rows[0].first_name +
+            '+' +
+            jobQuery.rows[0].last_name,
       },
       myJob: false,
       proposals: [],
@@ -115,6 +154,7 @@ export async function getJobById(req: Request, res: Response) {
       jobQuery.rows[0].client_id == req.user.id
     ) {
       job.myJob = true;
+
       const proposalQuery = await db.query(
         `SELECT p.job_id, p.freelancer_id, p.status, p.cover_letter, p.created_at, a.username, a.first_name, a.last_name, a.profile_picture, m.order milestone_order, m.status milestone_status, m.name, m.duration,m.amount  FROM proposals p 
         JOIN jobs j ON p.job_id = j.id 
@@ -137,7 +177,12 @@ export async function getJobById(req: Request, res: Response) {
               username: proposal.username,
               firstName: proposal.first_name,
               lastName: proposal.last_name,
-              profilePicture: proposal.profile_picture,
+              profilePicture:
+                proposal.profile_picture ||
+                'https://ui-avatars.com/api/?name=' +
+                  proposal.first_name +
+                  '+' +
+                  proposal.last_name,
             },
             milestones: [],
           };
