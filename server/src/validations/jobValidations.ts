@@ -43,13 +43,17 @@ export const createJobsValidationRules = [
     .isNumeric()
     .withMessage('Budget must be a number')
     .notEmpty()
-    .withMessage('Budget must not be empty'),
+    .withMessage('Budget must not be empty')
+    .isFloat({ min: 1 })
+    .withMessage('Budget must be greater than 0'),
 
   body('duration')
     .isNumeric()
     .withMessage('Duration must be a number')
     .notEmpty()
-    .withMessage('Duration must not be empty'),
+    .withMessage('Duration must not be empty')
+    .isInt({ min: 1 })
+    .withMessage('Duration must be greater than 0'),
 ];
 
 export const getJobsValidationRules = [
