@@ -126,6 +126,10 @@ export const deleteProposalValidationRules = [
         throw new Error('Proposal does not exist');
       }
 
+      if (proposalQuery.rows[0].status !== 'pending') {
+        throw new Error('Proposal cannot be deleted');
+      }
+
       return true;
     }),
 ];
