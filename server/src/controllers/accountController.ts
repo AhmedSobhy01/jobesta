@@ -181,6 +181,7 @@ export async function getUserByUsername(
             '+' +
             userData!.last_name,
         jobs,
+
       },
     });
   } catch {
