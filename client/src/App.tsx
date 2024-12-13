@@ -14,7 +14,8 @@ import { SetUserPage } from '@/utils/SetUserPage';
 import { Logout } from '@/utils/Logout';
 import ProfilePage from '@/pages/Profile';
 import { FreelancerContextProvider } from '@/store/freelancerContext';
-import Dashboard from './pages/Admin/Dashboard';
+import Dashboard from '@/pages/Admin/Dashboard';
+import Clients from '@/pages/Admin/Clients';
 
 const router = createBrowserRouter([
   {
@@ -54,6 +55,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Dashboard />,
+      },
+      {
+        path: 'clients',
+        element: <Clients />,
       },
     ],
   },

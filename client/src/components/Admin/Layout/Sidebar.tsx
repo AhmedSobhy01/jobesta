@@ -1,7 +1,7 @@
 import { faHome, faUser } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import jobestaLogo from '@/assets/jobesta-logo.png';
-import SidebarButton from './SidebarButton';
+import SidebarButton from '@/components/Admin/Layout/SidebarButton';
 
 const Sidebar: React.FC = () => {
   return (

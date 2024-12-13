@@ -15,7 +15,6 @@ export async function getAccounts(req: Request, res: Response) {
     accountsQuery += ' ORDER BY created_at DESC';
 
     const limit = parseInt(process.env.ADMIN_PAGINATION_LIMIT || '10');
-    console.log(limit);
 
     const totalItemsQuery = await db.query(countQuery);
     const totalItems = parseInt(totalItemsQuery.rows[0].count);
