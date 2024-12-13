@@ -144,9 +144,25 @@ export async function getJobById(req: Request, res: Response) {
             '+' +
             jobQuery.rows[0].last_name,
       },
+      myProposal: null,
       myJob: false,
       proposals: [],
     };
+
+    if (req.user && req.user.role == 'freelancer') {
+      const proposalQuery = await db.query(
+        'SELECT * FROM proposals WHERE job_id = $1 AND freelancer_id = $2',
+        [req.params.id, req.user.freelancer!.id],
+      );
+
+      if (proposalQuery.rows.length > 0) {
+        job.myProposal = {
+          coverLetter: proposalQuery.rows[0].cover_letter,
+          status: proposalQuery.rows[0].status,
+          createdAt: proposalQuery.rows[0].created_at,
+        };
+      }
+    }
 
     if (
       req.user &&

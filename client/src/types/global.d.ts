@@ -28,3 +28,15 @@ interface Job {
     profilePicture: string;
   };
 }
+
+interface Milestone {
+  name: string;
+  amount: string;
+  duration: string;
+  order: number;
+}
+
+interface Proposal {
+  coverLetter: string;
+  milestones: Milestone[];
+}
