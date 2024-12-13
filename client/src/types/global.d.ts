@@ -66,5 +66,4 @@ interface Proposal {
   createdAt?: string;
   freelancer?: Freelancer;
   milestones: Milestone[];
-  freelancer_id: string;
 }
