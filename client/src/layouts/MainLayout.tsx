@@ -4,6 +4,8 @@ import { useContext, useEffect, useState } from 'react';
 import UserContext from '@/store/userContext';
 import { getAuthJwtToken, getAuthRefreshToken } from '@/utils/auth';
 import ErrorModule from '@/components/ErrorModule';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function MainLayout() {
   const myUser = useContext(UserContext);
@@ -65,6 +67,8 @@ function MainLayout() {
 
   return (
     <div className="h-screen dark:bg-gray-900 bg-white" onClick={handleClick}>
+      <ToastContainer />
+
       {isError && (
         <ErrorModule
           errorMessage={userData?.message}
