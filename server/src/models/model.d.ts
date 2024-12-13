@@ -68,6 +68,7 @@ export interface IJob {
 }
 
 export interface IAccountDisplay {
+  id?: string;
   firstName: string;
   lastName: string;
   username: string;

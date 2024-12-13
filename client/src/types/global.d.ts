@@ -1,3 +1,24 @@
+interface User {
+  accountId: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  username: string | null;
+  email: string | null;
+  role: string | null;
+  isBanned: string | null;
+  profilePicture?: string;
+  jwtToken: string | null;
+  refreshToken: string | null;
+}
+
+interface Freelancer {
+  id?: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+  profilePicture: string;
+}
+
 interface PaginationData {
   currentPage: number;
   totalPages: number;
@@ -27,9 +48,12 @@ interface Job {
     username: string;
     profilePicture: string;
   };
+  myProposal?: Proposal;
+  proposals?: Proposal[];
 }
 
 interface Milestone {
+  status?: string;
   name: string;
   amount: string;
   duration: string;
@@ -37,6 +61,10 @@ interface Milestone {
 }
 
 interface Proposal {
+  status?: string;
   coverLetter: string;
+  createdAt?: string;
+  freelancer?: Freelancer;
   milestones: Milestone[];
+  freelancer_id: string;
 }

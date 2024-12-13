@@ -5,11 +5,18 @@ import { IJob, IProposal } from '../models/model.js';
 export async function createJob(req: Request, res: Response): Promise<void> {
   const { title, description, category, budget, duration } = req.body;
   try {
-    await db.query(
-      'INSERT INTO jobs (title, description, category_id, budget, duration, client_id) VALUES ($1, $2, $3, $4, $5, $6)',
+    const result = await db.query(
+      'INSERT INTO jobs (title, description, category_id, budget, duration, client_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id',
       [title, description, category, budget, duration, req.user!.id],
     );
-    res.status(201).json({ status: true, message: 'Job created' });
+
+    res.status(201).json({
+      status: true,
+      message: 'Job created',
+      data: {
+        jobId: result.rows[0].id,
+      },
+    });
   } catch {
     res.status(500).json({ status: false, message: 'Error creating job' });
   }
@@ -151,7 +158,12 @@ export async function getJobById(req: Request, res: Response) {
 
     if (req.user && req.user.role == 'freelancer') {
       const proposalQuery = await db.query(
-        'SELECT * FROM proposals WHERE job_id = $1 AND freelancer_id = $2',
+        `SELECT p.cover_letter, p.status, p.created_at, m.order milestone_order, m.status milestone_status, m.name, m.duration, m.amount, a.username, a.first_name, a.last_name, a.profile_picture 
+        FROM proposals p 
+        LEFT JOIN milestones m ON p.job_id = m.job_id AND p.freelancer_id = m.freelancer_id 
+        JOIN freelancers f ON p.freelancer_id = f.id
+        JOIN accounts a ON f.account_id = a.id
+        WHERE p.job_id = $1 AND p.freelancer_id = $2`,
         [req.params.id, req.user.freelancer!.id],
       );
 
@@ -160,6 +172,24 @@ export async function getJobById(req: Request, res: Response) {
           coverLetter: proposalQuery.rows[0].cover_letter,
           status: proposalQuery.rows[0].status,
           createdAt: proposalQuery.rows[0].created_at,
+          freelancer: {
+            username: proposalQuery.rows[0].username,
+            firstName: proposalQuery.rows[0].first_name,
+            lastName: proposalQuery.rows[0].last_name,
+            profilePicture:
+              proposalQuery.rows[0].profile_picture ||
+              'https://ui-avatars.com/api/?name=' +
+                proposalQuery.rows[0].first_name +
+                '+' +
+                proposalQuery.rows[0].last_name,
+          },
+          milestones: proposalQuery.rows.map((row) => ({
+            order: row.milestone_order,
+            status: row.milestone_status,
+            duration: row.duration,
+            amount: row.amount,
+            name: row.name,
+          })),
         };
       }
     }
@@ -190,6 +220,7 @@ export async function getJobById(req: Request, res: Response) {
             coverLetter: proposal.cover_letter,
             createdAt: proposal.created_at,
             freelancer: {
+              id: proposal.freelancer_id,
               username: proposal.username,
               firstName: proposal.first_name,
               lastName: proposal.last_name,
