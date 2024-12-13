@@ -260,3 +260,63 @@ export async function getJobById(req: Request, res: Response) {
     res.status(500).json({ status: false, message: 'Error retrieving job' });
   }
 }
+
+export async function acceptProposal(req: Request, res: Response) {
+  try {
+    const jobId = req.params.jobId;
+    const freelancerId = req.params.freelancerId;
+
+    const jobQuery = await db.query(
+      'SELECT * FROM jobs WHERE id = $1 AND client_id = $2',
+      [jobId, req.user!.id],
+    );
+
+    if (jobQuery.rows.length === 0) {
+      res.status(404).json({ status: false, message: 'Job not found' });
+      return;
+    }
+
+    const proposalQuery = await db.query(
+      'SELECT * FROM proposals WHERE job_id = $1 AND freelancer_id = $2',
+      [jobId, freelancerId],
+    );
+
+    if (proposalQuery.rows.length === 0) {
+      res.status(404).json({ status: false, message: 'Proposal not found' });
+      return;
+    }
+
+    if (proposalQuery.rows[0].status !== 'pending') {
+      res.status(400).json({
+        status: false,
+        message: 'Proposal is not pending',
+      });
+      return;
+    }
+
+    await db.query('UPDATE proposals SET status = $1 WHERE job_id = $2', [
+      'rejected',
+      jobId,
+    ]);
+
+    await db.query(
+      'UPDATE proposals SET status = $1 WHERE job_id = $2 AND freelancer_id = $3',
+      ['accepted', jobId, freelancerId],
+    );
+
+    await db.query('UPDATE jobs SET status = $1 WHERE id = $2', [
+      'in_progress',
+      jobId,
+    ]);
+
+    res.status(200).json({
+      status: true,
+      message: 'Proposal accepted',
+    });
+  } catch (err) {
+    console.log(err);
+    res
+      .status(500)
+      .json({ status: false, message: 'Error accepting proposal' });
+  }
+}

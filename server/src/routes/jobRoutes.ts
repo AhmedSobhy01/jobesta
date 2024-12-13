@@ -3,6 +3,7 @@ import {
   createJob,
   getJobById,
   getJobs,
+  acceptProposal,
 } from '../controllers/jobController.js';
 import { authenticate, prepareUser } from '../middlewares/authMiddleware.js';
 import { checkIfClient } from '../middlewares/clientMiddleware.js';
@@ -10,6 +11,7 @@ import { validateRequest } from '../middlewares/validationMiddleware.js';
 import {
   createJobsValidationRules,
   getJobsValidationRules,
+  acceptProposalValidationRules,
 } from '../validations/jobValidations.js';
 
 const jobRouter = Router();
@@ -25,6 +27,15 @@ jobRouter.post(
   createJobsValidationRules,
   validateRequest,
   createJob,
+);
+
+jobRouter.post(
+  '/:jobId/:freelancerId/accept',
+  authenticate,
+  checkIfClient,
+  acceptProposalValidationRules,
+  validateRequest,
+  acceptProposal,
 );
 
 export default jobRouter;

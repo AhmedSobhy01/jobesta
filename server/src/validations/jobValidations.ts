@@ -1,4 +1,4 @@
-import { body, query } from 'express-validator';
+import { body, param, query } from 'express-validator';
 import db from '../db/db.js';
 
 export const createJobsValidationRules = [
@@ -111,4 +111,18 @@ export const getJobsValidationRules = [
       }
       return true;
     }),
+];
+
+export const acceptProposalValidationRules = [
+  param('jobId')
+    .isNumeric()
+    .withMessage('Job ID must be a number')
+    .notEmpty()
+    .withMessage('Job ID must not be empty'),
+
+  param('freelancerId')
+    .isNumeric()
+    .withMessage('Freelancer ID must be a number')
+    .notEmpty()
+    .withMessage('Freelancer ID must not be empty'),
 ];
