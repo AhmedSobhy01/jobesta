@@ -3,13 +3,6 @@ import UserContext from '@/store/userContext';
 import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-interface IPreviousWork {
-  order: number;
-  title: string;
-  description: string;
-  url?: string;
-}
-
 interface ProfileBioData {
   anyUserData: {
     user: {

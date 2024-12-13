@@ -12,6 +12,7 @@ interface UserContextType {
   profilePicture?: string;
   jwtToken: string | null;
   refreshToken: string | null;
+  setUsername: (username?: string) => void;
   setUser: (newUser: {
     accountId: string | null;
     firstName: string | null;
@@ -38,6 +39,7 @@ const UserContext = createContext<UserContextType>({
   profilePicture: undefined,
   jwtToken: null,
   refreshToken: null,
+  setUsername: () => {},
   setUser: () => {},
 });
 
@@ -68,6 +70,13 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
     refreshToken: getAuthRefreshToken() || null,
   });
 
+  const setUsername = useCallback((username?: string) => {
+    setUserState((prev) => ({
+      ...prev,
+      username: username,
+    }));
+  }, []);
+
   const setUser = useCallback(
     (newUser: {
       accountId: string | null;
@@ -83,7 +92,7 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
     }) => {
       setUserState(newUser);
     },
-    [setUserState],
+    [],
   );
 
   const userContextValue = {
@@ -98,6 +107,7 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
     jwtToken: userState.jwtToken,
     refreshToken: userState.refreshToken,
     setUser,
+    setUsername,
   };
 
   return (

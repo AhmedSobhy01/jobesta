@@ -1,4 +1,4 @@
-import { Outlet, useLoaderData } from 'react-router-dom';
+import { Outlet, useLoaderData, useNavigate } from 'react-router-dom';
 import MainNavigationBar from '@/components/NavBar/MainNavigationBar';
 import { useContext, useEffect, useState } from 'react';
 import UserContext from '@/store/userContext';
@@ -7,6 +7,7 @@ import ErrorModule from '@/components/ErrorModule';
 import FreelancerContext from '@/store/freelancerContext';
 
 function MainLayout() {
+  const navigate = useNavigate();
   const myUser = useContext(UserContext);
   const myFreelancerUser = useContext(FreelancerContext);
   const [isError, setIsError] = useState(false);
@@ -35,11 +36,29 @@ function MainLayout() {
   };
 
   useEffect(() => {
+    if (userData?.user && !myUser.refreshToken) {
+      navigate('/');
+    }
+
     if (userData?.message) {
       setIsError(true);
     }
 
     if (userData?.user && userData.user.id !== myUser.accountId) {
+      if (userData.user.role === 'freelancer') {
+        const freelancerObj = {
+          freelancerId: myFreelancerUser.freelancerId,
+          balance: userData.freelancer.balance,
+          bio: myFreelancerUser.bio,
+          previousWork: myFreelancerUser.previousWork,
+          skills: myFreelancerUser.skills,
+          badges: myFreelancerUser.badges,
+          jobs: myFreelancerUser.jobs,
+        };
+
+        myFreelancerUser.setFreelancer(freelancerObj);
+      }
+
       const {
         id,
         firstName,
@@ -63,7 +82,14 @@ function MainLayout() {
         refreshToken: getAuthRefreshToken(),
       });
     }
-  }, [userData, myUser, myFreelancerUser]);
+  }, [
+    userData,
+    myFreelancerUser,
+    navigate,
+    myUser.refreshToken,
+    myUser.accountId,
+    myUser,
+  ]);
 
   return (
     <div className="h-full dark:bg-gray-900 bg-white" onClick={handleClick}>
@@ -147,7 +173,32 @@ MainLayout.loader = async function loader() {
     if (!userResponse.ok) {
       return { message: userData.message };
     }
+    if (userData.data.role === 'freelancer') {
+      const freelancerBalanceResponse = await fetch(
+        `${import.meta.env.VITE_API_URL}/freelancer/balance`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${newJwtToken}`,
+          },
+        },
+      );
 
+      const freelancerBalance = await freelancerBalanceResponse.json();
+
+      if (!freelancerBalanceResponse.ok) {
+        return {
+          message: freelancerBalance.message,
+        };
+      }
+
+      return {
+        user: userData.data,
+        freelancer: {
+          balance: freelancerBalance.data.balance,
+        },
+      };
+    }
     return {
       user: userData.data,
     };

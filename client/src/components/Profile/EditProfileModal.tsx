@@ -1,5 +1,6 @@
+import UserContext from '@/store/userContext';
 import { getAuthJwtToken, getAuthRefreshToken } from '@/utils/auth';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { ActionFunctionArgs, useNavigate } from 'react-router-dom';
 
 interface EditProfileModalProps {
@@ -19,6 +20,7 @@ interface EditProfileModalProps {
 const EditProfileModal: React.FC<EditProfileModalProps> & {
   action?: (args: ActionFunctionArgs) => Promise<unknown>;
 } = ({ setError, setErrorMessage, isOpen, onClose, initialData }) => {
+  const user = useContext(UserContext);
   const [formData, setFormData] = useState(initialData);
   const navigate = useNavigate();
   const handleChange = (
@@ -121,7 +123,8 @@ const EditProfileModal: React.FC<EditProfileModalProps> & {
         setErrorMessage(resData.message);
       }
 
-      navigate('/');
+      user.setUsername(resData.data.username);
+      navigate(`/users/${resData.data.username}`);
     } catch {
       setError(true);
       setErrorMessage('A network error occurred. Please try again later.');

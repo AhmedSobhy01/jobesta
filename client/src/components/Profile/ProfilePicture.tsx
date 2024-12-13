@@ -43,6 +43,13 @@ const ProfilePicture: React.FC<ProfilePictureData> = ({
   const [isEditingPic, setIsEditingPic] = useState(false);
   const [pic, setPic] = useState<File | null>(null);
 
+  let profilePic = anyUserData.user?.profilePicture;
+
+  if (!profilePic?.startsWith('http')) {
+    profilePic =
+      import.meta.env.VITE_API_URL + '/' + anyUserData.user?.profilePicture;
+  }
+
   const handleSubmit: FormEventHandler<HTMLFormElement> = (
     e: React.FormEvent<HTMLFormElement>,
   ) => {
@@ -55,7 +62,6 @@ const ProfilePicture: React.FC<ProfilePictureData> = ({
     setIsEditingPic(false);
     const file = pic;
 
-    console.log(file);
     if (file) {
       const formData = new FormData();
       formData.append('file', file);
@@ -124,24 +130,20 @@ const ProfilePicture: React.FC<ProfilePictureData> = ({
           setErrorMessage(resData.message);
           return;
         }
-
-        navigate('/');
       } catch {
         setError(true);
         setErrorMessage('A network error occurred. Please try again later.');
       }
     }
     //setNewProfilePic('');
-    navigate('/');
+    navigate(`/users/${anyUserData.user.username}`);
   };
 
   return (
     <>
       <div className="absolute top-20 left-10 w-40 h-40 rounded-full overflow-hidden border-4 border-white dark:border-gray-900 group">
         <img
-          src={
-            import.meta.env.VITE_API_URL + '/' + anyUserData.user.profilePicture
-          }
+          src={profilePic}
           alt="Profile Picture"
           className="w-full h-full object-cover cursor-pointer"
         />

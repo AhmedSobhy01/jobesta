@@ -14,13 +14,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import ProfilePicture from '@/components/Profile/ProfilePicture';
 import ProfileBio from '@/components/Profile/ProfileBio';
-
-interface IPreviousWork {
-  order?: number;
-  title?: string;
-  description?: string;
-  url?: string;
-}
+import Badge from '@/components/Profile/Badge';
+import Jobs from '@/components/Profile/Jobs';
 
 const activeCss =
   'text-green-700   font-semibold pb-2 border-b-2 border-gray-800 dark:text-green-700';
@@ -33,6 +28,7 @@ const ProfilePage: React.FC & {
   //contexts
   const userData = useContext(UserContext);
   const freelancerData = useContext(FreelancerContext);
+  const { setFreelancer } = useContext(FreelancerContext);
   //nav and params
   const navigate = useNavigate();
   const param = useParams();
@@ -58,7 +54,6 @@ const ProfilePage: React.FC & {
   const [newPreviousWork, setNewPreviousWork] = useState<
     IPreviousWork | undefined
   >({
-    order: 0,
     title: '',
     description: '',
     url: '',
@@ -69,12 +64,14 @@ const ProfilePage: React.FC & {
   const [editSkill, setEditSkill] = useState(false);
 
   const accountData = {
-    firstName: anyUserData ? anyUserData.user.firstName : userData.firstName,
-    lastName: anyUserData ? anyUserData.user.lastName : userData.lastName,
-    username: anyUserData ? anyUserData.user.username : userData.username,
-    role: anyUserData ? anyUserData.user.role : userData.role,
-    isBanned: anyUserData ? anyUserData.user.isBanned : userData.isBanned,
-    profilePicture: anyUserData
+    firstName: anyUserData.user
+      ? anyUserData.user.firstName
+      : userData.firstName,
+    lastName: anyUserData.user ? anyUserData.user.lastName : userData.lastName,
+    username: anyUserData.user ? anyUserData.user.username : userData.username,
+    role: anyUserData.user ? anyUserData.user.role : userData.role,
+    isBanned: anyUserData.user ? anyUserData.user.isBanned : userData.isBanned,
+    profilePicture: anyUserData.user
       ? anyUserData.user.profilePicture
       : userData.profilePicture,
   };
@@ -83,17 +80,22 @@ const ProfilePage: React.FC & {
     bio: anyUserData.freelancer?.bio,
     previousWork: anyUserData.freelancer?.previousWork,
     skills: anyUserData.freelancer?.skills,
+    badges: anyUserData.freelancer?.badges,
+    jobs: anyUserData.freelancer?.jobs,
   };
 
   useEffect(() => {
     if (
       userData.username === param.username &&
+      anyUserData.user &&
+      anyUserData.freelancer &&
       anyUserData.user.role === 'freelancer'
     ) {
-      const { bio, skills, previousWork } = anyUserData.freelancer;
-      freelancerData.setFreelancer({ bio, skills, previousWork });
+      const { bio, skills, previousWork, badges, jobs } =
+        anyUserData.freelancer;
+      setFreelancer({ bio, skills, previousWork, badges, jobs });
     }
-  }, [anyUserData.freelancer, anyUserData.user.role, param.username, userData]);
+  }, [anyUserData, param.username, setFreelancer, userData]);
 
   const handleAddSkill = () => {
     if (!newSkill) {
@@ -104,6 +106,7 @@ const ProfilePage: React.FC & {
 
     handleUpdateFreelancerData({ newSkill });
     setNewSkill('');
+    setEditSkill(false);
     setError(false);
   };
 
@@ -117,6 +120,8 @@ const ProfilePage: React.FC & {
     handleUpdateFreelancerData({ newPreviousWork });
 
     setError(false);
+    setNewPreviousWork({ title: '', description: '', url: '' });
+    setEditPrevWork(false);
   };
 
   async function handleUpdateFreelancerData(data: {
@@ -145,7 +150,9 @@ const ProfilePage: React.FC & {
     }
 
     allPrevWork = allPrevWork.map((prev, index) => ({
-      ...prev,
+      title: prev.title,
+      description: prev.description,
+      ...(prev.url && { url: prev.url }),
       order: index + 1,
     }));
 
@@ -223,7 +230,7 @@ const ProfilePage: React.FC & {
         return;
       }
 
-      navigate('/');
+      navigate(`/users/${userData.username}`);
     } catch {
       setError(true);
       setErrorMessage('A network error occurred. Please try again later.');
@@ -275,6 +282,15 @@ const ProfilePage: React.FC & {
     navigate('/');
   };
 
+  if (anyUserData.message) {
+    return (
+      <ErrorModule
+        onClose={handleErrorClose}
+        errorMessage="Error getting user"
+      />
+    );
+  }
+
   if (userData.username != param.username && !anyUserData) {
     return (
       <ErrorModule onClose={handleErrorClose} errorMessage="User not found." />
@@ -312,7 +328,6 @@ const ProfilePage: React.FC & {
             setErrorMessage={setErrorMessage}
           />
         </div>
-
         <div className="mt-12 bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md flex flex-col md:flex-row gap-6 items-center">
           <div className="w-full md:w-1/3 text-left">
             <div className="flex gap-4 items-baseline">
@@ -346,15 +361,11 @@ const ProfilePage: React.FC & {
           {/* Stats Section */}
           {userData.role === 'freelancer' && (
             <div className="flex gap-4">
-              <span className="bg-orange-500 text-white text-sm font-medium px-2 py-2 rounded-full">
-                26
-              </span>
-              <span className="bg-blue-500 text-white text-sm font-medium px-3 py-2 rounded-full">
-                6
-              </span>
-              <span className="bg-gray-500 text-white text-sm font-medium px-3 py-2 rounded-full">
-                12
-              </span>
+              {freelancerAccountData.badges.map(
+                (badge: IBadge, index: number) => {
+                  return <Badge key={index} badge={badge} />;
+                },
+              )}
             </div>
           )}
 
@@ -362,7 +373,7 @@ const ProfilePage: React.FC & {
             {/* Projects/Jobs */}
             <div className="text-center">
               <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200">
-                0
+                {freelancerAccountData.jobs.length}
               </h2>
               <p className="text-sm text-gray-600 dark:text-gray-400">Jobs</p>
             </div>
@@ -378,61 +389,42 @@ const ProfilePage: React.FC & {
             </div>
           </div>
         </div>
-
         {/* Tabs Section */}
-        {accountData.role === 'freelancer' && (
-          <div className="mt-4">
-            <ul className="flex space-x-4 border-b">
-              <button
-                onClick={() => handleJobsClick()}
-                className={activeComp.jobsActive ? activeCss : notActiveCss}
-              >
-                Jobs
-              </button>
-              <button
-                onClick={() => handlePrevWorkClick()}
-                className={
-                  activeComp.previousWorkActive ? activeCss : notActiveCss
-                }
-              >
-                Previous Work
-              </button>
-              <button
-                onClick={() => handleAboutClick()}
-                className={activeComp.skillsActive ? activeCss : notActiveCss}
-              >
-                Skills
-              </button>
-            </ul>
-          </div>
-        )}
-
+        <div className="mt-4">
+          <ul className="flex space-x-4 border-b">
+            <button
+              onClick={() => handleJobsClick()}
+              className={activeComp.jobsActive ? activeCss : notActiveCss}
+            >
+              Jobs
+            </button>
+            {accountData.role === 'freelancer' && (
+              <>
+                <button
+                  onClick={() => handlePrevWorkClick()}
+                  className={
+                    activeComp.previousWorkActive ? activeCss : notActiveCss
+                  }
+                >
+                  Previous Work
+                </button>
+                <button
+                  onClick={() => handleAboutClick()}
+                  className={activeComp.skillsActive ? activeCss : notActiveCss}
+                >
+                  Skills
+                </button>
+              </>
+            )}
+          </ul>
+        </div>
         {/* Active Section */}
-        {activeComp.jobsActive && (
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white hover:text-green-700 dark:text-gray-200 dark:bg-gray-900 h-min p-5 rounded-xl shadow-md">
-              <div className="mt-4">
-                <h3 className="text-xl font-semibold">Title</h3>
-                <p className="text-sm dark:text-gray-200 text-gray-500">
-                  Category
-                </p>
-                <p className="text-base text-gray-700 dark:text-gray-200">
-                  Description
-                </p>
-                <div className="mt-2 flex justify-between items-center">
-                  <span className="text-gray-700 text-sm dark:text-gray-200">
-                    budget
-                  </span>
-                  <span className="text-gray-700 text-sm dark:text-gray-200">
-                    duration
-                  </span>
-                </div>
-              </div>
-            </div>
+        {activeComp.jobsActive && accountData.role === 'freelancer' && (
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6 bg-white hover:text-green-700 dark:text-gray-200 dark:bg-gray-900 h-min p-5 rounded-xl shadow-md">
+            {freelancerData.jobs?.map((job) => <Jobs key={job.id} job={job} />)}
           </div>
         )}
-
-        {activeComp.previousWorkActive && (
+        {activeComp.previousWorkActive && accountData.role === 'freelancer' && (
           <>
             <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
               {freelancerAccountData.previousWork.map(
@@ -592,10 +584,6 @@ ProfilePage.loader = async function loader({
   params,
 }: LoaderFunctionArgs): Promise<unknown> {
   const username = params.username;
-
-  if (!username) {
-    return null;
-  }
 
   try {
     const userResponse = await fetch(
