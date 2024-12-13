@@ -5,8 +5,30 @@ import db from '../../db/db.js';
 export async function getAccounts(req: Request, res: Response) {
   try {
     let accountsQuery = 'SELECT * from accounts';
+    let countQuery = 'SELECT COUNT(*) FROM accounts';
 
-    if (req.query.role) accountsQuery += ` WHERE role = '${req.query.role}'`;
+    if (req.query.role) {
+      accountsQuery += ` WHERE role = '${req.query.role}'`;
+      countQuery += ` WHERE role = '${req.query.role}'`;
+    }
+
+    accountsQuery += ' ORDER BY created_at DESC';
+
+    const limit = parseInt(process.env.ADMIN_PAGINATION_LIMIT || '10');
+    console.log(limit);
+
+    const totalItemsQuery = await db.query(countQuery);
+    const totalItems = parseInt(totalItemsQuery.rows[0].count);
+    const totalPages = Math.ceil(totalItems / limit);
+
+    const page =
+      parseInt(req.query.page as string) > 0 &&
+      parseInt(req.query.page as string) <= totalPages
+        ? parseInt(req.query.page as string)
+        : 1;
+    const offset = (page - 1) * limit;
+
+    accountsQuery += ` LIMIT ${limit} OFFSET ${offset}`;
 
     const result = await db.query(accountsQuery);
 
@@ -24,9 +46,19 @@ export async function getAccounts(req: Request, res: Response) {
       };
     });
 
-    res
-      .status(200)
-      .json({ status: true, message: 'Accounts fetched', accounts });
+    res.status(200).json({
+      status: true,
+      message: 'Accounts fetched',
+      data: {
+        accounts,
+        pagination: {
+          currentPage: page,
+          totalItems,
+          totalPages,
+          perPage: limit,
+        },
+      },
+    });
   } catch {
     res
       .status(500)
