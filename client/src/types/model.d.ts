@@ -32,3 +32,12 @@ interface IBadge {
   description?: string;
   icon?: string;
 }
+
+interface INewData {
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
+  password?: string;
+  confirmPassword?: string;
+}

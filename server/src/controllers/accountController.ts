@@ -136,7 +136,6 @@ export async function getUserByUsername(
         'SELECT id FROM freelancers WHERE account_id = $1',
         [userData.id],
       );
-
       const freelancerData = result.rows[0];
 
       jobsQueryString += ' WHERE p.freelancer_id = $1 AND p.status = $2';

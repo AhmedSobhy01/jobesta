@@ -74,6 +74,7 @@ const ProfilePage: React.FC & {
     profilePicture: anyUserData.user
       ? anyUserData.user.profilePicture
       : userData.profilePicture,
+    jobs: anyUserData.user?.jobs,
   };
 
   const freelancerAccountData = {
@@ -81,7 +82,6 @@ const ProfilePage: React.FC & {
     previousWork: anyUserData.freelancer?.previousWork,
     skills: anyUserData.freelancer?.skills,
     badges: anyUserData.freelancer?.badges,
-    jobs: anyUserData.freelancer?.jobs,
   };
 
   useEffect(() => {
@@ -95,6 +95,7 @@ const ProfilePage: React.FC & {
         anyUserData.freelancer;
       setFreelancer({ bio, skills, previousWork, badges, jobs });
     }
+    setError(false);
   }, [anyUserData, param.username, setFreelancer, userData]);
 
   const handleAddSkill = () => {
@@ -107,7 +108,6 @@ const ProfilePage: React.FC & {
     handleUpdateFreelancerData({ newSkill });
     setNewSkill('');
     setEditSkill(false);
-    setError(false);
   };
 
   const handleSavePreviousWork = () => {
@@ -119,7 +119,6 @@ const ProfilePage: React.FC & {
 
     handleUpdateFreelancerData({ newPreviousWork });
 
-    setError(false);
     setNewPreviousWork({ title: '', description: '', url: '' });
     setEditPrevWork(false);
   };
@@ -225,8 +224,11 @@ const ProfilePage: React.FC & {
       const resData = await response.json();
 
       if (!response.ok) {
-        setError(true);
-        setErrorMessage(resData.message);
+        if (!resData.status) {
+          setError(true);
+          setErrorMessage('Invalid data');
+        }
+
         return;
       }
 
@@ -315,6 +317,7 @@ const ProfilePage: React.FC & {
             username: accountData.username,
             email: userData.email ? userData.email : '',
             password: '',
+            confirmPassword: '',
           }}
           setError={setError}
           setErrorMessage={setErrorMessage}
@@ -373,7 +376,7 @@ const ProfilePage: React.FC & {
             {/* Projects/Jobs */}
             <div className="text-center">
               <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200">
-                {freelancerAccountData.jobs.length}
+                {accountData.jobs?.length}
               </h2>
               <p className="text-sm text-gray-600 dark:text-gray-400">Jobs</p>
             </div>
@@ -419,9 +422,16 @@ const ProfilePage: React.FC & {
           </ul>
         </div>
         {/* Active Section */}
-        {activeComp.jobsActive && accountData.role === 'freelancer' && (
+        {activeComp.jobsActive && accountData.jobs?.length > 0 && (
           <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6 bg-white hover:text-green-700 dark:text-gray-200 dark:bg-gray-900 h-min p-5 rounded-xl shadow-md">
-            {freelancerData.jobs?.map((job) => <Jobs key={job.id} job={job} />)}
+            {accountData.jobs?.map((job: IJob) => (
+              <Jobs key={job.id} job={job} />
+            ))}
+          </div>
+        )}
+        {activeComp.jobsActive && accountData.jobs?.length === 0 && (
+          <div className="bg-white dark:bg-gray-900 p-5 rounded-xl shadow-md">
+            <p className=" dark:text-gray-200">no Jobs Available</p>
           </div>
         )}
         {activeComp.previousWorkActive && accountData.role === 'freelancer' && (
@@ -435,7 +445,7 @@ const ProfilePage: React.FC & {
                     className="bg-white hover:text-green-700 hover:bg-gray-100 dark:bg-gray-900 dark:hover:bg-gray-700 h-min p-5 rounded-xl shadow-md"
                   >
                     <div className="mt-4">
-                      <h3 className="text-xl text-inherit text-gray-900 dark:text-gray-100 font-semibold">
+                      <h3 className="text-xl text-inherit overflow-hidden text-gray-900 dark:text-gray-100 font-semibold">
                         {work.order}
                         {work.title}
                       </h3>
@@ -530,7 +540,7 @@ const ProfilePage: React.FC & {
                   (skill: string, index: number) => (
                     <div
                       key={index}
-                      className="p-2 border rounded-lg text-center bg-white dark:bg-gray-900 dark:text-gray-200 shadow-md cursor-pointer hover:text-green-700"
+                      className="p-2 border rounded-lg text-center bg-white dark:bg-gray-900 dark:text-gray-200 shadow-md overflow-hidden cursor-pointer hover:text-green-700"
                     >
                       {skill}
                     </div>

@@ -12,6 +12,7 @@ interface EditProfileModalProps {
     username: string;
     email: string;
     password: string;
+    confirmPassword: string;
   };
   setError: React.Dispatch<React.SetStateAction<boolean>>;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
@@ -39,14 +40,8 @@ const EditProfileModal: React.FC<EditProfileModalProps> & {
     username: string;
     email: string;
     password: string;
+    confirmPassword: string;
   }) {
-    interface INewData {
-      firstName: string;
-      lastName: string;
-      username: string;
-      email: string;
-      password?: string;
-    }
     const newData: INewData = {
       firstName: data.firstName,
       lastName: data.lastName,
@@ -67,6 +62,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> & {
 
     if (data.password !== '') {
       newData.password = data.password;
+      newData.confirmPassword = data.confirmPassword;
     }
 
     try {
@@ -119,8 +115,13 @@ const EditProfileModal: React.FC<EditProfileModalProps> & {
       const resData = await response.json();
 
       if (!resData.status) {
+        if (response.status === 422) {
+          setErrorMessage('Invalid Data');
+        } else {
+          setErrorMessage('Error occurs');
+        }
         setError(true);
-        setErrorMessage(resData.message);
+        return;
       }
 
       user.setUsername(resData.data.username);
@@ -220,7 +221,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> & {
                   Password
                 </label>
                 <p className="block text-sm dark:text-red-300 text-red-700">
-                  (*Optional)
+                  (Optional)
                 </p>
               </div>
               <input
@@ -228,6 +229,27 @@ const EditProfileModal: React.FC<EditProfileModalProps> & {
                 id="password"
                 name="password"
                 value={formData.password}
+                onChange={handleChange}
+                className="w-full mt-1 p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              />
+            </div>
+            <div>
+              <div className="flex">
+                <label
+                  htmlFor="confirmPassword"
+                  className="block text-sm dark:text-gray-300 text-gray-700"
+                >
+                  Confirm Password
+                </label>
+                <p className="block text-sm dark:text-red-300 text-red-700">
+                  (Optional)
+                </p>
+              </div>
+              <input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                value={formData.confirmPassword}
                 onChange={handleChange}
                 className="w-full mt-1 p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />
