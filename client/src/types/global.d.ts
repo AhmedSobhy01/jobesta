@@ -5,6 +5,18 @@ interface PaginationData {
   perPage: number;
 }
 
+interface Account {
+  id: number;
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
+  profilePicture: string;
+  isBanned: boolean;
+  role: string;
+  createdAt: string;
+}
+
 interface JobCategory {
   id: number;
   name: string;
