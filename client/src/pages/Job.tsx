@@ -9,6 +9,8 @@ import {
   faInfoCircle,
   faLayerGroup,
   faMoneyBillWave,
+  faPenToSquare,
+  faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import ProposalModal from '@/components/Proposals/ProposalModal';
 import { useContext, useState } from 'react';
@@ -16,6 +18,7 @@ import UserContext from '@/store/userContext';
 import Proposals from '@/components/Jobs/Proposals';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
+import EditJobModal from '@/components/Jobs/EditJobModal';
 
 function Job() {
   const navigate = useNavigate();
@@ -38,6 +41,8 @@ function Job() {
 
     setProposalModalOpen(true);
   };
+
+  const [isEditJobModalOpen, setEditJobModalOpen] = useState(false);
 
   const handleCloseJob = () => {
     Swal.fire({
@@ -97,6 +102,10 @@ function Job() {
 
   return (
     <div>
+      {isEditJobModalOpen && (
+        <EditJobModal job={job} onClose={() => setEditJobModalOpen(false)} />
+      )}
+
       {isProposalModalOpen && (
         <ProposalModal job={job} onClose={() => setProposalModalOpen(false)} />
       )}
@@ -158,13 +167,25 @@ function Job() {
 
                   {user.username === job.client.username &&
                     job.status === 'open' && (
-                      <button
-                        onClick={handleCloseJob}
-                        type="button"
-                        className="inline-flex text-black bg-red-200 border border-red-200 rounded-full hover:border-black justify-center px-8 py-3 mt-5"
-                      >
-                        Close Job
-                      </button>
+                      <div className="flex gap-2 mt-5">
+                        <button
+                          onClick={() => setEditJobModalOpen(true)}
+                          type="button"
+                          className="text-black bg-yellow-200 border border-yellow-200 rounded-full hover:border-black justify-center px-8 py-1.5 flex items-center gap-2"
+                        >
+                          <FontAwesomeIcon icon={faPenToSquare} />
+                          <span>Edit Job</span>
+                        </button>
+
+                        <button
+                          onClick={handleCloseJob}
+                          type="button"
+                          className="text-black bg-red-200 border border-red-200 rounded-full hover:border-black justify-center px-8 py-1.5 flex items-center gap-2"
+                        >
+                          <FontAwesomeIcon icon={faTrash} />
+                          <span>Close Job</span>
+                        </button>
+                      </div>
                     )}
                 </div>
               </div>

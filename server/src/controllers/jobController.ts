@@ -22,6 +22,24 @@ export async function createJob(req: Request, res: Response): Promise<void> {
   }
 }
 
+export async function updateJob(req: Request, res: Response): Promise<void> {
+  const { title, description, category, budget, duration } = req.body;
+
+  try {
+    await db.query(
+      'UPDATE jobs SET title = $1, description = $2, category_id = $3, budget = $4, duration = $5 WHERE id = $6',
+      [title, description, category, budget, duration, req.params.jobId],
+    );
+
+    res.status(200).json({
+      status: true,
+      message: 'Job updated',
+    });
+  } catch {
+    res.status(500).json({ status: false, message: 'Error updating job' });
+  }
+}
+
 export async function getJobs(req: Request, res: Response): Promise<void> {
   let queryString =
     "SELECT j.id, j.status, j.budget, j.duration, j.title, j.description, j.created_at, client.first_name, client.last_name, client.username, client.profile_picture,c.id category_id,c.name ,c.description category_description FROM jobs j LEFT JOIN categories c ON c.id = j.category_id INNER JOIN accounts client ON client.id = j.client_id WHERE status = 'open' ";
