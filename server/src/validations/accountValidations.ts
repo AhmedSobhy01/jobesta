@@ -79,7 +79,6 @@ export const updateAccountValidationRules = [
     ),
 
   body('confirmPassword')
-    .optional()
     .trim()
     .custom((value, { req }) => {
       if (value !== req.body.password) {
