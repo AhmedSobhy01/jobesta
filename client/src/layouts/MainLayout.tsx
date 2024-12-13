@@ -1,4 +1,4 @@
-import { Outlet, useLoaderData, useNavigate } from 'react-router-dom';
+import { Outlet, redirect, useLoaderData, useNavigate } from 'react-router-dom';
 import MainNavigationBar from '@/components/NavBar/MainNavigationBar';
 import { useContext, useEffect, useState } from 'react';
 import UserContext from '@/store/userContext';
@@ -37,11 +37,12 @@ function MainLayout() {
 
   useEffect(() => {
     if (userData?.user && !myUser.refreshToken) {
-      navigate('/');
+      navigate('/logout');
     }
 
     if (userData?.message) {
       setIsError(true);
+      navigate('/logout');
     }
 
     if (userData?.user && userData.user.id !== myUser.accountId) {
@@ -140,6 +141,11 @@ MainLayout.loader = async function loader() {
         },
       );
 
+      if (response.status === 403) {
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('refreshTokenExpiration');
+      }
+
       const resData = await response.json();
 
       if (!response.ok) {
@@ -167,6 +173,12 @@ MainLayout.loader = async function loader() {
         },
       },
     );
+
+    if (userResponse.status === 401) {
+      localStorage.removeItem('jwtToken');
+      localStorage.removeItem('jwtTokenExpiration');
+      return redirect('/');
+    }
 
     const userData = await userResponse.json();
 
