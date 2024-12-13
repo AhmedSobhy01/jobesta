@@ -126,3 +126,11 @@ export const acceptProposalValidationRules = [
     .notEmpty()
     .withMessage('Freelancer ID must not be empty'),
 ];
+
+export const closeJobValidationRules = [
+  param('jobId')
+    .isNumeric()
+    .withMessage('Job ID must be a number')
+    .notEmpty()
+    .withMessage('Job ID must not be empty'),
+];

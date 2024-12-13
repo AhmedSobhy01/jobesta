@@ -313,10 +313,48 @@ export async function acceptProposal(req: Request, res: Response) {
       status: true,
       message: 'Proposal accepted',
     });
-  } catch (err) {
-    console.log(err);
+  } catch {
     res
       .status(500)
       .json({ status: false, message: 'Error accepting proposal' });
+  }
+}
+
+export async function closeJob(req: Request, res: Response) {
+  try {
+    const jobQuery = await db.query(
+      'SELECT * FROM jobs WHERE id = $1 AND client_id = $2',
+      [req.params.jobId, req.user!.id],
+    );
+
+    if (jobQuery.rows.length === 0) {
+      res.status(404).json({ status: false, message: 'Job not found' });
+      return;
+    }
+
+    if (jobQuery.rows[0].status !== 'open') {
+      res.status(400).json({
+        status: false,
+        message: 'Job is not open',
+      });
+      return;
+    }
+
+    await db.query('UPDATE jobs SET status = $1 WHERE id = $2', [
+      'closed',
+      req.params.jobId,
+    ]);
+
+    await db.query('UPDATE proposals SET status = $1 WHERE job_id = $2', [
+      'rejected',
+      req.params.jobId,
+    ]);
+
+    res.status(200).json({
+      status: true,
+      message: 'Job closed',
+    });
+  } catch {
+    res.status(500).json({ status: false, message: 'Error closing job' });
   }
 }
