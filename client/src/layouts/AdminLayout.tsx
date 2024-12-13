@@ -5,6 +5,8 @@ import { useContext, useEffect, useState } from 'react';
 import { Outlet, useLoaderData } from 'react-router';
 import ErrorModule from '@/components/ErrorModule';
 import NavBar from '@/components/Admin/Layout/NavBar';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AdminLayout = () => {
   const myUser = useContext(UserContext);
@@ -64,6 +66,8 @@ const AdminLayout = () => {
 
   return (
     <div className="flex h-screen bg-gray-100" onClick={handleClick}>
+      <ToastContainer />
+
       {isError && (
         <ErrorModule
           errorMessage={userData?.message}
