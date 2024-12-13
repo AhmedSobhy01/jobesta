@@ -59,9 +59,18 @@ const MainNavigationBar: React.FC<{
             </span>
           </Link>
 
-          <div className="flex justify-between md:w-auto md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse relative">
+          <div className="flex justify-between md:w-auto md:order-2 space-x-3 relative">
             {refreshToken && (
               <>
+                {role == 'client' && (
+                  <Link
+                    to="/jobs/create"
+                    className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-500 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-green-700 dark:hover:bg-green-800 dark:focus:ring-green-800 flex items-center justify-center"
+                  >
+                    Create Job
+                  </Link>
+                )}
+
                 <NavButton
                   focus={false}
                   handleClick={handleBellClick}
@@ -133,14 +142,6 @@ const MainNavigationBar: React.FC<{
                   >
                     <NavBarItem page="/contacts">Contacts</NavBarItem>
                   </li>
-                  {role === 'client' && (
-                    <li
-                      className="py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-                      onClick={handleBarClick}
-                    >
-                      <NavBarItem page="/create-job">Create Job</NavBarItem>
-                    </li>
-                  )}
                 </ul>
               )}
             </div>
@@ -155,9 +156,6 @@ const MainNavigationBar: React.FC<{
               <NavBarItem page="/about">About</NavBarItem>
               <NavBarItem page="/jobs">Jobs</NavBarItem>
               <NavBarItem page="/contacts">Contacts</NavBarItem>
-              {role === 'client' && (
-                <NavBarItem page="/create-job">Create Job</NavBarItem>
-              )}
             </ul>
           </div>
         </div>
