@@ -26,12 +26,6 @@ function Job() {
 
   const { status: loaderStatus, error: loaderError, job } = useLoaderData();
 
-  const canApplyToJob =
-    (!user.username ||
-      (user.role === 'freelancer' && job.myProposal === null)) &&
-    job.status === 'open';
-  const alreadyAppliedToJob = user && job?.myProposal !== null;
-
   const [isProposalModalOpen, setProposalModalOpen] = useState(false);
 
   const handleOpenProposalModal = () => {
@@ -99,6 +93,12 @@ function Job() {
       <ErrorModule onClose={() => navigate('/')} errorMessage={loaderError} />
     );
   }
+
+  const canApplyToJob =
+    (!user.username ||
+      (user.role === 'freelancer' && job.myProposal === null)) &&
+    job.status === 'open';
+  const alreadyAppliedToJob = user && job?.myProposal !== null;
 
   return (
     <div>
