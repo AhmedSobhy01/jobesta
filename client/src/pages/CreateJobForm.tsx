@@ -53,10 +53,6 @@ const CreateJobForm = () => {
           throw new Error('Validation error.');
         }
 
-        toast(errorData.message || 'Failed to create job.', {
-          type: 'error',
-        });
-
         throw new Error(errorData.message || 'Failed to create job.');
       }
 
