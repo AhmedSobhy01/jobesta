@@ -1,7 +1,7 @@
 import { Form, useLoaderData, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import ErrorModule from '@/components/ErrorModule';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import UserContext from '@/store/userContext';
 
 const CreateJobForm = () => {
@@ -18,8 +18,14 @@ const CreateJobForm = () => {
   const navigate = useNavigate();
   const user = useContext(UserContext);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState<{ [key: string]: string } | null>({});
+
   const handleSuccess = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    setIsSubmitting(true);
+
     try {
       const formData = new FormData(e.currentTarget);
       const jobData = Object.fromEntries(formData.entries());
@@ -42,6 +48,11 @@ const CreateJobForm = () => {
       if (!response.ok) {
         const errorData = await response.json();
 
+        if (response.status === 422) {
+          setErrors(errorData.errors);
+          throw new Error('Validation error.');
+        }
+
         toast(errorData.message || 'Failed to create job.', {
           type: 'error',
         });
@@ -60,6 +71,8 @@ const CreateJobForm = () => {
         toast('Failed to create job.', { type: 'error' });
       }
     }
+
+    setIsSubmitting(false);
   };
 
   if (!categoriesStatus) {
@@ -87,6 +100,7 @@ const CreateJobForm = () => {
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
               required
             />
+            <p className="text-sm text-red-500 mt-1">{errors?.title}</p>
           </div>
 
           <div>
@@ -100,6 +114,7 @@ const CreateJobForm = () => {
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
               required
             ></textarea>
+            <p className="text-sm text-red-500 mt-1">{errors?.description}</p>
           </div>
 
           <div>
@@ -117,6 +132,7 @@ const CreateJobForm = () => {
                 </option>
               ))}
             </select>
+            <p className="text-sm text-red-500 mt-1">{errors?.category}</p>
           </div>
 
           <div>
@@ -132,6 +148,7 @@ const CreateJobForm = () => {
               min={1}
               step={0.01}
             />
+            <p className="text-sm text-red-500 mt-1">{errors?.budget}</p>
           </div>
 
           <div>
@@ -146,11 +163,13 @@ const CreateJobForm = () => {
               required
               min={0}
             />
+            <p className="text-sm text-red-500 mt-1">{errors?.duration}</p>
           </div>
 
           <button
             type="submit"
-            className="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-all"
+            className={`w-full py-2 bg-emerald-600 text-white rounded-lg transition-all ${isSubmitting ? 'bg-opacity-50 cursor-not-allowed' : 'hover:bg-emerald-700'}`}
+            disabled={isSubmitting}
           >
             Create Job
           </button>
