@@ -20,9 +20,7 @@ CREATE TYPE "proposal_status" AS ENUM (
 
 CREATE TYPE "milestone_status" AS ENUM (
   'pending',
-  'in_progress',
-  'completed',
-  'paid'
+  'completed'
 );
 
 CREATE TYPE "payment_status" AS ENUM (
