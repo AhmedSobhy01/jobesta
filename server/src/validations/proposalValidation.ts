@@ -42,13 +42,15 @@ const validProposal = [
     .isNumeric()
     .withMessage('Duration must be a number')
     .notEmpty()
-    .withMessage('Duration must not be empty'),
+    .withMessage('Duration must not be empty')
+    .isInt({ min: 1 }),
 
   body('milestones.*.amount')
     .isNumeric()
     .withMessage('Amount must be a number')
     .notEmpty()
-    .withMessage('Amount must not be empty'),
+    .withMessage('Amount must not be empty')
+    .isFloat({ min: 1 }),
 ];
 
 export const createProposalValidationRules = [
