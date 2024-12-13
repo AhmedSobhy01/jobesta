@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
 import { promises as fs } from 'fs';
 import db from '../db/db.js';
+import bcrypt from 'bcrypt';
 
 export async function getAccount(req: Request, res: Response): Promise<void> {
   const userData = req.user;
@@ -16,7 +17,12 @@ export async function getAccount(req: Request, res: Response): Promise<void> {
       email: userData!.email,
       role: userData!.role,
       isBanned: userData!.is_banned,
-      profilePicture: userData!.profile_picture,
+      profilePicture:
+        userData!.profile_picture ||
+        'https://ui-avatars.com/api/?name=' +
+          userData!.first_name +
+          '+' +
+          userData!.last_name,
     },
   });
 }
@@ -37,7 +43,19 @@ export async function updateAccount(
       [firstName, lastName, username, email, userId],
     );
 
-    res.status(201).json({ status: true, message: 'Updated account' });
+    if (req.body.password) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(req.body.password, salt);
+
+      await db.query('UPDATE accounts SET password = $1 WHERE id = $2', [
+        hashedPassword,
+        userId,
+      ]);
+    }
+
+    res
+      .status(201)
+      .json({ status: true, message: 'Updated account', data: { username } });
   } catch {
     res.status(500).json({
       status: false,
@@ -86,31 +104,40 @@ export async function getUserByUsername(
 ): Promise<void> {
   const { username } = req.params;
 
-  const userDataQuery = await db.query(
-    'SELECT * FROM accounts WHERE username = $1',
-    [username],
-  );
+  try {
+    const userDataQuery = await db.query(
+      'SELECT * FROM accounts WHERE username = $1',
+      [username],
+    );
 
-  if (userDataQuery.rowCount === 0) {
-    res.status(404).json({
-      status: false,
-      message: 'User not found',
+    if (userDataQuery.rowCount === 0) {
+      res.status(404).json({
+        status: false,
+        message: 'User not found',
+      });
+      return;
+    }
+
+    const userData = userDataQuery.rows[0];
+
+    res.status(200).json({
+      status: true,
+      message: 'User Found',
+      data: {
+        firstName: userData!.first_name,
+        lastName: userData!.last_name,
+        username: userData!.username,
+        role: userData!.role,
+        isBanned: userData!.is_banned,
+        profilePicture:
+          userData!.profile_picture ||
+          'https://ui-avatars.com/api/?name=' +
+            userData!.first_name +
+            '+' +
+            userData!.last_name,
+      },
     });
-    return;
+  } catch {
+    res.status(500).json({ status: false, message: 'Error fetching user' });
   }
-
-  const userData = userDataQuery.rows[0];
-
-  res.status(200).json({
-    status: true,
-    message: 'User Found',
-    data: {
-      firstName: userData!.first_name,
-      lastName: userData!.last_name,
-      username: userData!.username,
-      role: userData!.role,
-      isBanned: userData!.is_banned,
-      profilePicture: userData!.profile_picture,
-    },
-  });
 }
