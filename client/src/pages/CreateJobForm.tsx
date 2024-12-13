@@ -71,6 +71,11 @@ const CreateJobForm = () => {
     setIsSubmitting(false);
   };
 
+  if (!user || user.role != 'client') {
+    navigate('/');
+    return null;
+  }
+
   if (!categoriesStatus) {
     return (
       <ErrorModule
@@ -157,7 +162,7 @@ const CreateJobForm = () => {
               placeholder="Enter duration"
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
               required
-              min={0}
+              min={1}
             />
             <p className="text-sm text-red-500 mt-1">{errors?.duration}</p>
           </div>
