@@ -12,6 +12,7 @@ import { FileUploadError } from './utils/errors.js';
 import { MulterError } from 'multer';
 import notificationRoutes from './routes/notificationRoutes.js';
 import messageRoutes from './routes/messageRoutes.js';
+import milestoneRoutes from './routes/milestoneRoutes.js';
 
 // Load environment variables from the .env file
 configDotenv();
@@ -47,6 +48,7 @@ app.use('/auth', authRoutes);
 app.use('/admin', adminRoutes);
 app.use('/jobs', jobRoutes);
 app.use('/messages', messageRoutes);
+app.use('/milestones', milestoneRoutes);
 app.use('/notifications', notificationRoutes);
 app.use('/proposals', proposalRoutes);
 app.get('/categories', getCategories);
