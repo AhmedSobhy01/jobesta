@@ -98,7 +98,7 @@ const CreateJobForm = () => {
               type="text"
               name="title"
               placeholder="Enter job title"
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               required
             />
             <p className="text-sm text-red-500 mt-1">{errors?.title}</p>
@@ -112,7 +112,7 @@ const CreateJobForm = () => {
               name="description"
               placeholder="Enter job description"
               rows={4}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               required
             ></textarea>
             <p className="text-sm text-red-500 mt-1">{errors?.description}</p>
@@ -124,7 +124,7 @@ const CreateJobForm = () => {
             </label>
             <select
               name="category"
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               required
             >
               {categories.map((category) => (
@@ -144,7 +144,7 @@ const CreateJobForm = () => {
               type="number"
               name="budget"
               placeholder="Enter budget"
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               required
               min={1}
               step={0.01}
@@ -160,7 +160,7 @@ const CreateJobForm = () => {
               type="number"
               name="duration"
               placeholder="Enter duration"
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               required
               min={1}
             />

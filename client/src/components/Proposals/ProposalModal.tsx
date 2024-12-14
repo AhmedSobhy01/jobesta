@@ -131,7 +131,7 @@ const ProposalModal: React.FC<{
             value={coverLetter}
             onChange={handleCoverLetterChange}
             placeholder="Write a brief cover letter..."
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500"
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
             rows={3}
           />
           <p className="text-sm text-red-500 mt-1">{errors?.coverLetter}</p>
@@ -158,7 +158,7 @@ const ProposalModal: React.FC<{
                   value={milestone.name}
                   onChange={(e) => handleMilestoneChange(e, index)}
                   placeholder="Enter milestone name"
-                  className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500"
+                  className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                 />
                 <p className="text-sm text-red-500 mt-1">
                   {errors?.[`milestones[${index}].name`]}
@@ -181,7 +181,7 @@ const ProposalModal: React.FC<{
                     value={milestone.amount}
                     onChange={(e) => handleMilestoneChange(e, index)}
                     placeholder="Amount in USD"
-                    className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500"
+                    className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   />
                   <p className="text-sm text-red-500 mt-1">
                     {errors?.[`milestones[${index}].amount`]}
@@ -202,7 +202,7 @@ const ProposalModal: React.FC<{
                     value={milestone.duration}
                     onChange={(e) => handleMilestoneChange(e, index)}
                     placeholder="Days"
-                    className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500"
+                    className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   />
                   <p className="text-sm text-red-500 mt-1">
                     {errors?.[`milestones[${index}].duration`]}

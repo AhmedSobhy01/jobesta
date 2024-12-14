@@ -141,7 +141,7 @@ const EditJobModal = ({ job, onClose }: { job: Job; onClose: () => void }) => {
               name="title"
               defaultValue={job.title}
               placeholder="Enter job title"
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               required
             />
             <p className="text-sm text-red-500 mt-1">{errors?.title}</p>
@@ -156,7 +156,7 @@ const EditJobModal = ({ job, onClose }: { job: Job; onClose: () => void }) => {
               defaultValue={job.description}
               placeholder="Enter job description"
               rows={4}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               required
             ></textarea>
             <p className="text-sm text-red-500 mt-1">{errors?.description}</p>
@@ -172,7 +172,7 @@ const EditJobModal = ({ job, onClose }: { job: Job; onClose: () => void }) => {
               <select
                 name="category"
                 defaultValue={job.category.id}
-                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                 required
               >
                 {categories.map((category: JobCategory) => (
@@ -194,7 +194,7 @@ const EditJobModal = ({ job, onClose }: { job: Job; onClose: () => void }) => {
               name="budget"
               defaultValue={job.budget}
               placeholder="Enter budget"
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               required
               min={1}
               step={0.01}
@@ -211,7 +211,7 @@ const EditJobModal = ({ job, onClose }: { job: Job; onClose: () => void }) => {
               name="duration"
               defaultValue={job.duration}
               placeholder="Enter duration"
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               required
               min={1}
             />
