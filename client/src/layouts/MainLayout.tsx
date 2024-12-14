@@ -1,4 +1,4 @@
-import { Outlet, useLoaderData } from 'react-router-dom';
+import { Outlet, redirect, useLoaderData, useNavigate } from 'react-router-dom';
 import MainNavigationBar from '@/components/NavBar/MainNavigationBar';
 import { useContext, useEffect, useState } from 'react';
 import UserContext from '@/store/userContext';
@@ -6,9 +6,12 @@ import { getAuthJwtToken, getAuthRefreshToken } from '@/utils/auth';
 import ErrorModule from '@/components/ErrorModule';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import FreelancerContext from '@/store/freelancerContext';
 
 function MainLayout() {
+  const navigate = useNavigate();
   const myUser = useContext(UserContext);
+  const myFreelancerUser = useContext(FreelancerContext);
   const [isError, setIsError] = useState(false);
   const [dropdownOpen, setDropdownOpenMenu] = useState({
     isDropdownBarOpen: false,
@@ -35,11 +38,30 @@ function MainLayout() {
   };
 
   useEffect(() => {
+    if (userData?.user && !myUser.refreshToken) {
+      navigate('/logout');
+    }
+
     if (userData?.message) {
       setIsError(true);
+      navigate('/logout');
     }
 
     if (userData?.user && userData.user.id !== myUser.accountId) {
+      if (userData.user.role === 'freelancer') {
+        const freelancerObj = {
+          freelancerId: myFreelancerUser.freelancerId,
+          balance: userData.freelancer.balance,
+          bio: myFreelancerUser.bio,
+          previousWork: myFreelancerUser.previousWork,
+          skills: myFreelancerUser.skills,
+          badges: myFreelancerUser.badges,
+          jobs: myFreelancerUser.jobs,
+        };
+
+        myFreelancerUser.setFreelancer(freelancerObj);
+      }
+
       const {
         id,
         firstName,
@@ -63,7 +85,14 @@ function MainLayout() {
         refreshToken: getAuthRefreshToken(),
       });
     }
-  }, [userData, myUser]);
+  }, [
+    userData,
+    myFreelancerUser,
+    navigate,
+    myUser.refreshToken,
+    myUser.accountId,
+    myUser,
+  ]);
 
   return (
     <div className="h-screen dark:bg-gray-900 bg-white" onClick={handleClick}>
@@ -116,6 +145,11 @@ MainLayout.loader = async function loader() {
         },
       );
 
+      if (response.status === 403) {
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('refreshTokenExpiration');
+      }
+
       const resData = await response.json();
 
       if (!response.ok) {
@@ -144,12 +178,43 @@ MainLayout.loader = async function loader() {
       },
     );
 
+    if (userResponse.status === 401) {
+      localStorage.removeItem('jwtToken');
+      localStorage.removeItem('jwtTokenExpiration');
+      return redirect('/');
+    }
+
     const userData = await userResponse.json();
 
     if (!userResponse.ok) {
       return { message: userData.message };
     }
+    if (userData.data.role === 'freelancer') {
+      const freelancerBalanceResponse = await fetch(
+        `${import.meta.env.VITE_API_URL}/freelancer/balance`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${newJwtToken}`,
+          },
+        },
+      );
 
+      const freelancerBalance = await freelancerBalanceResponse.json();
+
+      if (!freelancerBalanceResponse.ok) {
+        return {
+          message: freelancerBalance.message,
+        };
+      }
+
+      return {
+        user: userData.data,
+        freelancer: {
+          balance: freelancerBalance.data.balance,
+        },
+      };
+    }
     return {
       user: userData.data,
     };

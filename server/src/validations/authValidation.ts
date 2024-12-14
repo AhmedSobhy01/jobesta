@@ -40,12 +40,21 @@ export const registerValidationRules = [
     .isAlphanumeric()
     .withMessage('Username must contain only letters and numbers')
     .custom(async (value) => {
+      if (value === 'me') {
+        throw 'Username cannot be "me"';
+      }
+      if (value === 'balance') {
+        throw 'Username cannot be "balance"';
+      }
+      return true;
+    })
+    .custom(async (value) => {
       const query = await db.query(
         'SELECT * FROM accounts WHERE username = $1',
         [value],
       );
       if (query.rowCount !== null && query.rowCount > 0) {
-        return Promise.reject('Username already in use');
+        throw 'Username already in use';
       }
     }),
 
@@ -62,7 +71,7 @@ export const registerValidationRules = [
         value,
       ]);
       if (query.rowCount !== null && query.rowCount > 0) {
-        return Promise.reject('Email already in use');
+        throw 'Email already in use';
       }
     }),
 
@@ -78,6 +87,17 @@ export const registerValidationRules = [
     .withMessage(
       'Password must contain at least one uppercase letter, one lowercase letter, and one number',
     ),
+
+  body('confirmPassword')
+    .optional()
+    .trim()
+    .custom((value, { req }) => {
+      if (value !== req.body.password) {
+        throw new Error('Passwords do not match');
+      }
+
+      return true;
+    }),
 
   body('role')
     .trim()

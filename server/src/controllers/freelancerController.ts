@@ -2,19 +2,45 @@ import type { Request, Response } from 'express';
 import type { IPreviousWork } from '../models/model';
 import db from '../db/db.js';
 
-export async function getCurrentFreelancer({ user }: Request, res: Response) {
-  const freelancerId = user!.freelancer!.id;
+export async function getFreelancerByUsername(req: Request, res: Response) {
+  const { username } = req.params;
 
   try {
+    const freelancerDataQuery = await db.query(
+      'SELECT f.id, f.bio FROM accounts a JOIN freelancers f ON f.account_id = a.id WHERE a.username = $1',
+      [username],
+    );
+
+    if (freelancerDataQuery.rowCount === 0) {
+      res.status(404).json({
+        status: false,
+        message: 'Freelancer not found',
+      });
+      return;
+    }
+
+    const freelancerData = freelancerDataQuery.rows[0];
+
     const skillsQuery = await db.query(
       'SELECT name FROM skills WHERE freelancer_id = $1',
-      [freelancerId],
+      [freelancerData.id],
     );
 
     const previousWorkQuery = await db.query(
-      'SELECT * FROM previous_works WHERE freelancer_id = $1',
-      [freelancerId],
+      'SELECT * FROM previous_works WHERE freelancer_id = $1 ORDER BY "order" ASC',
+      [freelancerData.id],
     );
+
+    const badgesQuery = await db.query(
+      'SELECT name,description,icon,earned_at FROM badges JOIN badge_freelancer bf ON bf.badge_id = badges.id WHERE freelancer_id = $1',
+      [freelancerData.id],
+    );
+
+    const badges = badgesQuery.rows.map((badge) => ({
+      name: badge.name,
+      description: badge.description,
+      icon: badge.icon,
+    }));
 
     const previousWork = previousWorkQuery.rows.map((work) => ({
       title: work.title,
@@ -25,11 +51,10 @@ export async function getCurrentFreelancer({ user }: Request, res: Response) {
     const skills = skillsQuery.rows.map((skill) => skill.name);
 
     const freelancer = {
-      id: user!.freelancer!.id,
-      balance: user!.freelancer!.balance,
-      bio: user!.freelancer!.bio,
+      bio: freelancerData.bio,
       previousWork,
       skills,
+      badges,
     };
 
     res
@@ -40,6 +65,23 @@ export async function getCurrentFreelancer({ user }: Request, res: Response) {
       status: false,
       message: 'Error fetching freelancer',
     });
+  }
+}
+
+export async function getFreelancerBalance(req: Request, res: Response) {
+  const freelancerId = req.user!.freelancer!.id;
+  try {
+    const balanceQuery = await db.query(
+      'SELECT balance FROM freelancers WHERE id = $1',
+      [freelancerId],
+    );
+    res.status(200).json({
+      status: true,
+      message: 'Balance fetched',
+      data: { balance: balanceQuery.rows[0].balance },
+    });
+  } catch {
+    res.status(500).json({ status: false, message: 'Error fetching balance' });
   }
 }
 
@@ -94,51 +136,4 @@ export async function updateFreelancer(
       message: 'Error updating freelancer',
     });
   }
-}
-
-export async function getFreelancerByUsername(req: Request, res: Response) {
-  const { username } = req.params;
-
-  const freelancerDataQuery = await db.query(
-    'SELECT f.id, f.bio, f.balance FROM accounts a JOIN freelancers f ON f.account_id = a.id WHERE a.username = $1',
-    [username],
-  );
-
-  if (freelancerDataQuery.rowCount === 0) {
-    res.status(404).json({
-      status: false,
-      message: 'Freelancer not found',
-    });
-    return;
-  }
-
-  const freelancerData = freelancerDataQuery.rows[0];
-
-  const skillsQuery = await db.query(
-    'SELECT name FROM skills WHERE freelancer_id = $1',
-    [freelancerData.id],
-  );
-
-  const previousWorkQuery = await db.query(
-    'SELECT * FROM previous_works WHERE freelancer_id = $1',
-    [freelancerData.id],
-  );
-
-  const previousWork = previousWorkQuery.rows.map((work) => ({
-    title: work.title,
-    description: work.description,
-    url: work.url,
-  }));
-
-  const skills = skillsQuery.rows.map((skill) => skill.name);
-
-  const freelancer = {
-    bio: freelancerData.bio,
-    previousWork,
-    skills,
-  };
-
-  res
-    .status(200)
-    .json({ status: true, message: 'Freelancer Found', data: freelancer });
 }

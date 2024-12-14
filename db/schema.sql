@@ -199,7 +199,7 @@ ALTER TABLE "previous_works" ADD FOREIGN KEY ("freelancer_id") REFERENCES "freel
 
 ALTER TABLE "notifications" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
-ALTER TABLE "freelancers" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "freelancers" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE "proposals" ADD FOREIGN KEY ("job_id") REFERENCES "jobs" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -222,6 +222,7 @@ ALTER TABLE "withdrawals" ADD FOREIGN KEY ("freelancer_id") REFERENCES "freelanc
 ALTER TABLE "jobs" ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 ALTER TABLE "jobs" ADD FOREIGN KEY ("client_id") REFERENCES "accounts" ("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
 
 INSERT INTO "accounts" ("first_name", "last_name", "username", "email", "password", "role") 
 VALUES ('admin','1','admin','admin@example.com','$2b$10$xNb2FgHuAHY/AiaHdsdpVevhaQwYFbhbnNrXICSqCjDSE71fbnUgK','admin');

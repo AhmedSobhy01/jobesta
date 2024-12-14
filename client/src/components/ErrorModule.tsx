@@ -26,7 +26,9 @@ const GlobalErrorPopup: React.FC<GlobalErrorPopupProps> = ({
           </button>
         </div>
         <div className="mt-4">
-          <p className="text-sm text-gray-800">{errorMessage}</p>
+          <p className="text-sm text-gray-800">
+            {errorMessage ? errorMessage : 'Error happened'}
+          </p>
         </div>
         <div className="mt-6 text-right">
           <button
