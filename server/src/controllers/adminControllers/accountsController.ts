@@ -38,7 +38,12 @@ export async function getAccounts(req: Request, res: Response) {
         lastName: account.last_name,
         username: account.username,
         email: account.email,
-        profilePicture: account.profile_picture,
+        profilePicture:
+          account.profile_picture ||
+          'https://ui-avatars.com/api/?name=' +
+            account.first_name +
+            '+' +
+            account.last_name,
         isBanned: account.is_banned,
         role: account.role,
         createdAt: account.created_at,
