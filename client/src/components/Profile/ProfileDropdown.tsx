@@ -27,6 +27,13 @@ const ProfileDropdown: React.FC = () => {
           </div>
           <div className="border-t dark:border-gray-700 border-gray-200"></div>
           <ul className="py-1">
+            {userData.role === 'admin' && (
+              <li>
+                <NavBarItem className="" page="/admin">
+                  Admin Dashboard
+                </NavBarItem>
+              </li>
+            )}
             <li>
               <NavBarItem className="" page={`/users/${userData.username}`}>
                 Profile
