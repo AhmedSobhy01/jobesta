@@ -98,7 +98,7 @@ const FreelancerModal: React.FC<{
     const modifiedPreviousWorks = previousWork.map((previousWork, i) => ({
       title: previousWork.title,
       description: previousWork.description,
-      url: previousWork.url,
+      url: previousWork.url || undefined,
       order: i + 1,
     }));
 
@@ -415,35 +415,41 @@ const FreelancerModal: React.FC<{
           {skills.length > 0 ? (
             <div className="border rounded-lg p-4 bg-gray-50 shadow-sm space-y-4">
               {skills.map((skill, index) => (
-                <div key={index} className="flex items-center space-x-2">
-                  <input
-                    type="text"
-                    id={`skill-${index}`}
-                    name="skill"
-                    value={skill}
-                    onChange={(e) => {
-                      setSkills((prevSkills) => {
-                        const updatedSkills = [...prevSkills];
-                        updatedSkills[index] = e.target.value;
-                        return updatedSkills;
-                      });
-                    }}
-                    placeholder="Enter Skill"
-                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSkills((previousSkills) => {
-                        const updatedSkills = [...previousSkills];
-                        updatedSkills.splice(index, 1);
-                        return updatedSkills;
-                      });
-                    }}
-                    className="text-red-500 hover:underline px-2"
-                  >
-                    <FontAwesomeIcon icon={faXmark} size="lg" />
-                  </button>
+                <div key={index} >
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="text"
+                      id={`skill-${index}`}
+                      name="skill"
+                      value={skill}
+                      onChange={(e) => {
+                        setSkills((prevSkills) => {
+                          const updatedSkills = [...prevSkills];
+                          updatedSkills[index] = e.target.value;
+                          return updatedSkills;
+                        });
+                      }}
+                      placeholder="Enter Skill"
+                      className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSkills((previousSkills) => {
+                          const updatedSkills = [...previousSkills];
+                          updatedSkills.splice(index, 1);
+                          return updatedSkills;
+                        });
+                      }}
+                      className="text-red-500 hover:underline px-2"
+                    >
+                      <FontAwesomeIcon icon={faXmark} size="lg" />
+                    </button>
+                  </div>
+                  <p className="text-sm text-red-500 mt-1 block">
+                    {errors?.[`skills[${index}]`]}
+                  </p>
                 </div>
               ))}
             </div>
