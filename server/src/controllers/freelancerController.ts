@@ -36,40 +36,6 @@ export async function getFreelancerByUsername(req: Request, res: Response) {
       [freelancerData.id],
     );
 
-    let jobsQueryString = `SELECT j.id, j.status, j.budget, j.duration, j.title, j.description, j.created_at, client.first_name, client.last_name, client.username, client.profile_picture, c.id category_id, c.name category_name ,c.description category_description 
-      FROM jobs j 
-      JOIN categories c ON c.id = j.category_id 
-      JOIN accounts client ON client.id = j.client_id
-      JOIN proposals p ON p.job_id = j.id
-      WHERE p.freelancer_id = $1`;
-
-    if (!req.user || req.user.username !== username) {
-      jobsQueryString += " AND j.status = 'completed'";
-    }
-
-    const jobsQuery = await db.query(jobsQueryString, [freelancerData.id]);
-
-    const jobs = jobsQuery.rows.map((job) => ({
-      id: job.id,
-      status: job.status,
-      budget: job.budget,
-      duration: job.duration,
-      title: job.title,
-      description: job.description,
-      category: {
-        id: job.category_id,
-        name: job.name,
-        description: job.category_description,
-      },
-      createdAt: job.created_at,
-      client: {
-        firstName: job.first_name,
-        lastName: job.last_name,
-        username: job.username,
-        profilePicture: job.profile_picture,
-      },
-    }));
-
     const badges = badgesQuery.rows.map((badge) => ({
       name: badge.name,
       description: badge.description,
@@ -89,7 +55,6 @@ export async function getFreelancerByUsername(req: Request, res: Response) {
       previousWork,
       skills,
       badges,
-      jobs,
     };
 
     res

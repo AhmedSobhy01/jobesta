@@ -10,7 +10,7 @@ export function SetUserPage() {
     const accountId = null;
     const firstName = null;
     const lastName = null;
-    const username = null;
+    const username = undefined;
     const email = null;
     const role = null;
     const isBanned = null;

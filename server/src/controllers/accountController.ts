@@ -120,6 +120,51 @@ export async function getUserByUsername(
 
     const userData = userDataQuery.rows[0];
 
+    let jobsQueryString = `SELECT j.id, j.status, j.budget, j.duration, j.title, j.description, j.created_at, client.first_name, client.last_name, client.username, client.profile_picture, c.id category_id, c.name category_name ,c.description category_description 
+      FROM jobs j 
+      JOIN accounts client ON client.id = j.client_id
+      LEFT JOIN categories c ON c.id = j.category_id 
+      LEFT JOIN proposals p ON p.job_id = j.id`;
+
+    let jobsQueryParams = [];
+
+    if (userData.role === 'client') {
+      jobsQueryString += ' WHERE j.client_id = $1';
+      jobsQueryParams = [userData.id];
+    } else {
+      const result = await db.query(
+        'SELECT id FROM freelancers WHERE account_id = $1',
+        [userData.id],
+      );
+      const freelancerData = result.rows[0];
+
+      jobsQueryString += ' WHERE p.freelancer_id = $1 AND p.status = $2';
+      jobsQueryParams = [freelancerData.id, 'accepted'];
+    }
+
+    const jobsQuery = await db.query(jobsQueryString, jobsQueryParams);
+
+    const jobs = jobsQuery.rows.map((job) => ({
+      id: job.id,
+      status: job.status,
+      budget: job.budget,
+      duration: job.duration,
+      title: job.title,
+      description: job.description,
+      category: {
+        id: job.category_id,
+        name: job.name,
+        description: job.category_description,
+      },
+      createdAt: job.created_at,
+      client: {
+        firstName: job.first_name,
+        lastName: job.last_name,
+        username: job.username,
+        profilePicture: job.profile_picture,
+      },
+    }));
+
     res.status(200).json({
       status: true,
       message: 'User Found',
@@ -135,6 +180,7 @@ export async function getUserByUsername(
             userData!.first_name +
             '+' +
             userData!.last_name,
+        jobs,
       },
     });
   } catch {

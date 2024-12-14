@@ -5,18 +5,19 @@ interface UserContextType {
   accountId: string | null;
   firstName: string | null;
   lastName: string | null;
-  username: string | null;
+  username?: string;
   email: string | null;
   role: string | null;
   isBanned: string | null;
   profilePicture?: string;
   jwtToken: string | null;
   refreshToken: string | null;
+  setUsername: (username?: string) => void;
   setUser: (newUser: {
     accountId: string | null;
     firstName: string | null;
     lastName: string | null;
-    username: string | null;
+    username?: string;
     email: string | null;
     role: string | null;
     isBanned: string | null;
@@ -31,13 +32,14 @@ const UserContext = createContext<UserContextType>({
   accountId: null,
   firstName: null,
   lastName: null,
-  username: null,
+  username: undefined,
   email: null,
   role: null,
   isBanned: null,
   profilePicture: undefined,
   jwtToken: null,
   refreshToken: null,
+  setUsername: () => {},
   setUser: () => {},
 });
 
@@ -48,7 +50,7 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
     accountId: string | null;
     firstName: string | null;
     lastName: string | null;
-    username: string | null;
+    username?: string;
     email: string | null;
     role: string | null;
     isBanned: string | null;
@@ -59,7 +61,7 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
     accountId: null,
     firstName: null,
     lastName: null,
-    username: null,
+    username: undefined,
     email: null,
     role: null,
     isBanned: null,
@@ -68,12 +70,19 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
     refreshToken: getAuthRefreshToken() || null,
   });
 
+  const setUsername = useCallback((username?: string) => {
+    setUserState((prev) => ({
+      ...prev,
+      username: username,
+    }));
+  }, []);
+
   const setUser = useCallback(
     (newUser: {
       accountId: string | null;
       firstName: string | null;
       lastName: string | null;
-      username: string | null;
+      username?: string;
       email: string | null;
       role: string | null;
       isBanned: string | null;
@@ -83,7 +92,7 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
     }) => {
       setUserState(newUser);
     },
-    [setUserState],
+    [],
   );
 
   const userContextValue = {
@@ -98,6 +107,7 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
     jwtToken: userState.jwtToken,
     refreshToken: userState.refreshToken,
     setUser,
+    setUsername,
   };
 
   return (

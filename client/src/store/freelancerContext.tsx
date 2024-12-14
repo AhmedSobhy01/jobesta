@@ -1,23 +1,21 @@
 import { createContext, useCallback, useState } from 'react';
 
-interface IPreviousWork {
-  title: string;
-  description: number;
-  url?: string;
-}
-
 interface FreelancerContextType {
   freelancerId?: string;
   balance?: number;
   bio?: string;
-  previousWork?: [IPreviousWork];
-  skills?: [string];
+  previousWork?: IPreviousWork[];
+  skills?: string[];
+  badges?: IBadge[];
+  jobs?: IJob[];
   setFreelancer: (newFreelancer: {
     freelancerId?: string;
     balance?: number;
     bio?: string;
-    previousWork?: [IPreviousWork];
-    skills?: [string];
+    previousWork?: IPreviousWork[];
+    skills?: string[];
+    badges?: IBadge[];
+    jobs?: IJob[];
   }) => void;
 }
 
@@ -28,6 +26,8 @@ const FreelancerContext = createContext<FreelancerContextType>({
   bio: undefined,
   previousWork: undefined,
   skills: undefined,
+  badges: undefined,
+  jobs: undefined,
   setFreelancer: () => {},
 });
 
@@ -38,14 +38,18 @@ export const FreelancerContextProvider: React.FC<{
     freelancerId?: string;
     balance?: number;
     bio?: string;
-    previousWork?: [IPreviousWork];
-    skills?: [string];
+    previousWork?: IPreviousWork[];
+    skills?: string[];
+    badges?: IBadge[];
+    jobs?: IJob[];
   }>({
     freelancerId: undefined,
     balance: undefined,
     bio: undefined,
     previousWork: undefined,
     skills: undefined,
+    badges: undefined,
+    jobs: undefined,
   });
 
   const setFreelancer = useCallback(
@@ -53,8 +57,10 @@ export const FreelancerContextProvider: React.FC<{
       freelancerId?: string;
       balance?: number;
       bio?: string;
-      previousWork?: [IPreviousWork];
-      skills?: [string];
+      previousWork?: IPreviousWork[];
+      skills?: string[];
+      badges?: IBadge[];
+      jobs?: IJob[];
     }) => {
       setFreelancerState(newFreelancer);
     },
@@ -67,6 +73,8 @@ export const FreelancerContextProvider: React.FC<{
     bio: freelancerState.bio,
     previousWork: freelancerState.previousWork,
     skills: freelancerState.skills,
+    badges: freelancerState.badges,
+    jobs: freelancerState.jobs,
     setFreelancer,
   };
 
