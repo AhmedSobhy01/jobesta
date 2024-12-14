@@ -392,7 +392,7 @@ const ProfilePage: React.FC & {
           </div>
 
           {/* Stats Section */}
-          {userData.role === 'freelancer' && (
+          {accountData.role === 'freelancer' && (
             <div className="flex gap-4">
               {freelancerAccountData.badges.map(
                 (badge: IBadge, index: number) => {

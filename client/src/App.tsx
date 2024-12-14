@@ -14,6 +14,7 @@ import { Logout } from '@/utils/Logout';
 import ProfilePage from '@/pages/Profile';
 import { FreelancerContextProvider } from '@/store/freelancerContext';
 import CreateJobForm from '@/pages/CreateJobForm';
+import Notifications from '@/pages/Notifications';
 
 const router = createBrowserRouter([
   {
@@ -38,6 +39,11 @@ const router = createBrowserRouter([
             loader: Job.loader,
           },
         ],
+      },
+      {
+        path: '/notifications',
+        element: <Notifications />,
+        loader: Notifications.loader,
       },
       { path: 'contacts', element: <Contacts /> },
       {
