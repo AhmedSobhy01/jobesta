@@ -7,7 +7,6 @@ import {
   banAccount,
   unbanAccount,
   getFreelancer,
-  updateFreelancer
 } from '../../controllers/adminControllers/accountsController.js';
 import {
   getAccountsValidationRules,
@@ -37,12 +36,12 @@ accountsRouter.get(
   getFreelancer,
 );
 
-accountsRouter.put(
-  '/freelancer/:accountId',
-  createOrUpdateFreelancerValidationRules,
-  validateRequest,
-  updateFreelancer,
-);
+// accountsRouter.put(
+//   '/freelancer/:accountId',
+//   createOrUpdateFreelancerValidationRules,
+//   validateRequest,
+//   updateFreelancer,
+// );
 
 
 accountsRouter.post(

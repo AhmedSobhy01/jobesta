@@ -95,6 +95,13 @@ const FreelancerModal: React.FC<{
     setIsSubmitting(true);
     let errorFlag = false;
 
+    const modifiedPreviousWorks = previousWorks.map((previousWork, i) => ({
+      title: previousWork.title,
+      description: previousWork.description,
+      url: previousWork.url,
+      order: i + 1,
+    }));
+
     const accountData: {
       role: string;
       firstName: string;
@@ -103,6 +110,11 @@ const FreelancerModal: React.FC<{
       email: string;
       password?: string;
       confirmPassword?: string;
+      freelancer?: {
+        bio: string;
+        skills: string[];
+        previousWorks: IPreviousWork[];
+      };
     } = {
       role: 'freelancer',
       firstName,
@@ -111,23 +123,11 @@ const FreelancerModal: React.FC<{
       email,
       password,
       confirmPassword,
-    };
-
-    const modifiedPreviousWorks = previousWorks.map((previousWork, i) => ({
-      title: previousWork.title,
-      description: previousWork.description,
-      url: previousWork.url,
-      order: i + 1,
-    }));
-
-    const freelancerData: {
-      bio: string;
-      skills: string[];
-      previousWorks: IPreviousWork[];
-    } = {
-      bio,
-      skills,
-      previousWorks: modifiedPreviousWorks,
+      freelancer: {
+        bio,
+        skills,
+        previousWorks: modifiedPreviousWorks,
+      },
     };
 
     if (password.trim() === '') {
@@ -136,7 +136,7 @@ const FreelancerModal: React.FC<{
     }
 
     try {
-      const res1 = await fetch(
+      const res = await fetch(
         `${import.meta.env.VITE_API_URL}/admin/accounts/${freelancer?.id || ''}`,
         {
           method: isUpdate ? 'PUT' : 'POST',
@@ -148,41 +148,19 @@ const FreelancerModal: React.FC<{
         },
       );
 
-      if (!res1.ok && res1.status !== 422)
-        throw new Error('Something went wrong1!');
+      if (!res.ok && res.status !== 422)
+        throw new Error('Something went wrong!');
 
-      const data1 = await res1.json();
+      const data = await res.json();
 
-      if (Object.values(data1?.errors || {}).length) {
-        setErrors(data1.errors);
-        errorFlag = true;
-      }
-
-      const res2 = await fetch(
-        `${import.meta.env.VITE_API_URL}/admin/accounts/freelancer/${freelancer?.id || ''}`,
-        {
-          method: 'PUT',
-          headers: {
-            Authorization: `Bearer ${user.jwtToken}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(freelancerData),
-        },
-      );
-
-      const data2 = await res2.json();
-
-      if (!res2.ok && res2.status !== 422)
-        throw new Error('Something went wrong2!');
-
-      if (Object.values(data2?.errors || {}).length) {
-        setErrors((prevErrors) => ({ ...prevErrors, ...data2.errors }));
+      if (Object.values(data?.errors || {}).length) {
+        setErrors(data.errors);
         errorFlag = true;
       }
 
       if (errorFlag) throw new Error('Validation failed');
 
-      toast(data1.message, { type: 'success' });
+      toast(data.message, { type: 'success' });
       navigate('/admin/freelancers?reload=true');
       onClose();
     } catch (error) {
