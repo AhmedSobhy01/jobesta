@@ -35,7 +35,6 @@ accountsRouter.get(
   getFreelancer,
 );
 
-
 accountsRouter.post(
   '/',
   createAccountValidationRules,
