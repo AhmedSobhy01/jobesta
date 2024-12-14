@@ -112,22 +112,6 @@ const Clients = () => {
             hasMore={pagination.currentPage < pagination.totalPages}
             loader={<TableLoader />}
             scrollableTarget="table"
-            refreshFunction={() => {
-              setClients([]);
-              setCurrentPage(1);
-            }}
-            pullDownToRefresh
-            pullDownToRefreshThreshold={50}
-            pullDownToRefreshContent={
-              <h3 style={{ textAlign: 'center' }}>
-                &#8595; Pull down to refresh
-              </h3>
-            }
-            releaseToRefreshContent={
-              <h3 style={{ textAlign: 'center' }}>
-                &#8593; Release to refresh
-              </h3>
-            }
           >
             <table className="w-full text-sm text-left text-gray-500">
               <thead className="text-xs text-gray-700 uppercase bg-gray-50">

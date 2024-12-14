@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -8,10 +8,16 @@ import {
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import ClientModal from '@/components/Admin/Clients/ClientModal';
+import UserContext from '@/store/userContext';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router';
 
 const ClientRowItem: React.FC<{
   client: Account;
 }> = ({ client }) => {
+  const navigate = useNavigate();
+  const user = useContext(UserContext);
+
   const [isEditAccountModalOpen, setIsEditAccountModalOpen] = useState(false);
 
   const deleteClient = () => {
@@ -26,12 +32,26 @@ const ClientRowItem: React.FC<{
       showLoaderOnConfirm: true,
       allowOutsideClick: () => !Swal.isLoading(),
       backdrop: true,
-      preConfirm: () =>
-        new Promise<void>((resolve) => {
-          setTimeout(() => {
-            resolve();
-          }, 2000);
-        }),
+      preConfirm: () => {
+        fetch(`${import.meta.env.VITE_API_URL}/admin/accounts/${client.id}`, {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${user.jwtToken}`,
+          },
+        })
+          .then((response) => {
+            if (!response.ok) throw new Error('Failed to delete client');
+
+            return response.json();
+          })
+          .then((data) => {
+            toast(data.message, { type: 'success' });
+            navigate('/admin/clients?reload=true');
+          })
+          .catch(() => {
+            toast('Failed to delete client', { type: 'error' });
+          });
+      },
     });
   };
 
