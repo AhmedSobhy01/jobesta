@@ -134,7 +134,7 @@ const ClientModal: React.FC<{
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
             placeholder="First Name"
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500"
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
           />
           <p className="text-sm text-red-500 mt-1">{errors?.firstName}</p>
         </div>
@@ -153,7 +153,7 @@ const ClientModal: React.FC<{
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
             placeholder="Last Name"
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500"
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
           />
           <p className="text-sm text-red-500 mt-1">{errors?.lastName}</p>
         </div>
@@ -172,7 +172,7 @@ const ClientModal: React.FC<{
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             placeholder="Username"
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500"
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
           />
           <p className="text-sm text-red-500 mt-1">{errors?.username}</p>
         </div>
@@ -191,7 +191,7 @@ const ClientModal: React.FC<{
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500"
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
           />
           <p className="text-sm text-red-500 mt-1">{errors?.email}</p>
         </div>
@@ -210,7 +210,7 @@ const ClientModal: React.FC<{
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500"
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
           />
           <p className="text-sm text-red-500 mt-1">{errors?.password}</p>
         </div>
@@ -229,7 +229,7 @@ const ClientModal: React.FC<{
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder="Confirm Password"
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-emerald-500 focus:border-emerald-500"
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
           />
           <p className="text-sm text-red-500 mt-1">{errors?.confirmPassword}</p>
         </div>
