@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import db from '../../db/db.js';
+import { IPreviousWork } from '../../models/model.js';
 
 export async function getAccounts(req: Request, res: Response) {
   try {
@@ -169,7 +170,7 @@ export async function getFreelancer(req: Request, res: Response) {
 
     console.log(freelancerDataQuery.rows);
 
-    const { id:freelancerId, bio } = freelancerDataQuery.rows[0];
+    const { id: freelancerId, bio } = freelancerDataQuery.rows[0];
 
     const skillsQuery = await db.query(
       'SELECT name FROM skills WHERE freelancer_id = $1',
@@ -206,10 +207,61 @@ export async function getFreelancer(req: Request, res: Response) {
         },
       },
     });
-  } catch(err) {
+  } catch (err) {
     console.log(err);
     res
       .status(500)
       .json({ message: 'Failed to fetch freelancer', status: false });
+  }
+}
+
+export async function updateFreelancer(req: Request, res: Response) {
+  const { accountId } = req.params;
+  const { bio, skills, previousWork } = req.body;
+
+  try {
+    const freelancerDataQuery = await db.query(
+      'SELECT id FROM freelancers WHERE account_id = $1',
+      [accountId],
+    );
+
+    const freelancerId = freelancerDataQuery.rows[0].id;
+
+    await db.query('UPDATE freelancers SET bio = $1 WHERE id = $2', [
+      bio,
+      freelancerId,
+    ]);
+
+    await db.query('DELETE FROM skills WHERE freelancer_id = $1', [
+      freelancerId,
+    ]);
+
+    for (const skill of skills) {
+      await db.query('INSERT INTO skills (name,freelancer_id) VALUES ($1,$2)', [
+        skill,
+        freelancerId,
+      ]);
+    }
+
+    await db.query('DELETE FROM previous_works WHERE freelancer_id = $1', [
+      freelancerId,
+    ]);
+
+    previousWork.sort(
+      (a: IPreviousWork, b: IPreviousWork) => a.order - b.order,
+    );
+
+    for (const [index, work] of previousWork.entries()) {
+      await db.query(
+        'INSERT INTO previous_works (title,description,url,"order",freelancer_id) VALUES ($1,$2,$3,$4,$5)',
+        [work.title, work.description, work.url, index + 1, freelancerId],
+      );
+    }
+
+    res.status(200).json({ message: 'Freelancer updated', status: true });
+  } catch {
+    res
+      .status(500)
+      .json({ message: 'Failed to update freelancer', status: false });
   }
 }

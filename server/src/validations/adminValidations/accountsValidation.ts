@@ -263,6 +263,7 @@ export const createOrUpdateFreelancerValidationRules = [
     .withMessage('Bio must not exceed 1023 characters'),
 
   body('skills')
+    .optional()
     .isArray()
     .withMessage('Skills must be an array')
     .custom((skills) => {
@@ -283,6 +284,7 @@ export const createOrUpdateFreelancerValidationRules = [
     .withMessage('Skill must not exceed 255 characters'),
 
   body('previousWork')
+    .optional()
     .isArray()
     .withMessage('Previous work must be an array')
     .custom((previousWork) => {
