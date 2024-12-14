@@ -10,7 +10,7 @@ export function SetUserPage() {
     const accountId = null;
     const firstName = null;
     const lastName = null;
-    const username = null;
+    const username = undefined;
     const email = null;
     const role = null;
     const isBanned = null;
@@ -31,7 +31,10 @@ export function SetUserPage() {
       refreshToken,
     });
 
-    navigate('/');
+    const redirectTo =
+      new URLSearchParams(window.location.search).get('redirect') || '/';
+
+    navigate(redirectTo);
   }, [setUser, navigate]);
 
   return null;

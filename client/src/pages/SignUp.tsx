@@ -18,9 +18,12 @@ function SignUp() {
 
   const navigate = useNavigate();
 
+  const redirectTo =
+    new URLSearchParams(window.location.search).get('redirect') || '/';
+
   function handleUserType(type: string) {
     setSelectRole(type);
-    navigate(`/signup?role=${type}`);
+    navigate(`/signup?role=${type}&redirect=${redirectTo}`);
   }
   return (
     <div className="justify-items-center">

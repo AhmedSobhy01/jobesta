@@ -1,6 +1,7 @@
 import { limitText } from '@/utils/string';
 import { humanReadable } from '@/utils/time';
 import CategoryBadge from '@/components/Jobs/CategoryBadge';
+import { Link } from 'react-router';
 
 const JobCard: React.FC<{
   job: Job;
@@ -48,9 +49,12 @@ const JobCard: React.FC<{
                 Posted {humanReadable(job.createdAt)}
               </time>
             </div>
-            <button className="inline-flex text-black bg-green-200 border border-green-200 rounded-full hover:border-black justify-center px-8 py-2">
+            <Link
+              to={`/jobs/${job.id}`}
+              className="inline-flex text-black bg-green-200 border border-green-200 rounded-full hover:border-black justify-center px-8 py-2"
+            >
               Apply
-            </button>
+            </Link>
           </div>
         </div>
       </div>
