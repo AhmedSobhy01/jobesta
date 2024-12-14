@@ -283,7 +283,7 @@ export const createOrUpdateFreelancerValidationRules = [
     .isLength({ max: 255 })
     .withMessage('Skill must not exceed 255 characters'),
 
-  body('previousWork')
+  body('previousWorks')
     .optional()
     .isArray()
     .withMessage('Previous work must be an array')
@@ -298,7 +298,7 @@ export const createOrUpdateFreelancerValidationRules = [
       return true;
     }),
 
-  body('previousWork.*.title')
+  body('previousWorks.*.title')
     .trim()
     .notEmpty()
     .withMessage('Title must not be empty')
@@ -307,7 +307,7 @@ export const createOrUpdateFreelancerValidationRules = [
     .isLength({ max: 255 })
     .withMessage('Title must not exceed 255 characters'),
 
-  body('previousWork.*.description')
+  body('previousWorks.*.description')
     .trim()
     .notEmpty()
     .withMessage('Description must not be empty')
@@ -316,13 +316,13 @@ export const createOrUpdateFreelancerValidationRules = [
     .isLength({ max: 1000 })
     .withMessage('Description must not exceed 1000 characters'),
 
-  body('previousWork.*.url')
+  body('previousWorks.*.url')
     .optional()
     .trim()
     .isURL()
     .withMessage('URL must be a valid URL'),
 
-  body('previousWork.*.order')
+  body('previousWorks.*.order')
     .isInt({ min: 1 })
     .withMessage('Order must be a positive integer'),
 ];

@@ -216,7 +216,7 @@ export async function getFreelancer(req: Request, res: Response) {
 
 export async function updateFreelancer(req: Request, res: Response) {
   const { accountId } = req.params;
-  const { bio, skills, previousWork } = req.body;
+  const { bio, skills, previousWorks } = req.body;
 
   try {
     const freelancerDataQuery = await db.query(
@@ -246,11 +246,12 @@ export async function updateFreelancer(req: Request, res: Response) {
       freelancerId,
     ]);
 
-    previousWork.sort(
+    if(previousWorks.length !== 0) 
+    previousWorks.sort(
       (a: IPreviousWork, b: IPreviousWork) => a.order - b.order,
     );
 
-    for (const [index, work] of previousWork.entries()) {
+    for (const [index, work] of previousWorks.entries()) {
       await db.query(
         'INSERT INTO previous_works (title,description,url,"order",freelancer_id) VALUES ($1,$2,$3,$4,$5)',
         [work.title, work.description, work.url, index + 1, freelancerId],
@@ -258,7 +259,8 @@ export async function updateFreelancer(req: Request, res: Response) {
     }
 
     res.status(200).json({ message: 'Freelancer updated', status: true });
-  } catch {
+  } catch(err) {
+    console.log(err);
     res
       .status(500)
       .json({ message: 'Failed to update freelancer', status: false });
