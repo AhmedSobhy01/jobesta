@@ -190,13 +190,45 @@ export const acceptProposalValidationRules = [
     .isNumeric()
     .withMessage('Job ID must be a number')
     .notEmpty()
-    .withMessage('Job ID must not be empty'),
+    .withMessage('Job ID must not be empty')
+    .custom(async (jobId, { req }) => {
+      const jobQuery = await db.query(
+        'SELECT * FROM jobs WHERE id = $1 AND client_id = $2',
+        [jobId, req.user.id],
+      );
+
+      if (jobQuery.rows.length === 0) {
+        throw new Error('Job does not exist');
+      }
+
+      if (jobQuery.rows[0].status !== 'open') {
+        throw new Error('Job is not open');
+      }
+
+      return true;
+    }),
 
   param('freelancerId')
     .isNumeric()
     .withMessage('Freelancer ID must be a number')
     .notEmpty()
-    .withMessage('Freelancer ID must not be empty'),
+    .withMessage('Freelancer ID must not be empty')
+    .custom(async (freelancerId, { req }) => {
+      const proposalQuery = await db.query(
+        'SELECT * FROM proposals WHERE job_id = $1 AND freelancer_id = $2',
+        [req.jobId, freelancerId],
+      );
+
+      if (proposalQuery.rows.length === 0) {
+        throw new Error('Proposal does not exist');
+      }
+
+      if (proposalQuery.rows[0].status !== 'pending') {
+        throw new Error('Proposal is not pending');
+      }
+
+      return true;
+    }),
 ];
 
 export const closeJobValidationRules = [
@@ -204,5 +236,21 @@ export const closeJobValidationRules = [
     .isNumeric()
     .withMessage('Job ID must be a number')
     .notEmpty()
-    .withMessage('Job ID must not be empty'),
+    .withMessage('Job ID must not be empty')
+    .custom(async (jobId, { req }) => {
+      const jobQuery = await db.query(
+        'SELECT * FROM jobs WHERE id = $1 AND client_id = $2',
+        [jobId, req.user.id],
+      );
+
+      if (jobQuery.rows.length === 0) {
+        throw new Error('Job does not exist');
+      }
+
+      if (jobQuery.rows[0].status !== 'open') {
+        throw new Error('Job is not open');
+      }
+
+      return true;
+    }),
 ];
