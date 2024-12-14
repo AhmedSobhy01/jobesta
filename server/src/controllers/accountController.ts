@@ -183,8 +183,7 @@ export async function getUserByUsername(
         jobs,
       },
     });
-  } catch (err){
-    console.log(err);
+  } catch {
     res.status(500).json({ status: false, message: 'Error fetching user' });
   }
 }
