@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
+  faBan,
   faCheck,
   faPenToSquare,
   faTimes,
@@ -20,6 +21,82 @@ const ClientRowItem: React.FC<{
 
   const [isEditAccountModalOpen, setIsEditAccountModalOpen] = useState(false);
 
+  const banClient = () => {
+    Swal.fire({
+      title: 'Are you sure?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      cancelButtonText: 'Cancel',
+      confirmButtonText: 'Yes, ban client',
+      showLoaderOnConfirm: true,
+      allowOutsideClick: () => !Swal.isLoading(),
+      backdrop: true,
+      preConfirm: () => {
+        fetch(
+          `${import.meta.env.VITE_API_URL}/admin/accounts/ban/${client.id}`,
+          {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${user.jwtToken}`,
+            },
+          },
+        )
+          .then((response) => {
+            if (!response.ok) throw new Error('Failed to ban client');
+
+            return response.json();
+          })
+          .then((data) => {
+            toast(data.message, { type: 'success' });
+            navigate('/admin/clients?reload=true');
+          })
+          .catch(() => {
+            toast('Failed to ban client', { type: 'error' });
+          });
+      },
+    });
+  };
+
+  const unbanClient = () => {
+    Swal.fire({
+      title: 'Are you sure?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      cancelButtonText: 'Cancel',
+      confirmButtonText: 'Yes, unban client',
+      showLoaderOnConfirm: true,
+      allowOutsideClick: () => !Swal.isLoading(),
+      backdrop: true,
+      preConfirm: () => {
+        fetch(
+          `${import.meta.env.VITE_API_URL}/admin/accounts/unban/${client.id}`,
+          {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${user.jwtToken}`,
+            },
+          },
+        )
+          .then((response) => {
+            if (!response.ok) throw new Error('Failed to unban client');
+
+            return response.json();
+          })
+          .then((data) => {
+            toast(data.message, { type: 'success' });
+            navigate('/admin/clients?reload=true');
+          })
+          .catch(() => {
+            toast('Failed to unban client', { type: 'error' });
+          });
+      },
+    });
+  };
+
   const deleteClient = () => {
     Swal.fire({
       title: 'Are you sure?',
@@ -28,7 +105,7 @@ const ClientRowItem: React.FC<{
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       cancelButtonText: 'Cancel',
-      confirmButtonText: 'Yes, delete it',
+      confirmButtonText: 'Yes, delete client',
       showLoaderOnConfirm: true,
       allowOutsideClick: () => !Swal.isLoading(),
       backdrop: true,
@@ -87,6 +164,16 @@ const ClientRowItem: React.FC<{
           <button type="button" onClick={() => setIsEditAccountModalOpen(true)}>
             <FontAwesomeIcon icon={faPenToSquare} />
           </button>
+
+          {client.isBanned ? (
+            <button type="button" onClick={unbanClient} title="Unban client">
+              <FontAwesomeIcon icon={faCheck} />
+            </button>
+          ) : (
+            <button type="button" onClick={banClient} title="Ban client">
+              <FontAwesomeIcon icon={faBan} />
+            </button>
+          )}
 
           <button type="button" onClick={deleteClient}>
             <FontAwesomeIcon icon={faTrash} />
