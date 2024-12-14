@@ -207,8 +207,7 @@ export async function getFreelancer(req: Request, res: Response) {
         },
       },
     });
-  } catch (err) {
-    console.log(err);
+  } catch {
     res
       .status(500)
       .json({ message: 'Failed to fetch freelancer', status: false });
