@@ -309,39 +309,42 @@ const Proposals: React.FC<{ job: Job }> = ({ job }) => {
                     <p className="mt-2">{proposal.coverLetter}</p>
                   </div>
 
-                  <div className="flex flex-col gap-3 mt-3 border rounded-lg p-5 bg-gray-50 shadow-sm">
+                  <div className="mt-3 border rounded-lg p-5 bg-gray-50 shadow-sm ">
                     <h4 className="text-lg font-bold">Milestones</h4>
-                    {proposal.milestones.map((milestone, milestoneIndex) => (
-                      <div key={milestoneIndex} className="border-b py-3">
-                        <div className="flex items-center justify-between gap-3">
-                          <span className="font-semibold text-lg">
-                            {milestone.name}
-                          </span>
-                          <span
-                            className={`text-sm text-white ${
-                              milestone.status === 'completed'
-                                ? 'bg-green-500'
-                                : 'bg-yellow-500'
-                            } py-0.5 px-3 rounded-3xl`}
-                          >
-                            {milestone.status
-                              ? milestone.status[0].toUpperCase() +
-                                milestone.status.slice(1)
-                              : ''}
-                          </span>
-                        </div>
-                        <div className="flex flex-col gap-3 mt-2">
-                          <div>
-                            <span className="font-bold">Amount:</span>{' '}
-                            <span>{milestone.amount}$</span>
+                    <div className="divide-y">
+                      {proposal.milestones.map((milestone, milestoneIndex) => (
+                        <div key={milestoneIndex} className="py-5">
+                          <div className="flex items-center justify-between gap-3">
+                            <span className="font-semibold text-lg">
+                              {milestone.name}
+                            </span>
+                            <span
+                              className={`text-sm text-white ${
+                                milestone.status === 'completed'
+                                  ? 'bg-green-500'
+                                  : 'bg-yellow-500'
+                              } py-0.5 px-3 rounded-3xl`}
+                            >
+                              {milestone.status
+                                ? milestone.status[0].toUpperCase() +
+                                  milestone.status.slice(1)
+                                : ''}
+                            </span>
                           </div>
-                          <div>
-                            <span className="font-bold">Duration:</span>{' '}
-                            <span>{milestone.duration} Days</span>
+
+                          <div className="flex flex-col gap-3 mt-2">
+                            <div>
+                              <span className="font-bold">Amount:</span>{' '}
+                              <span>{milestone.amount}$</span>
+                            </div>
+                            <div>
+                              <span className="font-bold">Duration:</span>{' '}
+                              <span>{milestone.duration} Days</span>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
