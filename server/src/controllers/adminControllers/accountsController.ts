@@ -157,3 +157,59 @@ export async function unbanAccount(req: Request, res: Response) {
     res.status(500).json({ message: 'Failed to unban account', status: false });
   }
 }
+
+export async function getFreelancer(req: Request, res: Response) {
+  const { accountId } = req.params;
+
+  try {
+    const freelancerDataQuery = await db.query(
+      'SELECT id,bio FROM freelancers WHERE account_id = $1',
+      [accountId],
+    );
+
+    console.log(freelancerDataQuery.rows);
+
+    const { id:freelancerId, bio } = freelancerDataQuery.rows[0];
+
+    const skillsQuery = await db.query(
+      'SELECT name FROM skills WHERE freelancer_id = $1',
+      [freelancerId],
+    );
+
+    const skills = skillsQuery.rows.map((skill) => skill.name);
+
+    const previousWorkQuery = await db.query(
+      'SELECT title,description,url,"order" FROM previous_works WHERE freelancer_id = $1',
+      [freelancerId],
+    );
+
+    const previousWorks = previousWorkQuery.rows.map((work) => {
+      return {
+        order: work.order,
+        title: work.title,
+        description: work.description,
+        url: work.url,
+      };
+    });
+
+    previousWorks.sort((a, b) => a.order - b.order);
+
+    res.status(200).json({
+      status: true,
+      message: 'Freelancer fetched',
+      data: {
+        freelancer: {
+          id: freelancerId,
+          bio,
+          skills,
+          previousWorks,
+        },
+      },
+    });
+  } catch(err) {
+    console.log(err);
+    res
+      .status(500)
+      .json({ message: 'Failed to fetch freelancer', status: false });
+  }
+}
