@@ -21,6 +21,7 @@ const Sidebar: React.FC = () => {
       <nav className="mt-6 space-y-2">
         <SidebarButton icon={faHome} text="Dashboard" route="/admin" />
         <SidebarButton icon={faUser} text="Clients" route="/admin/clients" />
+        <SidebarButton icon={faUser} text="Freelancers" route="/admin/freelancers" />
       </nav>
 
       <div className="mt-auto p-4 text-center text-sm text-gray-600 dark:text-gray-400">
