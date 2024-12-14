@@ -64,9 +64,11 @@ export interface IJob {
   };
   proposals: Array<IProposal>;
   myJob: boolean;
+  myProposal: IProposal | null;
 }
 
 export interface IAccountDisplay {
+  id?: string;
   firstName: string;
   lastName: string;
   username: string;

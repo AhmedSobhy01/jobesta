@@ -14,9 +14,11 @@ import ErrorModule from '@/components/ErrorModule';
 function Login() {
   const navigate = useNavigation();
   const errors = useActionData();
+
   const [isGlobalError, setIsGlobalError] = useState(
     !errors?.status && !!errors?.global,
   );
+
   const [isCredentialError, setIsCredentialError] = useState(
     !errors?.status && !!errors?.message,
   );
@@ -25,6 +27,9 @@ function Login() {
     setIsCredentialError(!!errors?.message);
     setIsGlobalError(!!errors?.global);
   }, [errors]);
+
+  const redirectTo =
+    new URLSearchParams(window.location.search).get('redirect') || '/';
 
   const isSubmitting = navigate.state === 'submitting';
 
@@ -91,7 +96,10 @@ function Login() {
             </Form>
             <p className="mt-6 text-gray-700 text-center">
               Don't have an account?{' '}
-              <Link to="/signup" className="text-green-600 hover:underline">
+              <Link
+                to={`/signup?redirect=${redirectTo}`}
+                className="text-green-600 hover:underline"
+              >
                 Sign Up
               </Link>
             </p>
@@ -156,7 +164,10 @@ Login.action = async function action({ request }: ActionFunctionArgs) {
       refreshedTokenExpiration.toISOString(),
     );
 
-    return redirect('/set-user');
+    const redirectTo =
+      new URLSearchParams(window.location.search).get('redirect') || '/';
+
+    return redirect(`/set-user?redirect=${redirectTo}`);
   } catch {
     return {
       status: false,

@@ -3,6 +3,7 @@ import MainLayout from '@/layouts/MainLayout';
 import Home from '@/pages/Home';
 import About from '@/pages/About';
 import Jobs from '@/pages/Jobs';
+import Job from '@/pages/Job';
 import Contacts from '@/pages/Contacts';
 import Login from '@/pages/Login';
 import SignUp from '@/pages/SignUp';
@@ -12,6 +13,7 @@ import { SetUserPage } from '@/utils/SetUserPage';
 import { Logout } from '@/utils/Logout';
 import ProfilePage from '@/pages/Profile';
 import { FreelancerContextProvider } from '@/store/freelancerContext';
+import CreateJobForm from '@/pages/CreateJobForm';
 
 const router = createBrowserRouter([
   {
@@ -21,7 +23,22 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: 'about', element: <About /> },
-      { path: 'jobs', element: <Jobs />, loader: Jobs.loader },
+      {
+        path: 'jobs',
+        children: [
+          { path: '', element: <Jobs />, loader: Jobs.loader },
+          {
+            path: 'create',
+            element: <CreateJobForm />,
+            loader: CreateJobForm.loader,
+          },
+          {
+            path: ':jobId',
+            element: <Job />,
+            loader: Job.loader,
+          },
+        ],
+      },
       { path: 'contacts', element: <Contacts /> },
       {
         path: 'users/:username',

@@ -31,7 +31,10 @@ export function SetUserPage() {
       refreshToken,
     });
 
-    navigate('/');
+    const redirectTo =
+      new URLSearchParams(window.location.search).get('redirect') || '/';
+
+    navigate(redirectTo);
   }, [setUser, navigate]);
 
   return null;

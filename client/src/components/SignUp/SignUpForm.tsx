@@ -133,7 +133,10 @@ SignUpForm.action = async function action({ request }: ActionFunctionArgs) {
       refreshedTokenExpiration.toISOString(),
     );
 
-    return redirect('/set-user');
+    const redirectTo =
+      new URLSearchParams(window.location.search).get('redirect') || '/';
+
+    return redirect(`/set-user?redirect=${redirectTo}`);
   } catch {
     return { global: 'A network error occurred. Please try again later.' };
   }

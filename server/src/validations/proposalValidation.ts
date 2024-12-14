@@ -42,13 +42,15 @@ const validProposal = [
     .isNumeric()
     .withMessage('Duration must be a number')
     .notEmpty()
-    .withMessage('Duration must not be empty'),
+    .withMessage('Duration must not be empty')
+    .isInt({ min: 1 }),
 
   body('milestones.*.amount')
     .isNumeric()
     .withMessage('Amount must be a number')
     .notEmpty()
-    .withMessage('Amount must not be empty'),
+    .withMessage('Amount must not be empty')
+    .isFloat({ min: 1 }),
 ];
 
 export const createProposalValidationRules = [
@@ -122,6 +124,10 @@ export const deleteProposalValidationRules = [
 
       if (proposalQuery.rows.length === 0) {
         throw new Error('Proposal does not exist');
+      }
+
+      if (proposalQuery.rows[0].status !== 'pending') {
+        throw new Error('Proposal cannot be deleted');
       }
 
       return true;
