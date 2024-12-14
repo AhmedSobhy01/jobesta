@@ -22,9 +22,8 @@ const FreelancerModal: React.FC<{
   const [confirmPassword, setConfirmPassword] = useState('');
   const [bio, setBio] = useState('');
   const [previousWorks, setPreviousWorks] = useState<IPreviousWork[]>([
-    { title: '', description: '', url: '' },
   ]);
-  const [skills, setSkills] = useState<string[]>(['']);
+  const [skills, setSkills] = useState<string[]>([]);
 
   const [errors, setErrors] = useState<{ [key: string]: string } | null>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -167,7 +166,7 @@ const FreelancerModal: React.FC<{
   return createPortal(
     <div
       className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
-      onClick={handleModalClick}
+      onMouseDown={handleModalClick}
     >
       <div className="bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative max-h-[90vh] overflow-y-auto">
         <button
@@ -307,7 +306,7 @@ const FreelancerModal: React.FC<{
             name="bio"
             value={bio}
             onChange={(e) => setBio(e.target.value)}
-            placeholder="Write a brief cover letter..."
+            placeholder="Write a small bio about yourself..."
             className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
             rows={3}
           />
