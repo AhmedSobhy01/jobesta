@@ -30,7 +30,6 @@ export async function getNotifications(
 
     const notifications = notificationsQuery.rows.map((notification) => {
       return {
-        id: notification.id,
         type: notification.type,
         message: notification.message,
         isRead: notification.is_read,
