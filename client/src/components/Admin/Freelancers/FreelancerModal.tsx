@@ -1,7 +1,7 @@
 import UserContext from '@/store/userContext';
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faXmark, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router';
@@ -20,9 +20,42 @@ const FreelancerModal: React.FC<{
   const [email, setEmail] = useState(freelancer?.email || '');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [bio, setBio] = useState('');
+  const [previousWorks, setPreviousWorks] = useState<IPreviousWork[]>([
+    { title: '', description: '', url: '' },
+  ]);
+  const [skills, setSkills] = useState<string[]>(['']);
 
   const [errors, setErrors] = useState<{ [key: string]: string } | null>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!isUpdate) return;
+    (async () => {
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/admin/accounts/freelancer/${freelancer?.id}`,
+          {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${user.jwtToken}`,
+              'Content-Type': 'application/json',
+            },
+          },
+        );
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message);
+
+        console.log(data.data.freelancer);
+
+        setSkills(data.data.freelancer.skills);
+        setPreviousWorks(data.data.freelancer.previousWorks);
+        setBio(data.data.freelancer.bio);
+      } catch (error) {
+        toast((error as Error).message, { type: 'error' });
+      }
+    })();
+  }, [freelancer, isUpdate, user.jwtToken]);
 
   const handleClose = () => {
     if (isSubmitting) return;
@@ -32,6 +65,34 @@ const FreelancerModal: React.FC<{
   const handleModalClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) handleClose();
   };
+  
+    const handlePreviousWorkChange = (
+      e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+      index: number,
+    ) => {
+      const { name, value } = e.target;
+      setPreviousWorks((oldPreviousWorks) => {
+        const updatedPreviousWorks = [...oldPreviousWorks];
+        updatedPreviousWorks[index] = {
+          ...updatedPreviousWorks[index],
+          [name]: value,
+        };
+        return updatedPreviousWorks;
+      });
+    };
+  
+    const addPreviousWork = () => {
+      setPreviousWorks((oldPreviousWorks) => [
+        ...oldPreviousWorks,
+        { title: '', description: '', url: '' },
+      ]);
+    };
+  
+    const removePreviousWork = (index: number) => {
+      setPreviousWorks((oldPreviousWorks) =>
+        oldPreviousWorks.filter((_, i) => i !== index),
+      );
+    };
 
   const handleSubmit = () => {
     setErrors(null);
@@ -232,6 +293,167 @@ const FreelancerModal: React.FC<{
             className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
           />
           <p className="text-sm text-red-500 mt-1">{errors?.confirmPassword}</p>
+        </div>
+
+        <div className="mb-4">
+          <label
+            htmlFor="bio"
+            className="block text-sm font-medium text-gray-600 mb-2"
+          >
+            Bio
+          </label>
+          <textarea
+            id="bio"
+            name="bio"
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}
+            placeholder="Write a brief cover letter..."
+            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+            rows={3}
+          />
+          <p className="text-sm text-red-500 mt-1">{errors?.bio}</p>
+        </div>
+
+        <div className="space-y-4 mb-4">
+          <h3 className="text-lg font-medium text-gray-700">Previous Work</h3>
+          {previousWorks.length > 0 ? (
+            previousWorks.map((previousWork, index) => (
+              <div
+                key={index}
+                className="border rounded-lg p-4 bg-gray-50 shadow-sm space-y-4"
+              >
+                <div>
+                  <label
+                    htmlFor={`previous-work-${index}-title`}
+                    className="block text-sm font-medium text-gray-600"
+                  >
+                    Title
+                  </label>
+                  <input
+                    type="text"
+                    id={`previous-work-${index}-title`}
+                    name="title"
+                    value={previousWork.title}
+                    onChange={(e) => handlePreviousWorkChange(e, index)}
+                    placeholder="Enter Previous Work Title"
+                    className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                  />
+                  <p className="text-sm text-red-500 mt-1">
+                    {errors?.[`previousWork[${index}].title`]}
+                  </p>
+                </div>
+
+                <div>
+                  <label
+                    htmlFor={`previous-work-${index}-description`}
+                    className="block text-sm font-medium text-gray-600"
+                  >
+                    Description
+                  </label>
+                  <textarea
+                    id={`previous-work-${index}-description`}
+                    name="description"
+                    value={previousWork.description}
+                    onChange={(e) => handlePreviousWorkChange(e, index)}
+                    placeholder="Enter Previous Work Description"
+                    className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                  />
+                  <p className="text-sm text-red-500 mt-1">
+                    {errors?.[`previousWork[${index}].description`]}
+                  </p>
+                </div>
+
+                <div>
+                  <label
+                    htmlFor={`previous-work-${index}-url`}
+                    className="block text-sm font-medium text-gray-600"
+                  >
+                    URL
+                  </label>
+                  <input
+                    type="text"
+                    id={`previous-work-${index}-url`}
+                    name="url"
+                    value={previousWork.url}
+                    onChange={(e) => handlePreviousWorkChange(e, index)}
+                    placeholder="Enter Previous Work URL"
+                    className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                  />
+                  <p className="text-sm text-red-500 mt-1">
+                    {errors?.[`previousWork[${index}].url`]}
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => removePreviousWork(index)}
+                  className="text-red-500 text-sm hover:underline mt-2"
+                >
+                  <FontAwesomeIcon icon={faTrash} />
+                  <span className="ml-2">Remove Previous Work</span>
+                </button>
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-500">No Previous Work added</p>
+          )}
+
+          <button
+            type="button"
+            onClick={addPreviousWork}
+            className="px-4 py-2 bg-emerald-100 text-emerald-600 rounded-md hover:bg-blue-200 focus:outline-none"
+          >
+            + Add Previous Work
+          </button>
+        </div>
+
+        <div className="space-y-4 mb-4">
+          <h3 className="text-lg font-medium text-gray-700">Skills</h3>
+          {skills.length > 0 ? (
+            <div className="border rounded-lg p-4 bg-gray-50 shadow-sm space-y-4">
+              {skills.map((skill, index) => (
+                <div key={index} className="flex items-center space-x-2">
+                  <input
+                    type="text"
+                    id={`skill-${index}`}
+                    name="skill"
+                    value={skill}
+                    onChange={(e) => {
+                      setSkills((prevSkills) => {
+                        const updatedSkills = [...prevSkills];
+                        updatedSkills[index] = e.target.value;
+                        return updatedSkills;
+                      });
+                    }}
+                    placeholder="Enter Skill"
+                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSkills((previousSkills) => {
+                        const updatedSkills = [...previousSkills];
+                        updatedSkills.splice(index, 1);
+                        return updatedSkills;
+                      });
+                    }}
+                    className="text-red-500 hover:underline px-2"
+                  >
+                    <FontAwesomeIcon icon={faXmark} size="lg" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500">No skills added</p>
+          )}
+          <button
+            type="button"
+            onClick={() => setSkills((oldSkills) => [...oldSkills, ''])}
+            className="px-4 py-2 bg-emerald-100 text-emerald-600 rounded-md hover:bg-blue-200 focus:outline-none"
+          >
+            + Add Skill
+          </button>
         </div>
 
         <div className="mt-6 flex justify-end space-x-3">
