@@ -11,6 +11,7 @@ import { getCategories } from './controllers/categoriesController.js';
 import { FileUploadError } from './utils/errors.js';
 import { MulterError } from 'multer';
 import notificationRoutes from './routes/notificationRoutes.js';
+import messageRoutes from './routes/messageRoutes.js';
 
 // Load environment variables from the .env file
 configDotenv();
@@ -45,10 +46,9 @@ app.use('/freelancer', freelancerRoutes);
 app.use('/auth', authRoutes);
 app.use('/admin', adminRoutes);
 app.use('/jobs', jobRoutes);
+app.use('/messages', messageRoutes);
 app.use('/notifications', notificationRoutes);
 app.use('/proposals', proposalRoutes);
-
-// custom route for getting all the available categories
 app.get('/categories', getCategories);
 
 // Default Route: Sends a welcome message to the user (for health-checks)
