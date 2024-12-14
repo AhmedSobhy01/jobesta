@@ -15,7 +15,7 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router';
 
-const ClientRowItem: React.FC<{
+const FreelancerRowItem: React.FC<{
   freelancer: Account;
 }> = ({ freelancer }) => {
   const navigate = useNavigate();
@@ -31,7 +31,7 @@ const ClientRowItem: React.FC<{
       confirmButtonColor: '#F44336',
       cancelButtonColor: '#3085d6',
       cancelButtonText: 'Cancel',
-      confirmButtonText: 'Yes, ban client',
+      confirmButtonText: 'Yes, ban freelancer',
       showLoaderOnConfirm: true,
       allowOutsideClick: () => !Swal.isLoading(),
       backdrop: true,
@@ -46,7 +46,7 @@ const ClientRowItem: React.FC<{
           },
         )
           .then((response) => {
-            if (!response.ok) throw new Error('Failed to ban client');
+            if (!response.ok) throw new Error('Failed to ban freelancer');
 
             return response.json();
           })
@@ -55,7 +55,7 @@ const ClientRowItem: React.FC<{
             navigate('/admin/freelancers?reload=true');
           })
           .catch(() => {
-            toast('Failed to ban client', { type: 'error' });
+            toast('Failed to ban freelancer', { type: 'error' });
           });
       },
     });
@@ -69,7 +69,7 @@ const ClientRowItem: React.FC<{
       confirmButtonColor: '#F44336',
       cancelButtonColor: '#3085d6',
       cancelButtonText: 'Cancel',
-      confirmButtonText: 'Yes, unban client',
+      confirmButtonText: 'Yes, unban freelancer',
       showLoaderOnConfirm: true,
       allowOutsideClick: () => !Swal.isLoading(),
       backdrop: true,
@@ -84,7 +84,7 @@ const ClientRowItem: React.FC<{
           },
         )
           .then((response) => {
-            if (!response.ok) throw new Error('Failed to unban client');
+            if (!response.ok) throw new Error('Failed to unban freelancer');
 
             return response.json();
           })
@@ -93,7 +93,7 @@ const ClientRowItem: React.FC<{
             navigate('/admin/freelancers?reload=true');
           })
           .catch(() => {
-            toast('Failed to unban client', { type: 'error' });
+            toast('Failed to unban freelancer', { type: 'error' });
           });
       },
     });
@@ -107,7 +107,7 @@ const ClientRowItem: React.FC<{
       confirmButtonColor: '#F44336',
       cancelButtonColor: '#3085d6',
       cancelButtonText: 'Cancel',
-      confirmButtonText: 'Yes, delete client',
+      confirmButtonText: 'Yes, delete freelancer',
       showLoaderOnConfirm: true,
       allowOutsideClick: () => !Swal.isLoading(),
       backdrop: true,
@@ -122,16 +122,16 @@ const ClientRowItem: React.FC<{
           },
         )
           .then((response) => {
-            if (!response.ok) throw new Error('Failed to delete client');
+            if (!response.ok) throw new Error('Failed to delete freelancer');
 
             return response.json();
           })
           .then((data) => {
             toast(data.message, { type: 'success' });
-            navigate('/admin/clients?reload=true');
+            navigate('/admin/freelancers?reload=true');
           })
           .catch(() => {
-            toast('Failed to delete client', { type: 'error' });
+            toast('Failed to delete freelancer', { type: 'error' });
           });
       },
     });
@@ -178,12 +178,16 @@ const ClientRowItem: React.FC<{
             <button
               type="button"
               onClick={unbanFreelancer}
-              title="Unban client"
+              title="Unban freelancer"
             >
               <FontAwesomeIcon icon={faCheck} />
             </button>
           ) : (
-            <button type="button" onClick={banFreelancer} title="Ban client">
+            <button
+              type="button"
+              onClick={banFreelancer}
+              title="Ban freelancer"
+            >
               <FontAwesomeIcon icon={faBan} />
             </button>
           )}
@@ -197,4 +201,4 @@ const ClientRowItem: React.FC<{
   );
 };
 
-export default ClientRowItem;
+export default FreelancerRowItem;

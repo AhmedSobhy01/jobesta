@@ -164,7 +164,6 @@ const ClientRowItem: React.FC<{
         </td>
         <td className="px-6 py-4 whitespace-nowrap">{client.createdAt}</td>
         <td className="px-6 py-4 space-x-5 rtl:space-x-reverse whitespace-nowrap">
-
           <Link to={`/users/${client.username}`}>
             <FontAwesomeIcon icon={faEye} />
           </Link>

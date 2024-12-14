@@ -43,7 +43,6 @@ accountsRouter.get(
 //   updateFreelancer,
 // );
 
-
 accountsRouter.post(
   '/',
   createAccountValidationRules,
@@ -56,7 +55,7 @@ accountsRouter.post(
   createOrUpdateFreelancerValidationRules,
   validateRequest,
   createAccount,
-)
+);
 
 accountsRouter.put(
   '/:accountId',

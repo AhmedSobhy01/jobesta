@@ -8,7 +8,7 @@ import ErrorModule from '@/components/ErrorModule';
 import { useNavigate, useSearchParams } from 'react-router';
 import UserContext from '@/store/userContext';
 
-const Clients = () => {
+const Freelancers = () => {
   const navigate = useNavigate();
   const user = useContext(UserContext);
 
@@ -165,4 +165,4 @@ const Clients = () => {
   );
 };
 
-export default Clients;
+export default Freelancers;

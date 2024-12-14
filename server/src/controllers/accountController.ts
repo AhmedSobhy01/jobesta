@@ -126,12 +126,12 @@ export async function getUserByUsername(
       LEFT JOIN categories c ON c.id = j.category_id 
       LEFT JOIN proposals p ON p.job_id = j.id`;
 
-    let jobsQueryParams:Array<string> = [];
+    let jobsQueryParams: Array<string> = [];
 
     if (userData.role === 'client') {
       jobsQueryString += ' WHERE j.client_id = $1';
       jobsQueryParams = [userData.id];
-    } else if(userData.role === 'freelancer') {
+    } else if (userData.role === 'freelancer') {
       const result = await db.query(
         'SELECT id FROM freelancers WHERE account_id = $1',
         [userData.id],
