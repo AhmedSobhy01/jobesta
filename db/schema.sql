@@ -225,7 +225,7 @@ ALTER TABLE "jobs" ADD FOREIGN KEY ("client_id") REFERENCES "accounts" ("id") ON
 
 
 INSERT INTO "accounts" ("first_name", "last_name", "username", "email", "password", "role") 
-VALUES ('admin','1','admin','admin@example.com','$2b$10$xNb2FgHuAHY/AiaHdsdpVevhaQwYFbhbnNrXICSqCjDSE71fbnUgK','admin');
+VALUES ('admin','1','admin','admin@example.com','$2b$10$PULvnFnlNpW1oaWcaRA1mefM1QhCuaOMCCw81GtUeJhvUV/stomfu','admin');
 
 INSERT INTO "categories" ("name", "description")
 VALUES ('Web Development','Web Development'),
