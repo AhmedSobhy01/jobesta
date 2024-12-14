@@ -7,11 +7,14 @@ import {
   faPenToSquare,
   faTimes,
   faTrash,
+  faEye,
 } from '@fortawesome/free-solid-svg-icons';
+
 import ClientModal from '@/components/Admin/Clients/ClientModal';
 import UserContext from '@/store/userContext';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
+import { Link } from 'react-router';
 
 const ClientRowItem: React.FC<{
   client: Account;
@@ -161,6 +164,11 @@ const ClientRowItem: React.FC<{
         </td>
         <td className="px-6 py-4 whitespace-nowrap">{client.createdAt}</td>
         <td className="px-6 py-4 space-x-5 rtl:space-x-reverse whitespace-nowrap">
+
+          <Link to={`/users/${client.username}`}>
+            <FontAwesomeIcon icon={faEye} />
+          </Link>
+
           <button type="button" onClick={() => setIsEditAccountModalOpen(true)}>
             <FontAwesomeIcon icon={faPenToSquare} />
           </button>

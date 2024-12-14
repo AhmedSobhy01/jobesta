@@ -7,11 +7,13 @@ import {
   faPenToSquare,
   faTimes,
   faTrash,
+  faEye,
 } from '@fortawesome/free-solid-svg-icons';
 import FreelancerModal from '@/components/Admin/Freelancers/FreelancerModal';
 import UserContext from '@/store/userContext';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
+import { Link } from 'react-router';
 
 const ClientRowItem: React.FC<{
   freelancer: Account;
@@ -110,12 +112,15 @@ const ClientRowItem: React.FC<{
       allowOutsideClick: () => !Swal.isLoading(),
       backdrop: true,
       preConfirm: () => {
-        fetch(`${import.meta.env.VITE_API_URL}/admin/accounts/${freelancer.id}`, {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${user.jwtToken}`,
+        fetch(
+          `${import.meta.env.VITE_API_URL}/admin/accounts/${freelancer.id}`,
+          {
+            method: 'DELETE',
+            headers: {
+              Authorization: `Bearer ${user.jwtToken}`,
+            },
           },
-        })
+        )
           .then((response) => {
             if (!response.ok) throw new Error('Failed to delete client');
 
@@ -161,12 +166,20 @@ const ClientRowItem: React.FC<{
         </td>
         <td className="px-6 py-4 whitespace-nowrap">{freelancer.createdAt}</td>
         <td className="px-6 py-4 space-x-5 rtl:space-x-reverse whitespace-nowrap">
+          <Link to={`/users/${freelancer.username}`}>
+            <FontAwesomeIcon icon={faEye} />
+          </Link>
+
           <button type="button" onClick={() => setIsEditAccountModalOpen(true)}>
             <FontAwesomeIcon icon={faPenToSquare} />
           </button>
 
           {freelancer.isBanned ? (
-            <button type="button" onClick={unbanFreelancer} title="Unban client">
+            <button
+              type="button"
+              onClick={unbanFreelancer}
+              title="Unban client"
+            >
               <FontAwesomeIcon icon={faCheck} />
             </button>
           ) : (
