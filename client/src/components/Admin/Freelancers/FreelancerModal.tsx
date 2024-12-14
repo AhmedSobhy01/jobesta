@@ -21,7 +21,7 @@ const FreelancerModal: React.FC<{
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [bio, setBio] = useState('');
-  const [previousWorks, setPreviousWorks] = useState<IPreviousWork[]>([]);
+  const [previousWork, setPreviousWork] = useState<IPreviousWork[]>([]);
   const [skills, setSkills] = useState<string[]>([]);
 
   const [errors, setErrors] = useState<{ [key: string]: string } | null>({});
@@ -45,7 +45,7 @@ const FreelancerModal: React.FC<{
         if (!res.ok) throw new Error(data.message);
 
         setSkills(data.data.freelancer.skills);
-        setPreviousWorks(data.data.freelancer.previousWorks);
+        setPreviousWork(data.data.freelancer.previousWork);
         setBio(data.data.freelancer.bio);
       } catch (error) {
         toast((error as Error).message, { type: 'error' });
@@ -67,7 +67,7 @@ const FreelancerModal: React.FC<{
     index: number,
   ) => {
     const { name, value } = e.target;
-    setPreviousWorks((oldPreviousWorks) => {
+    setPreviousWork((oldPreviousWorks) => {
       const updatedPreviousWorks = [...oldPreviousWorks];
       updatedPreviousWorks[index] = {
         ...updatedPreviousWorks[index],
@@ -78,14 +78,14 @@ const FreelancerModal: React.FC<{
   };
 
   const addPreviousWork = () => {
-    setPreviousWorks((oldPreviousWorks) => [
+    setPreviousWork((oldPreviousWorks) => [
       ...oldPreviousWorks,
       { title: '', description: '', url: '' },
     ]);
   };
 
   const removePreviousWork = (index: number) => {
-    setPreviousWorks((oldPreviousWorks) =>
+    setPreviousWork((oldPreviousWorks) =>
       oldPreviousWorks.filter((_, i) => i !== index),
     );
   };
@@ -95,7 +95,7 @@ const FreelancerModal: React.FC<{
     setIsSubmitting(true);
     let errorFlag = false;
 
-    const modifiedPreviousWorks = previousWorks.map((previousWork, i) => ({
+    const modifiedPreviousWorks = previousWork.map((previousWork, i) => ({
       title: previousWork.title,
       description: previousWork.description,
       url: previousWork.url,
@@ -110,11 +110,9 @@ const FreelancerModal: React.FC<{
       email: string;
       password?: string;
       confirmPassword?: string;
-      freelancer?: {
-        bio: string;
-        skills: string[];
-        previousWorks: IPreviousWork[];
-      };
+      bio: string;
+      skills: string[];
+      previousWork: IPreviousWork[];
     } = {
       role: 'freelancer',
       firstName,
@@ -123,11 +121,9 @@ const FreelancerModal: React.FC<{
       email,
       password,
       confirmPassword,
-      freelancer: {
-        bio,
-        skills,
-        previousWorks: modifiedPreviousWorks,
-      },
+      bio,
+      skills,
+      previousWork: modifiedPreviousWorks,
     };
 
     if (password.trim() === '') {
@@ -323,8 +319,8 @@ const FreelancerModal: React.FC<{
 
         <div className="space-y-4 mb-4">
           <h3 className="text-lg font-medium text-gray-700">Previous Work</h3>
-          {previousWorks.length > 0 ? (
-            previousWorks.map((previousWork, index) => (
+          {previousWork.length > 0 ? (
+            previousWork.map((previousWork, index) => (
               <div
                 key={index}
                 className="border rounded-lg p-4 bg-gray-50 shadow-sm space-y-4"
@@ -346,7 +342,7 @@ const FreelancerModal: React.FC<{
                     className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   />
                   <p className="text-sm text-red-500 mt-1">
-                    {errors?.[`previousWorks[${index}].title`]}
+                    {errors?.[`previousWork[${index}].title`]}
                   </p>
                 </div>
 
@@ -366,7 +362,7 @@ const FreelancerModal: React.FC<{
                     className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   />
                   <p className="text-sm text-red-500 mt-1">
-                    {errors?.[`previousWorks[${index}].description`]}
+                    {errors?.[`previousWork[${index}].description`]}
                   </p>
                 </div>
 
@@ -387,7 +383,7 @@ const FreelancerModal: React.FC<{
                     className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   />
                   <p className="text-sm text-red-500 mt-1">
-                    {errors?.[`previousWorks[${index}].url`]}
+                    {errors?.[`previousWork[${index}].url`]}
                   </p>
                 </div>
 
