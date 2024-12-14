@@ -21,8 +21,7 @@ const FreelancerModal: React.FC<{
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [bio, setBio] = useState('');
-  const [previousWorks, setPreviousWorks] = useState<IPreviousWork[]>([
-  ]);
+  const [previousWorks, setPreviousWorks] = useState<IPreviousWork[]>([]);
   const [skills, setSkills] = useState<string[]>([]);
 
   const [errors, setErrors] = useState<{ [key: string]: string } | null>({});
@@ -45,8 +44,6 @@ const FreelancerModal: React.FC<{
         const data = await res.json();
         if (!res.ok) throw new Error(data.message);
 
-        console.log(data.data.freelancer);
-
         setSkills(data.data.freelancer.skills);
         setPreviousWorks(data.data.freelancer.previousWorks);
         setBio(data.data.freelancer.bio);
@@ -64,40 +61,41 @@ const FreelancerModal: React.FC<{
   const handleModalClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) handleClose();
   };
-  
-    const handlePreviousWorkChange = (
-      e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-      index: number,
-    ) => {
-      const { name, value } = e.target;
-      setPreviousWorks((oldPreviousWorks) => {
-        const updatedPreviousWorks = [...oldPreviousWorks];
-        updatedPreviousWorks[index] = {
-          ...updatedPreviousWorks[index],
-          [name]: value,
-        };
-        return updatedPreviousWorks;
-      });
-    };
-  
-    const addPreviousWork = () => {
-      setPreviousWorks((oldPreviousWorks) => [
-        ...oldPreviousWorks,
-        { title: '', description: '', url: '' },
-      ]);
-    };
-  
-    const removePreviousWork = (index: number) => {
-      setPreviousWorks((oldPreviousWorks) =>
-        oldPreviousWorks.filter((_, i) => i !== index),
-      );
-    };
 
-  const handleSubmit = () => {
+  const handlePreviousWorkChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    index: number,
+  ) => {
+    const { name, value } = e.target;
+    setPreviousWorks((oldPreviousWorks) => {
+      const updatedPreviousWorks = [...oldPreviousWorks];
+      updatedPreviousWorks[index] = {
+        ...updatedPreviousWorks[index],
+        [name]: value,
+      };
+      return updatedPreviousWorks;
+    });
+  };
+
+  const addPreviousWork = () => {
+    setPreviousWorks((oldPreviousWorks) => [
+      ...oldPreviousWorks,
+      { title: '', description: '', url: '' },
+    ]);
+  };
+
+  const removePreviousWork = (index: number) => {
+    setPreviousWorks((oldPreviousWorks) =>
+      oldPreviousWorks.filter((_, i) => i !== index),
+    );
+  };
+
+  const handleSubmit = async () => {
     setErrors(null);
     setIsSubmitting(true);
+    let errorFlag = false;
 
-    const freelancerData: {
+    const accountData: {
       role: string;
       firstName: string;
       lastName: string;
@@ -115,52 +113,84 @@ const FreelancerModal: React.FC<{
       confirmPassword,
     };
 
+    const modifiedPreviousWorks = previousWorks.map((previousWork, i) => ({
+      title: previousWork.title,
+      description: previousWork.description,
+      url: previousWork.url,
+      order: i + 1,
+    }));
+
+    const freelancerData: {
+      bio: string;
+      skills: string[];
+      previousWorks: IPreviousWork[];
+    } = {
+      bio,
+      skills,
+      previousWorks: modifiedPreviousWorks,
+    };
+
     if (password.trim() === '') {
-      delete freelancerData.password;
-      delete freelancerData.confirmPassword;
+      delete accountData.password;
+      delete accountData.confirmPassword;
     }
 
-    fetch(
-      `${import.meta.env.VITE_API_URL}/admin/accounts/${freelancer?.id || ''}`,
-      {
-        method: isUpdate ? 'PUT' : 'POST',
-        headers: {
-          Authorization: `Bearer ${user.jwtToken}`,
-          'Content-Type': 'application/json',
+    try {
+      const res1 = await fetch(
+        `${import.meta.env.VITE_API_URL}/admin/accounts/${freelancer?.id || ''}`,
+        {
+          method: isUpdate ? 'PUT' : 'POST',
+          headers: {
+            Authorization: `Bearer ${user.jwtToken}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(accountData),
         },
-        body: JSON.stringify(freelancerData),
-      },
-    )
-      .then((res) => {
-        if (!res.ok && res.status !== 422)
-          throw new Error('Something went wrong!');
+      );
 
-        return res.json();
-      })
-      .then((data) => {
-        if (Object.values(data?.errors || {}).length) {
-          setErrors(data.errors);
+      if (!res1.ok && res1.status !== 422)
+        throw new Error('Something went wrong1!');
 
-          if (data.errors.accountId) throw new Error(data.errors.accountId);
+      const data1 = await res1.json();
 
-          throw new Error('Validation failed');
-        }
+      if (Object.values(data1?.errors || {}).length) {
+        setErrors(data1.errors);
+        errorFlag = true;
+      }
 
-        return data;
-      })
-      .then((data) => {
-        toast(data.message, { type: 'success' });
-        navigate('/admin/freelancers?reload=true');
-        onClose();
-      })
-      .catch((error) => {
-        if (error.message === 'Validation failed') return;
+      const res2 = await fetch(
+        `${import.meta.env.VITE_API_URL}/admin/accounts/freelancer/${freelancer?.id || ''}`,
+        {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${user.jwtToken}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(freelancerData),
+        },
+      );
 
-        toast(error.message, { type: 'error' });
-      })
-      .finally(() => {
-        setIsSubmitting(false);
-      });
+      const data2 = await res2.json();
+
+      if (!res2.ok && res2.status !== 422)
+        throw new Error('Something went wrong2!');
+
+      if (Object.values(data2?.errors || {}).length) {
+        setErrors((prevErrors) => ({ ...prevErrors, ...data2.errors }));
+        errorFlag = true;
+      }
+
+      if (errorFlag) throw new Error('Validation failed');
+
+      toast(data1.message, { type: 'success' });
+      navigate('/admin/freelancers?reload=true');
+      onClose();
+    } catch (error) {
+      if ((error as Error).message === 'Validation failed') return;
+      toast((error as Error).message, { type: 'error' });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return createPortal(
@@ -338,7 +368,7 @@ const FreelancerModal: React.FC<{
                     className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   />
                   <p className="text-sm text-red-500 mt-1">
-                    {errors?.[`previousWork[${index}].title`]}
+                    {errors?.[`previousWorks[${index}].title`]}
                   </p>
                 </div>
 
@@ -358,7 +388,7 @@ const FreelancerModal: React.FC<{
                     className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   />
                   <p className="text-sm text-red-500 mt-1">
-                    {errors?.[`previousWork[${index}].description`]}
+                    {errors?.[`previousWorks[${index}].description`]}
                   </p>
                 </div>
 
@@ -379,7 +409,7 @@ const FreelancerModal: React.FC<{
                     className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   />
                   <p className="text-sm text-red-500 mt-1">
-                    {errors?.[`previousWork[${index}].url`]}
+                    {errors?.[`previousWorks[${index}].url`]}
                   </p>
                 </div>
 
