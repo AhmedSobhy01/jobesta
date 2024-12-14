@@ -6,6 +6,7 @@ import {
   acceptProposal,
   closeJob,
   updateJob,
+  reopenJob,
 } from '../controllers/jobController.js';
 import { authenticate, prepareUser } from '../middlewares/authMiddleware.js';
 import { checkIfClient } from '../middlewares/clientMiddleware.js';
@@ -16,6 +17,7 @@ import {
   updateJobValidationRules,
   acceptProposalValidationRules,
   closeJobValidationRules,
+  reopenJobValidationRules,
 } from '../validations/jobValidations.js';
 
 const jobRouter = Router();
@@ -40,6 +42,15 @@ jobRouter.post(
   acceptProposalValidationRules,
   validateRequest,
   acceptProposal,
+);
+
+jobRouter.put(
+  '/:jobId/reopen',
+  authenticate,
+  checkIfClient,
+  reopenJobValidationRules,
+  validateRequest,
+  reopenJob,
 );
 
 jobRouter.put(

@@ -330,3 +330,24 @@ export async function closeJob(req: Request, res: Response) {
     res.status(500).json({ status: false, message: 'Error closing job' });
   }
 }
+
+export async function reopenJob(req: Request, res: Response) {
+  try {
+    await db.query('UPDATE jobs SET status = $1 WHERE id = $2', [
+      'open',
+      req.params.jobId,
+    ]);
+
+    await db.query('UPDATE proposals SET status = $1 WHERE job_id = $2', [
+      'pending',
+      req.params.jobId,
+    ]);
+
+    res.status(200).json({
+      status: true,
+      message: 'Job reopened',
+    });
+  } catch {
+    res.status(500).json({ status: false, message: 'Error reopening job' });
+  }
+}

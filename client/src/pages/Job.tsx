@@ -5,6 +5,7 @@ import { humanReadable } from '@/utils/time';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCheck,
+  faFolderOpen,
   faHourglassHalf,
   faInfoCircle,
   faLayerGroup,
@@ -62,6 +63,56 @@ function Job() {
             .then((res) => {
               if (!res.ok && res.status !== 422)
                 throw new Error('Failed to close job');
+
+              return res.json();
+            })
+            .then((data) => {
+              if (Object.values(data?.errors || {}).length) {
+                if (data.errors.jobId) throw new Error(data.errors.jobId);
+
+                throw new Error('Validation failed');
+              }
+
+              return data;
+            })
+            .then((data) => {
+              toast(data.message, { type: 'success' });
+              navigate(`/jobs/${job.id}`);
+            })
+            .catch((error) => {
+              toast(error.message, { type: 'error' });
+            })
+            .finally(() => {
+              resolve();
+            });
+        }),
+    });
+  };
+
+  const handleReopenJob = () => {
+    Swal.fire({
+      title: 'Are you sure?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      cancelButtonText: 'Cancel',
+      confirmButtonText: 'Yes, reopen it!',
+      showLoaderOnConfirm: true,
+      allowOutsideClick: () => !Swal.isLoading(),
+      backdrop: true,
+      preConfirm: () =>
+        new Promise<void>((resolve) => {
+          fetch(import.meta.env.VITE_API_URL + '/jobs/' + job.id + '/reopen', {
+            method: 'PUT',
+            headers: {
+              Authorization: `Bearer ${user.jwtToken}`,
+              'Content-Type': 'application/json',
+            },
+          })
+            .then((res) => {
+              if (!res.ok && res.status !== 422)
+                throw new Error('Failed to reopen job');
 
               return res.json();
             })
@@ -186,6 +237,18 @@ function Job() {
                           <span>Close Job</span>
                         </button>
                       </div>
+                    )}
+
+                  {user.username === job.client.username &&
+                    job.status === 'closed' && (
+                      <button
+                        onClick={handleReopenJob}
+                        type="button"
+                        className="text-black bg-emerald-200 border border-emerald-200 rounded-full hover:border-black justify-center px-8 py-1.5 flex items-center gap-2 mt-5"
+                      >
+                        <FontAwesomeIcon icon={faFolderOpen} />
+                        <span>Reopen Job</span>
+                      </button>
                     )}
                 </div>
               </div>

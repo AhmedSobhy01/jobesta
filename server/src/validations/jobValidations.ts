@@ -254,3 +254,27 @@ export const closeJobValidationRules = [
       return true;
     }),
 ];
+
+export const reopenJobValidationRules = [
+  param('jobId')
+    .isNumeric()
+    .withMessage('Job ID must be a number')
+    .notEmpty()
+    .withMessage('Job ID must not be empty')
+    .custom(async (jobId, { req }) => {
+      const jobQuery = await db.query(
+        'SELECT * FROM jobs WHERE id = $1 AND client_id = $2',
+        [jobId, req.user.id],
+      );
+
+      if (jobQuery.rows.length === 0) {
+        throw new Error('Job does not exist');
+      }
+
+      if (jobQuery.rows[0].status !== 'closed') {
+        throw new Error('Job is not closed');
+      }
+
+      return true;
+    }),
+];
