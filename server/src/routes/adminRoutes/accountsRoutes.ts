@@ -15,7 +15,6 @@ import {
   deleteAccountValidationRules,
   banAccountValidationRules,
   unbanAccountValidationRules,
-  createOrUpdateFreelancerValidationRules,
   getFreelancerValidationRules,
 } from '../../validations/adminValidations/accountsValidation.js';
 import { validateRequest } from '../../middlewares/validationMiddleware.js';
@@ -36,23 +35,10 @@ accountsRouter.get(
   getFreelancer,
 );
 
-// accountsRouter.put(
-//   '/freelancer/:accountId',
-//   createOrUpdateFreelancerValidationRules,
-//   validateRequest,
-//   updateFreelancer,
-// );
 
 accountsRouter.post(
   '/',
   createAccountValidationRules,
-  validateRequest,
-  createAccount,
-);
-
-accountsRouter.post(
-  '/freelancer',
-  createOrUpdateFreelancerValidationRules,
   validateRequest,
   createAccount,
 );

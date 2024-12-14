@@ -67,8 +67,7 @@ export async function getAccounts(req: Request, res: Response) {
 }
 
 export async function createAccount(req: Request, res: Response) {
-  const { firstName, lastName, username, email, password, role, freelancer } =
-    req.body;
+  const { firstName, lastName, username, email, password, role } = req.body;
 
   try {
     const salt = await bcrypt.genSalt(10);
@@ -84,33 +83,33 @@ export async function createAccount(req: Request, res: Response) {
         'INSERT INTO freelancers (account_id) VALUES ($1) RETURNING id',
         [userIdQuery.rows[0].id],
       );
-      if (freelancer) {
-        const { bio, skills, previousWorks } = freelancer;
+      const { bio, skills, previousWork } = req.body;
 
-        const freelancerId = freelancerDataQuery.rows[0].id;
+      const freelancerId = freelancerDataQuery.rows[0].id;
 
+      if (bio) {
         await db.query('UPDATE freelancers SET bio = $1 WHERE id = $2', [
           bio,
           freelancerId,
         ]);
+      }
 
-        for (const skill of skills) {
-          await db.query(
-            'INSERT INTO skills (name,freelancer_id) VALUES ($1,$2)',
-            [skill, freelancerId],
-          );
-        }
-        if (previousWorks.length !== 0)
-          previousWorks.sort(
-            (a: IPreviousWork, b: IPreviousWork) => a.order - b.order,
-          );
+      for (const skill of skills) {
+        await db.query(
+          'INSERT INTO skills (name,freelancer_id) VALUES ($1,$2)',
+          [skill, freelancerId],
+        );
+      }
+      if (previousWork.length !== 0)
+        previousWork.sort(
+          (a: IPreviousWork, b: IPreviousWork) => a.order - b.order,
+        );
 
-        for (const [index, work] of previousWorks.entries()) {
-          await db.query(
-            'INSERT INTO previous_works (title,description,url,"order",freelancer_id) VALUES ($1,$2,$3,$4,$5)',
-            [work.title, work.description, work.url, index + 1, freelancerId],
-          );
-        }
+      for (const [index, work] of previousWork.entries()) {
+        await db.query(
+          'INSERT INTO previous_works (title,description,url,"order",freelancer_id) VALUES ($1,$2,$3,$4,$5)',
+          [work.title, work.description, work.url, index + 1, freelancerId],
+        );
       }
     }
 
@@ -124,8 +123,7 @@ export async function createAccount(req: Request, res: Response) {
 
 export async function updateAccount(req: Request, res: Response) {
   const { accountId } = req.params;
-  const { firstName, lastName, username, email, password, freelancer } =
-    req.body;
+  const { firstName, lastName, username, email, password } = req.body;
 
   try {
     const accountQuery = await db.query(
@@ -143,8 +141,8 @@ export async function updateAccount(req: Request, res: Response) {
       ]);
     }
 
-    if (accountQuery.rows[0].role === 'freelancer' && freelancer) {
-      const { bio, skills, previousWorks } = freelancer;
+    if (accountQuery.rows[0].role === 'freelancer') {
+      const { bio, skills, previousWork } = req.body;
       const freelancerDataQuery = await db.query(
         'SELECT id FROM freelancers WHERE account_id = $1',
         [accountId],
@@ -172,12 +170,12 @@ export async function updateAccount(req: Request, res: Response) {
         freelancerId,
       ]);
 
-      if (previousWorks.length !== 0)
-        previousWorks.sort(
+      if (previousWork.length !== 0)
+        previousWork.sort(
           (a: IPreviousWork, b: IPreviousWork) => a.order - b.order,
         );
 
-      for (const [index, work] of previousWorks.entries()) {
+      for (const [index, work] of previousWork.entries()) {
         await db.query(
           'INSERT INTO previous_works (title,description,url,"order",freelancer_id) VALUES ($1,$2,$3,$4,$5)',
           [work.title, work.description, work.url, index + 1, freelancerId],
@@ -257,7 +255,7 @@ export async function getFreelancer(req: Request, res: Response) {
       [freelancerId],
     );
 
-    const previousWorks = previousWorkQuery.rows.map((work) => {
+    const previousWork = previousWorkQuery.rows.map((work) => {
       return {
         order: work.order,
         title: work.title,
@@ -266,7 +264,7 @@ export async function getFreelancer(req: Request, res: Response) {
       };
     });
 
-    previousWorks.sort((a, b) => a.order - b.order);
+    previousWork.sort((a, b) => a.order - b.order);
 
     res.status(200).json({
       status: true,
@@ -276,7 +274,7 @@ export async function getFreelancer(req: Request, res: Response) {
           id: freelancerId,
           bio,
           skills,
-          previousWorks,
+          previousWork,
         },
       },
     });
