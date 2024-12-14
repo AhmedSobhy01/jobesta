@@ -126,16 +126,22 @@ const ProfilePicture: React.FC<ProfilePictureData> = ({
         const resData = await response.json();
 
         if (!resData.status) {
-          setError(true);
-          setErrorMessage(resData.message);
-          return;
+          if (response.status === 422) {
+            if (resData.errors && resData.errors.file) {
+              throw new Error(resData.errors.file);
+            }
+          }
+          throw new Error(resData.message);
         }
-      } catch {
-        setError(true);
-        setErrorMessage('A network error occurred. Please try again later.');
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(true);
+          setErrorMessage(err.message);
+        } else {
+          setErrorMessage('A network error occurred. Please try again later.');
+        }
       }
     }
-    //setNewProfilePic('');
     navigate(`/users/${anyUserData.user.username}`);
   };
 

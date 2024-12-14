@@ -11,14 +11,20 @@ const Jobs: React.FC<{ job: IJob }> = ({ job }) => {
   } = job;
 
   let statusColor = '';
-  if (status && status == 'Open') {
-    statusColor = 'text-green-600 bg-green-100';
-  } else if (status && status == 'In Progress') {
-    statusColor = 'text-yellow-600 bg-yellow-100';
-  } else if (status && status == 'Completed') {
-    statusColor = 'text-gray-600 bg-gray-200';
+  if (status && status == 'open') {
+    statusColor =
+      'text-green-600 bg-green-100 dark:text-green-400 dark:bg-green-900';
+  } else if (status && status == 'in_progress') {
+    statusColor =
+      'text-yellow-600 bg-yellow-100 dark:text-yellow-400 dark:bg-yellow-900';
+  } else if (status && status == 'completed') {
+    statusColor =
+      'text-gray-600 bg-gray-200 dark:text-gray-400 dark:bg-gray-800';
+  } else if (status && (status == 'closed' || status == 'cancelled')) {
+    statusColor = 'text-gray-600 bg-red-200 dark:text-gray-400 dark:bg-red-900';
   } else {
-    statusColor = 'text-gray-600 bg-gray-100';
+    statusColor =
+      'text-gray-600 bg-gray-100 dark:text-gray-400 dark:bg-gray-700';
   }
 
   return (

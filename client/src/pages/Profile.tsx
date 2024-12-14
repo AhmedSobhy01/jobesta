@@ -225,17 +225,47 @@ const ProfilePage: React.FC & {
 
       if (!response.ok) {
         if (!resData.status) {
-          setError(true);
-          setErrorMessage('Invalid data');
+          if (response.status === 422) {
+            if (data.newSkill) {
+              const index = freelancerData.skills
+                ? freelancerData.skills.length
+                : 0;
+              const obj = `skills[${index}]`;
+              if (freelancerData.skills && resData.errors[obj]) {
+                throw new Error(resData.errors[obj]);
+              }
+            } else if (data.newPreviousWork && freelancerData.previousWork) {
+              const index = freelancerData.previousWork
+                ? freelancerData.previousWork.length
+                : 0;
+              const titObj = `previousWork[${index}].title`;
+              const descObj = `previousWork[${index}].description`;
+              const urlObj = `previousWork[${index}].url`;
+              if (resData.errors[titObj]) {
+                throw new Error(resData.errors[titObj]);
+              } else if (resData.errors[descObj]) {
+                throw new Error(resData.errors[descObj]);
+              } else if (resData.errors[urlObj]) {
+                throw new Error(resData.errors[urlObj]);
+              }
+            } else if (newData.bio && resData.errors?.bio) {
+              throw new Error(resData.errors?.bio);
+            }
+            throw new Error('Invalid data');
+          }
+          throw new Error('Error updatiing data');
         }
-
         return;
       }
 
       navigate(`/users/${userData.username}`);
-    } catch {
+    } catch (err) {
       setError(true);
-      setErrorMessage('A network error occurred. Please try again later.');
+      if (err instanceof Error) {
+        setErrorMessage(err.message);
+      } else {
+        setErrorMessage('A network error occurred. Please try again later.');
+      }
     }
   }
 
@@ -431,7 +461,7 @@ const ProfilePage: React.FC & {
         )}
         {activeComp.jobsActive && accountData.jobs?.length === 0 && (
           <div className="bg-white dark:bg-gray-900 p-5 rounded-xl shadow-md">
-            <p className=" dark:text-gray-200">no Jobs Available</p>
+            <p className=" dark:text-gray-200">No Jobs Available</p>
           </div>
         )}
         {activeComp.previousWorkActive && accountData.role === 'freelancer' && (
