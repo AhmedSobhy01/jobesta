@@ -170,95 +170,92 @@ const Proposals: React.FC<{ job: Job }> = ({ job }) => {
         {proposals.map((proposal: Proposal, index: number) => (
           <div key={index} className="border-2 rounded-lg overflow-hidden mb-4">
             <div
-              className="p-6 flex justify-between items-center cursor-pointer bg-gray-100"
+              className="p-6 cursor-pointer bg-gray-100"
               onClick={() => toggleAccordion(index)}
             >
-              <div className="flex items-center gap-4">
-                <img
-                  alt="Freelancer profile picture"
-                  src={proposal.freelancer!.profilePicture}
-                  decoding="async"
-                  loading="lazy"
-                  className="rounded-full w-16 h-16"
-                />
-
-                <div>
-                  <h4 className="text-lg font-semibold">
-                    {proposal.freelancer!.firstName}{' '}
-                    {proposal.freelancer!.lastName}
-                  </h4>
-                  <p className="text-sm text-gray-400">
-                    {proposal.freelancer!.username}
-                  </p>
+              <div className="flex justify-between items-center gap-4">
+                <div className="flex items-center flex-wrap gap-4">
+                  <img
+                    alt="Freelancer profile picture"
+                    src={proposal.freelancer!.profilePicture}
+                    decoding="async"
+                    loading="lazy"
+                    className="rounded-full w-16 h-16"
+                  />
+                  <div>
+                    <h4 className="text-lg font-semibold">
+                      {proposal.freelancer!.firstName}{' '}
+                      {proposal.freelancer!.lastName}
+                    </h4>
+                    <p className="text-sm text-gray-400">
+                      {proposal.freelancer!.username}
+                    </p>
+                  </div>
+                  <div
+                    className={`text-sm text-white ${
+                      proposal.status === 'accepted'
+                        ? 'bg-green-500'
+                        : proposal.status === 'rejected'
+                          ? 'bg-red-500'
+                          : 'bg-yellow-500'
+                    } py-0.5 px-3 rounded-3xl`}
+                  >
+                    {proposal.status
+                      ? proposal.status[0].toUpperCase() +
+                        proposal.status.slice(1)
+                      : ''}
+                  </div>
                 </div>
-
-                <div
-                  className={`text-sm text-white ${
-                    proposal.status === 'accepted'
-                      ? 'bg-green-500'
-                      : proposal.status === 'rejected'
-                        ? 'bg-red-500'
-                        : 'bg-yellow-500'
-                  } py-0.5 px-3 rounded-3xl`}
-                >
-                  {proposal.status
-                    ? proposal.status[0].toUpperCase() +
-                      proposal.status.slice(1)
-                    : ''}
-                </div>
-              </div>
-
-              <div className="flex items-center gap-7">
-                {proposal.status === 'pending' &&
-                  proposal.freelancer!.username === user.username && (
-                    <div className="flex flex-col items-end gap-2 z-30">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEditProposal(proposal);
-                        }}
-                        className="flex items-center gap-2 text-sm bg-yellow-500 text-white px-3 py-1 rounded-lg select-none"
-                      >
-                        <FontAwesomeIcon icon={faPenToSquare} />
-                        Edit Proposal
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteProposal();
-                        }}
-                        className="flex items-center gap-2 text-sm bg-red-500 text-white px-3 py-1 rounded-lg select-none"
-                      >
-                        <FontAwesomeIcon icon={faTrash} />
-                        Delete Proposal
-                      </button>
-                    </div>
-                  )}
-
-                {proposal.status === 'pending' &&
-                  job.client.username === user.username && (
-                    <div className="flex flex-col items-end gap-2 z-30">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleAcceptProposal(proposal);
-                        }}
-                        className="flex items-center gap-2 text-sm bg-green-500 text-white px-3 py-1 rounded-lg select-none"
-                      >
-                        <FontAwesomeIcon icon={faCheck} />
-                        Accept Proposal
-                      </button>
-                    </div>
-                  )}
-
                 <FontAwesomeIcon
                   icon={expandedIndex === index ? faChevronUp : faChevronDown}
                 />
               </div>
+
+              {proposal.status === 'pending' &&
+                proposal.freelancer!.username === user.username && (
+                  <div className="flex items-center gap-3 z-30 mt-5">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEditProposal(proposal);
+                      }}
+                      className="flex items-center gap-2 text-sm bg-yellow-500 text-white px-3 py-1 rounded-lg select-none"
+                    >
+                      <FontAwesomeIcon icon={faPenToSquare} />
+                      Edit Proposal
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteProposal();
+                      }}
+                      className="flex items-center gap-2 text-sm bg-red-500 text-white px-3 py-1 rounded-lg select-none"
+                    >
+                      <FontAwesomeIcon icon={faTrash} />
+                      Delete Proposal
+                    </button>
+                  </div>
+                )}
+
+              {proposal.status === 'pending' &&
+                job.client.username === user.username && (
+                  <div className="flex items-center gap-3 z-30 mt-5">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAcceptProposal(proposal);
+                      }}
+                      className="flex items-center gap-2 text-sm bg-green-500 text-white px-3 py-1 rounded-lg select-none"
+                    >
+                      <FontAwesomeIcon icon={faCheck} />
+                      Accept Proposal
+                    </button>
+                  </div>
+                )}
             </div>
 
             {expandedIndex === index && (
