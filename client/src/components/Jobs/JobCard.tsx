@@ -1,6 +1,6 @@
 import { limitText } from '@/utils/string';
 import { humanReadable } from '@/utils/time';
-import CategoryBadge from './CategoryBadge';
+import CategoryBadge from '@/components/Jobs/CategoryBadge';
 import { Link } from 'react-router';
 
 const JobCard: React.FC<{
