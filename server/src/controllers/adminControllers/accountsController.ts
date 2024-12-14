@@ -246,10 +246,10 @@ export async function updateFreelancer(req: Request, res: Response) {
       freelancerId,
     ]);
 
-    if(previousWorks.length !== 0) 
-    previousWorks.sort(
-      (a: IPreviousWork, b: IPreviousWork) => a.order - b.order,
-    );
+    if (previousWorks.length !== 0)
+      previousWorks.sort(
+        (a: IPreviousWork, b: IPreviousWork) => a.order - b.order,
+      );
 
     for (const [index, work] of previousWorks.entries()) {
       await db.query(
@@ -259,8 +259,7 @@ export async function updateFreelancer(req: Request, res: Response) {
     }
 
     res.status(200).json({ message: 'Freelancer updated', status: true });
-  } catch(err) {
-    console.log(err);
+  } catch {
     res
       .status(500)
       .json({ message: 'Failed to update freelancer', status: false });
