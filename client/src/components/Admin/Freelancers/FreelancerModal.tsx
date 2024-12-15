@@ -1,7 +1,7 @@
 import UserContext from '@/store/userContext';
 import { faXmark, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState,useRef } from 'react';
 import { toast } from 'react-toastify';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router';
@@ -27,8 +27,10 @@ const FreelancerModal: React.FC<{
   const [errors, setErrors] = useState<{ [key: string]: string } | null>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const fetchDataRef = useRef(false);
   useEffect(() => {
-    if (!isUpdate) return;
+    if (!isUpdate || fetchDataRef.current) return;
+    fetchDataRef.current = true;
     (async () => {
       try {
         const res = await fetch(
@@ -50,6 +52,7 @@ const FreelancerModal: React.FC<{
       } catch (error) {
         toast((error as Error).message, { type: 'error' });
       }
+      fetchDataRef.current = false;
     })();
   }, [freelancer, isUpdate, user.jwtToken]);
 
