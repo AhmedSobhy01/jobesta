@@ -17,6 +17,7 @@ import { FreelancerContextProvider } from '@/store/freelancerContext';
 import Dashboard from '@/pages/Admin/Dashboard';
 import Clients from '@/pages/Admin/Clients';
 import CreateJobForm from '@/pages/CreateJobForm';
+import ManageJob from './pages/ManageJob';
 
 const router = createBrowserRouter([
   {
@@ -34,6 +35,11 @@ const router = createBrowserRouter([
             path: 'create',
             element: <CreateJobForm />,
             loader: CreateJobForm.loader,
+          },
+          {
+            path: ':jobId/manage',
+            element: <ManageJob />,
+            loader: ManageJob.loader,
           },
           {
             path: ':jobId',
