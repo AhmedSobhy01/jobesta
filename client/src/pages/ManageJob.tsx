@@ -428,7 +428,7 @@ function ManageJob() {
                           message.sender.username === user.username
                             ? 'end'
                             : 'start'
-                        } m-3`}
+                        } m-3 group`}
                       >
                         <div
                           className={`-mt-2 ${
@@ -440,7 +440,7 @@ function ManageJob() {
                           <div className="flex items-center gap-2 w-full">
                             {message.sender.username == user.username && (
                               <button
-                                className={`text-red-500 dark:text-red-400 focus:outline-none`}
+                                className="text-red-500 dark:text-red-400 focus:outline-none w-0 opacity-0 group-hover:w-auto group-hover:opacity-100 transition-opacity duration-100 ease-in-out"
                                 onClick={() => handleDeleteMessage(message.id)}
                               >
                                 <FontAwesomeIcon icon={faTrash} />
