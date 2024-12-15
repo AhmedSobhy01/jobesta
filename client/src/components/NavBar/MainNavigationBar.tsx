@@ -8,7 +8,7 @@ import jobestaLogo from '@/assets/jobesta-logo.png';
 import { useContext } from 'react';
 import UserContext from '@/store/userContext';
 import ProfileDropdown from '@/components/Profile/ProfileDropdown';
-import NotificationsDropdown from '../Notifications/notificationsDropDown';
+import NotificationsDropdown from '@/components/Notifications/notificationsDropdown';
 
 const MainNavigationBar: React.FC<{
   dropdownOpen: {
