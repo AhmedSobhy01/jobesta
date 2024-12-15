@@ -132,7 +132,7 @@ const Categories = () => {
                 </tr>
               </thead>
               <tbody>
-                {loading && <TableSkeleton columns={3} />}
+                {loading && <TableSkeleton columns={4} />}
 
                 {categories.map((category: JobCategory) => (
                   <CategoryRowItem key={category.id} category={category} />
