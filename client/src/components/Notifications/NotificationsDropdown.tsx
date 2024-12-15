@@ -6,24 +6,17 @@ import {
   useLoaderData,
 } from 'react-router';
 import { getAuthJwtToken, getAuthRefreshToken } from '@/utils/auth';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  FaCheckCircle,
-  FaTimesCircle,
-  FaStar,
-  FaDollarSign,
-  FaEnvelope,
-  FaTrophy,
-  FaExclamationCircle,
-  FaSpinner,
-} from 'react-icons/fa';
-
-interface INotifications {
-  type: string;
-  message: string;
-  isRead: boolean;
-  createdAt: string;
-  url: string;
-}
+  faCircleCheck,
+  faCircleExclamation,
+  faCircleXmark,
+  faDollarSign,
+  faEnvelope,
+  faSpinner,
+  faStar,
+  faTrophy,
+} from '@fortawesome/free-solid-svg-icons';
 
 // const NOTIFICATIONS: INotifications[] = [
 //   {
@@ -94,27 +87,41 @@ const NotificationsDropdown: React.FC & {
   const getIconByType = (type: string) => {
     switch (type) {
       case 'proposal_submitted':
-        return <FaEnvelope className="text-blue-500" />;
+        return <FontAwesomeIcon icon={faEnvelope} className="text-blue-500" />;
       case 'proposal_accepted':
-        return <FaCheckCircle className="text-green-500" />;
+        return <FontAwesomeIcon icon={faCircleCheck} />;
       case 'proposal_rejected':
-        return <FaTimesCircle className="text-red-500" />;
+        return (
+          <FontAwesomeIcon icon={faCircleXmark} className="text-red-500" />
+        );
       case 'milestone_completed':
-        return <FaStar className="text-yellow-500" />;
+        return <FontAwesomeIcon icon={faStar} className="text-yellow-500" />;
       case 'payment_received':
-        return <FaDollarSign className="text-green-500" />;
+        return (
+          <FontAwesomeIcon icon={faDollarSign} className="text-green-500" />
+        );
       case 'message_received':
-        return <FaEnvelope className="text-blue-500" />;
+        return <FontAwesomeIcon icon={faEnvelope} className="text-blue-500" />;
       case 'review_received':
-        return <FaTrophy className="text-purple-500" />;
+        return <FontAwesomeIcon icon={faTrophy} className="text-purple-500" />;
       case 'badge_earned':
-        return <FaTrophy className="text-purple-500" />;
+        return <FontAwesomeIcon icon={faTrophy} className="text-purple-500" />;
       case 'withdrawal_requested':
-        return <FaExclamationCircle className="text-orange-500" />;
+        return (
+          <FontAwesomeIcon
+            icon={faCircleExclamation}
+            className="text-orange-500"
+          />
+        );
       case 'withdrawal_processed':
-        return <FaSpinner className="text-gray-500" />;
+        return <FontAwesomeIcon icon={faSpinner} className="text-gray-500" />;
       default:
-        return <FaExclamationCircle className="text-gray-500" />;
+        return (
+          <FontAwesomeIcon
+            icon={faCircleExclamation}
+            className="text-orange-500"
+          />
+        );
     }
   };
 

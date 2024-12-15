@@ -1,184 +1,131 @@
-import { useEffect, useState } from 'react';
-import { Link, useLoaderData } from 'react-router';
+import { Link, useLoaderData, useNavigate } from 'react-router';
 import { getAuthJwtToken, getAuthRefreshToken } from '@/utils/auth';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  FaCheckCircle,
-  FaTimesCircle,
-  FaStar,
-  FaDollarSign,
-  FaEnvelope,
-  FaTrophy,
-  FaExclamationCircle,
-  FaSpinner,
-} from 'react-icons/fa';
+  faCircleCheck,
+  faCircleExclamation,
+  faCircleXmark,
+  faDollarSign,
+  faEnvelope,
+  faSpinner,
+  faStar,
+  faTrophy,
+} from '@fortawesome/free-solid-svg-icons';
+import Pagination from '@/components/Common/Pagination';
+import ErrorModule from '@/components/ErrorModule';
 
-interface INotifications {
-  type: string;
-  message: string;
-  isRead: boolean;
-  createdAt: string;
-  url: string;
-}
-
-interface IPagination {
-  currentPage: number;
-  totalPages: number;
-  totalItems: number;
-  perPage: number;
-}
-
-// const NOTIFICATIONS: INotifications[] = [
-//   {
-//     type: 'proposal_accepted',
-//     message: 'your proposal have been proposal_accepted',
-//     isRead: false,
-//     createdAt: '2 days ago',
-//     url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
-//   },
-//   {
-//     type: 'proposal_rejected',
-//     message: 'your proposal have been proposal_rejected',
-//     isRead: false,
-//     createdAt: '2 days ago',
-//     url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
-//   },
-//   {
-//     type: 'milestone_completed',
-//     message: 'your proposal have been milestone_completed',
-//     isRead: false,
-//     createdAt: '2 days ago',
-//     url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
-//   },
-//   {
-//     type: 'payment_received',
-//     message: 'your proposal have been payment_received',
-//     isRead: false,
-//     createdAt: '2 days ago',
-//     url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
-//   },
-//   {
-//     type: 'message_received',
-//     message: 'your proposal have been message_received',
-//     isRead: false,
-//     createdAt: '2 days ago',
-//     url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
-//   },
-//   {
-//     type: 'review_received',
-//     message: 'your proposal have been review_received',
-//     isRead: false,
-//     createdAt: '2 days ago',
-//     url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
-//   },
-//   {
-//     type: 'badge_earned',
-//     message: 'your proposal have been badge_earned',
-//     isRead: false,
-//     createdAt: '2 days ago',
-//     url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
-//   },
-//   {
-//     type: 'withdrawal_requested',
-//     message: 'your proposal have been withdrawal_requested',
-//     isRead: false,
-//     createdAt: '2 days ago',
-//     url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
-//   },
-// ];
+const NOTIFICATIONS: INotifications[] = [
+  {
+    type: 'proposal_accepted',
+    message: 'your proposal have been proposal_accepted',
+    isRead: false,
+    createdAt: '2 days ago',
+    url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
+  },
+  {
+    type: 'proposal_rejected',
+    message: 'your proposal have been proposal_rejected',
+    isRead: false,
+    createdAt: '2 days ago',
+    url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
+  },
+  {
+    type: 'milestone_completed',
+    message: 'your proposal have been milestone_completed',
+    isRead: false,
+    createdAt: '2 days ago',
+    url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
+  },
+  {
+    type: 'payment_received',
+    message: 'your proposal have been payment_received',
+    isRead: false,
+    createdAt: '2 days ago',
+    url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
+  },
+  {
+    type: 'message_received',
+    message: 'your proposal have been message_received',
+    isRead: false,
+    createdAt: '2 days ago',
+    url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
+  },
+  {
+    type: 'review_received',
+    message: 'your proposal have been review_received',
+    isRead: false,
+    createdAt: '2 days ago',
+    url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
+  },
+  {
+    type: 'badge_earned',
+    message: 'your proposal have been badge_earned',
+    isRead: false,
+    createdAt: '2 days ago',
+    url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
+  },
+  {
+    type: 'withdrawal_requested',
+    message: 'your proposal have been withdrawal_requested',
+    isRead: false,
+    createdAt: '2 days ago',
+    url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
+  },
+];
 
 const NotificationsPage = () => {
+  const navigate = useNavigate();
   const loaderData = useLoaderData();
-  const [notifications, setNotifications] = useState(
-    loaderData?.notifications || [],
-  );
-  console.log(notifications);
-
-  const [paginationData, setPaginationData] = useState<IPagination>(
-    loaderData?.pagination || {
-      currentPage: 1,
-      totalPages: 1,
-      totalItems: 0,
-      perPage: 10,
-    },
-  );
-
-  useEffect(() => {
-    async function fetchNotifications(page: number) {
-      const jwtToken = getAuthJwtToken();
-      const refreshToken = getAuthRefreshToken();
-
-      if (!refreshToken || refreshToken === 'EXPIRED') {
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('jwtToken');
-        localStorage.removeItem('jwtTokenExpiration');
-        setNotifications([]);
-        return;
-      }
-
-      try {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/notifications?page=${page}`,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${jwtToken}`,
-            },
-          },
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          setNotifications(data.data.notifications);
-          setPaginationData({
-            currentPage: data.data.pagination.currentPage,
-            totalPages: data.data.pagination.totalPages,
-            totalItems: data.data.pagination.totalItems,
-            perPage: data.data.pagination.perPage,
-          });
-        } else {
-          setNotifications([]);
-        }
-      } catch (error) {
-        console.error('Error fetching notifications:', error);
-        setNotifications([]);
-      }
-    }
-
-    fetchNotifications(paginationData.currentPage);
-  }, [paginationData.currentPage]);
 
   const getIconByType = (type: string) => {
     switch (type) {
       case 'proposal_submitted':
-        return <FaEnvelope className="text-blue-500" />;
+        return <FontAwesomeIcon icon={faEnvelope} className="text-blue-500" />;
       case 'proposal_accepted':
-        return <FaCheckCircle className="text-green-500" />;
+        return <FontAwesomeIcon icon={faCircleCheck} />;
       case 'proposal_rejected':
-        return <FaTimesCircle className="text-red-500" />;
+        return (
+          <FontAwesomeIcon icon={faCircleXmark} className="text-red-500" />
+        );
       case 'milestone_completed':
-        return <FaStar className="text-yellow-500" />;
+        return <FontAwesomeIcon icon={faStar} className="text-yellow-500" />;
       case 'payment_received':
-        return <FaDollarSign className="text-green-500" />;
+        return (
+          <FontAwesomeIcon icon={faDollarSign} className="text-green-500" />
+        );
       case 'message_received':
-        return <FaEnvelope className="text-blue-500" />;
+        return <FontAwesomeIcon icon={faEnvelope} className="text-blue-500" />;
       case 'review_received':
-        return <FaTrophy className="text-purple-500" />;
+        return <FontAwesomeIcon icon={faTrophy} className="text-purple-500" />;
       case 'badge_earned':
-        return <FaTrophy className="text-purple-500" />;
+        return <FontAwesomeIcon icon={faTrophy} className="text-purple-500" />;
       case 'withdrawal_requested':
-        return <FaExclamationCircle className="text-orange-500" />;
+        return (
+          <FontAwesomeIcon
+            icon={faCircleExclamation}
+            className="text-orange-500"
+          />
+        );
       case 'withdrawal_processed':
-        return <FaSpinner className="text-gray-500" />;
+        return <FontAwesomeIcon icon={faSpinner} className="text-gray-500" />;
       default:
-        return <FaExclamationCircle className="text-gray-500" />;
+        return (
+          <FontAwesomeIcon
+            icon={faCircleExclamation}
+            className="text-orange-500"
+          />
+        );
     }
   };
 
-  const handlePageChange = (newPage: number) => {
-    if (newPage > 0 && newPage <= paginationData.totalPages) {
-      setPaginationData((prev) => ({ ...prev, currentPage: newPage }));
-    }
-  };
+  if (!loaderData.status) {
+    return (
+      <ErrorModule
+        errorMessage={loaderData.message}
+        onClose={() => navigate('/')}
+      />
+    );
+  }
 
   return (
     <div className="flex justify-center min-h-full">
@@ -187,10 +134,10 @@ const NotificationsPage = () => {
           Notifications
         </h1>
 
-        {notifications.length > 0 ? (
+        {NOTIFICATIONS.length > 0 ? (
           <>
             <ul className="space-y-2">
-              {notifications.map(
+              {NOTIFICATIONS.map(
                 (notification: INotifications, index: number) => {
                   return (
                     <li
@@ -216,29 +163,7 @@ const NotificationsPage = () => {
               )}
             </ul>
 
-            <div className="flex justify-between items-center mt-4">
-              <button
-                onClick={() => handlePageChange(paginationData.currentPage - 1)}
-                className={`px-4 py-2 rounded-md hover:bg-gray-400 dark:hover:bg-gray-600 ${paginationData.currentPage === 1 ? 'bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed' : 'bg-gray-300 dark:bg-gray-700'}`}
-                disabled={paginationData.currentPage === 1}
-              >
-                Previous
-              </button>
-
-              <span className="text-gray-700 dark:text-gray-300">
-                Page {paginationData.currentPage} of {paginationData.totalPages}
-              </span>
-
-              <button
-                onClick={() => handlePageChange(paginationData.currentPage + 1)}
-                className={`px-4 py-2  rounded-md hover:bg-gray-400 dark:hover:bg-gray-600 ${paginationData.currentPage === 1 ? 'bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed' : 'bg-gray-300 dark:bg-gray-700'}`}
-                disabled={
-                  paginationData.currentPage === paginationData.totalPages
-                }
-              >
-                Next
-              </button>
-            </div>
+            <Pagination pagination={loaderData.pagination} />
           </>
         ) : (
           <p className="text-gray-500 dark:text-gray-400 text-center">
@@ -277,20 +202,16 @@ NotificationsPage.loader = async function loader() {
       },
     );
 
+    const data = await response.json();
     if (!response.ok) {
       return {
-        notifications: [],
-        pagination: {
-          currentPage: 1,
-          totalPages: 1,
-          totalItems: 0,
-          perPage: 10,
-        },
+        status: false,
+        message: data.message,
       };
     }
 
-    const data = await response.json();
     return {
+      status: true,
       notifications: data.data.notifications,
       pagination: {
         currentPage: data.data.pagination.currentPage,
@@ -300,10 +221,9 @@ NotificationsPage.loader = async function loader() {
       },
     };
   } catch (error) {
-    console.error('Error loading notifications:', error);
     return {
-      notifications: [],
-      pagination: { currentPage: 1, totalPages: 1, totalItems: 0, perPage: 10 },
+      status: false,
+      message: 'Error loading notifications' + error,
     };
   }
 };

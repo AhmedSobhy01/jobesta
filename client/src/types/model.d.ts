@@ -41,3 +41,11 @@ interface INewData {
   password?: string;
   confirmPassword?: string;
 }
+
+interface INotifications {
+  type: string;
+  message: string;
+  isRead: boolean;
+  createdAt: string;
+  url: string;
+}
