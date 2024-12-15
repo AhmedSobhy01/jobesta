@@ -1,7 +1,7 @@
 import UserContext from '@/store/userContext';
 import { faXmark, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useContext, useEffect, useState,useRef } from 'react';
+import React, { useContext, useEffect, useState, useRef } from 'react';
 import { toast } from 'react-toastify';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router';
