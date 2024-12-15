@@ -79,3 +79,10 @@ interface Proposal {
   freelancer?: Freelancer;
   milestones: Milestone[];
 }
+
+interface Badge{
+  id: number;
+  name: string;
+  description: string;
+  icon: string;
+}
