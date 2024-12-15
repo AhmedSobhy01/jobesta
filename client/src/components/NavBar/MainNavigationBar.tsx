@@ -86,7 +86,11 @@ const MainNavigationBar: React.FC<{
                     <FontAwesomeIcon icon={faBell} />
                   </NavButton>
 
-                  {isDropdownBellOpen && <NotificationsDropdown />}
+                  {isDropdownBellOpen && (
+                    <NotificationsDropdown
+                      setDropdownOpenMenu={setDropdownOpenMenu}
+                    />
+                  )}
                 </div>
                 <div className="relative">
                   <NavButton

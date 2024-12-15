@@ -118,7 +118,11 @@ const NotificationsPage = () => {
 
 export default NotificationsPage;
 
-NotificationsPage.loader = async function loader() {
+NotificationsPage.loader = async function loader({
+  request,
+}: {
+  request: Request;
+}) {
   const jwtToken = getAuthJwtToken();
   const refreshToken = getAuthRefreshToken();
 
@@ -131,10 +135,13 @@ NotificationsPage.loader = async function loader() {
       pagination: { currentPage: 1, totalPages: 1, totalItems: 0, perPage: 10 },
     };
   }
+  const url = new URL(request.url);
+  const queryParams = url.searchParams;
+  const page = queryParams.get('page') || '1';
 
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/notifications?page=1`,
+      `${import.meta.env.VITE_API_URL}/notifications?page=${page}`,
       {
         headers: {
           'Content-Type': 'application/json',
