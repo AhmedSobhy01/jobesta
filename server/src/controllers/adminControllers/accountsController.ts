@@ -239,8 +239,6 @@ export async function getFreelancer(req: Request, res: Response) {
       [accountId],
     );
 
-    console.log(freelancerDataQuery.rows);
-
     const { id: freelancerId, bio } = freelancerDataQuery.rows[0];
 
     const skillsQuery = await db.query(
