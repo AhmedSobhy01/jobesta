@@ -16,6 +16,7 @@ import ProfilePage from '@/pages/Profile';
 import { FreelancerContextProvider } from '@/store/freelancerContext';
 import Dashboard from '@/pages/Admin/Dashboard';
 import Clients from '@/pages/Admin/Clients';
+import Categories from '@/pages/Admin/Categories';
 import CreateJobForm from '@/pages/CreateJobForm';
 
 const router = createBrowserRouter([
@@ -75,6 +76,10 @@ const router = createBrowserRouter([
       {
         path: 'clients',
         element: <Clients />,
+      },
+      {
+        path: 'categories',
+        element: <Categories />,
       },
     ],
   },
