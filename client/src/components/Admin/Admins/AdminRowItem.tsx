@@ -11,7 +11,7 @@ import {
 import AdminModal from '@/components/Admin/Admins/AdminModal';
 import UserContext from '@/store/userContext';
 import { toast } from 'react-toastify';
-import { useNavigate,Link } from 'react-router';
+import { useNavigate, Link } from 'react-router';
 
 const AdminRowItem: React.FC<{
   admin: Account;
