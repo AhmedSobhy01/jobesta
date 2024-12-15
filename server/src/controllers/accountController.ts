@@ -140,6 +140,8 @@ export async function getUserByUsername(
 
       jobsQueryString += ' WHERE p.freelancer_id = $1 AND p.status = $2';
       jobsQueryParams = [freelancerData.id, 'accepted'];
+    } else {
+      jobsQueryString += ' WHERE 1 != 1';
     }
 
     const jobsQuery = await db.query(jobsQueryString, jobsQueryParams);
