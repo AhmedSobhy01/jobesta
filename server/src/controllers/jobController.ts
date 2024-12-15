@@ -181,7 +181,8 @@ export async function getJobById(req: Request, res: Response) {
         LEFT JOIN milestones m ON p.job_id = m.job_id AND p.freelancer_id = m.freelancer_id 
         JOIN freelancers f ON p.freelancer_id = f.id
         JOIN accounts a ON f.account_id = a.id
-        WHERE p.job_id = $1 AND p.freelancer_id = $2`,
+        WHERE p.job_id = $1 AND p.freelancer_id = $2
+        ORDER BY m.order ASC`,
         [req.params.id, req.user.freelancer!.id],
       );
 
@@ -226,7 +227,8 @@ export async function getJobById(req: Request, res: Response) {
         JOIN freelancers f ON p.freelancer_id = f.id
         JOIN milestones m ON m.job_id = j.id and m.freelancer_id = f.id 
         JOIN accounts a ON f.account_id = a.id
-        WHERE p.job_id = $1 AND j.client_id = $2`,
+        WHERE p.job_id = $1 AND j.client_id = $2
+        ORDER BY m.order ASC`,
         [req.params.id, req.user.id],
       );
 

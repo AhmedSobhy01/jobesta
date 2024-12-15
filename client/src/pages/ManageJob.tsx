@@ -409,7 +409,7 @@ function ManageJob() {
 
         <div className="w-full flex gap-5 flex-1 min-h-full max-h-full flex-col md:flex-row">
           <div className="md:w-2/3 max-h-full">
-            <div className="border bg-white dark:bg-gray-800 dark:border-gray-700 p-5 rounded-lg shadow-md min-h-full max-h-full flex flex-col">
+            <div className="border bg-white dark:bg-gray-800 dark:border-gray-700 p-5 rounded-lg shadow-md min-h-[40rem] md:min-h-full md:max-h-full flex flex-col">
               <h2 className="text-xl font-semibold">Messages</h2>
               <div className="w-full px-5 flex flex-col justify-between flex-1 min-h-full">
                 <div
@@ -565,7 +565,14 @@ function ManageJob() {
             <div className="flex flex-col space-y-2 mt-5 overflow-y-auto flex-1 px-2">
               {proposal?.milestones?.map((milestone: Milestone, i: number) => (
                 <div key={i} className="border p-3 rounded-lg">
-                  <h3 className="text-lg font-semibold">Milestone {i + 1}</h3>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-lg font-semibold w-5 h-5 p-4 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center text-gray-800 dark:text-gray-200">
+                      {i + 1}
+                    </span>
+                    <span className="text-gray-600 dark:text-gray-200 font-bold">
+                      {milestone.name}
+                    </span>
+                  </div>
                   <p className="text-gray-600 dark:text-gray-200">
                     Price: ${milestone.amount}
                   </p>
