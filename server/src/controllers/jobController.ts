@@ -191,6 +191,7 @@ export async function getJobById(req: Request, res: Response) {
           status: proposalQuery.rows[0].status,
           createdAt: proposalQuery.rows[0].created_at,
           freelancer: {
+            id: req.user.freelancer!.id,
             username: proposalQuery.rows[0].username,
             firstName: proposalQuery.rows[0].first_name,
             lastName: proposalQuery.rows[0].last_name,

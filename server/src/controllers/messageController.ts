@@ -49,9 +49,9 @@ export async function sendMessage(req: Request, res: Response) {
   const { message } = req.body;
 
   try {
-    await db.query(
+    const result = await db.query(
       `INSERT INTO messages (message, attachment_path, job_id, freelancer_id, account_id)
-      VALUES ($1, $2, $3, $4, $5)`,
+      VALUES ($1, $2, $3, $4, $5) RETURNING id, sent_at`,
       [
         message,
         req.file ? req.file.path : null,
@@ -61,7 +61,30 @@ export async function sendMessage(req: Request, res: Response) {
       ],
     );
 
-    res.json({ status: true, message: 'Message sent' });
+    res.json({
+      status: true,
+      message: 'Message sent',
+      data: {
+        message: {
+          id: result.rows[0].id,
+          message,
+          attachmentPath: req.file ? req.file.path : null,
+          sentAt: result.rows[0].sent_at,
+          sender: {
+            firstName: req.user!.first_name,
+            lastName: req.user!.last_name,
+            profilePicture:
+              req.user!.profile_picture ||
+              'https://ui-avatars.com/api/?name=' +
+                req.user!.first_name +
+                '+' +
+                req.user!.last_name,
+            username: req.user!.username,
+            isFreelancer: req.params.freelancerId === req.user!.id,
+          },
+        },
+      },
+    });
   } catch {
     res.status(500).json({ status: false, message: 'Error sending message' });
   }
@@ -74,7 +97,8 @@ export async function deleteMessage(req: Request, res: Response) {
       [req.params.messageId, req.params.jobId, req.params.freelancerId],
     );
 
-    await fs.unlink(result.rows[0].attachment_path);
+    if (result.rows[0].attachment_path)
+      await fs.unlink(result.rows[0].attachment_path);
 
     await db.query(
       `DELETE FROM messages WHERE id = $1 AND job_id = $2 AND freelancer_id = $3`,
