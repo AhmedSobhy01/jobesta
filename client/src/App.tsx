@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import MainLayout from '@/layouts/MainLayout';
+import AdminLayout from '@/layouts/AdminLayout';
 import Home from '@/pages/Home';
 import About from '@/pages/About';
 import Jobs from '@/pages/Jobs';
@@ -13,6 +14,8 @@ import { SetUserPage } from '@/utils/SetUserPage';
 import { Logout } from '@/utils/Logout';
 import ProfilePage from '@/pages/Profile';
 import { FreelancerContextProvider } from '@/store/freelancerContext';
+import Dashboard from '@/pages/Admin/Dashboard';
+import Clients from '@/pages/Admin/Clients';
 import CreateJobForm from '@/pages/CreateJobForm';
 import Notifications from '@/pages/Notifications';
 
@@ -64,6 +67,22 @@ const router = createBrowserRouter([
   {
     path: '/logout',
     element: <Logout />,
+  },
+
+  {
+    path: 'admin',
+    element: <AdminLayout />,
+    loader: AdminLayout.loader,
+    children: [
+      {
+        index: true,
+        element: <Dashboard />,
+      },
+      {
+        path: 'clients',
+        element: <Clients />,
+      },
+    ],
   },
 ]);
 

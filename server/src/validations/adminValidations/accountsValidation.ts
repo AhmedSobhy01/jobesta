@@ -142,7 +142,7 @@ export const updateAccountValidationRules = [
     .custom(async (value, { req }) => {
       const query = await db.query(
         'SELECT * FROM accounts WHERE email = $1 AND id != $2',
-        [value, req.user!.id],
+        [value, req.params!.accountId],
       );
       if (query.rowCount !== null && query.rowCount > 0) {
         return Promise.reject('Email already in use');
@@ -163,9 +163,10 @@ export const updateAccountValidationRules = [
     ),
 
   body('confirmPassword')
-    .optional()
     .trim()
     .custom((value, { req }) => {
+      if (!req.body?.password) return true;
+
       if (value !== req.body.password) {
         throw new Error('Passwords do not match');
       }
