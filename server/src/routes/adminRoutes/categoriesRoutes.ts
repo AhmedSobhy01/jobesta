@@ -2,6 +2,7 @@ import router from 'express';
 import {
   getCategories,
   createCategory,
+  updateCategory,
   deleteCategory,
 } from '../../controllers/adminControllers/categoriesController.js';
 import {
@@ -18,6 +19,13 @@ categoriesRouter.post(
   createCategoryValidationRules,
   validateRequest,
   createCategory,
+);
+
+categoriesRouter.put(
+  '/:id',
+  createCategoryValidationRules,
+  validateRequest,
+  updateCategory,
 );
 
 categoriesRouter.delete(

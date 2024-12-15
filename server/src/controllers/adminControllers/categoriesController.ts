@@ -69,6 +69,24 @@ export async function createCategory(req: Request, res: Response) {
   }
 }
 
+export async function updateCategory(req: Request, res: Response) {
+  const id = req.params.id;
+  const { name, description } = req.body;
+
+  try {
+    await db.query(
+      'UPDATE categories SET name = $1, description = $2 WHERE id = $3',
+      [name, description, id],
+    );
+    res.json({ status: true, message: 'Category updated' });
+  } catch {
+    res.status(500).json({
+      status: false,
+      message: 'An error occurred while updating category',
+    });
+  }
+}
+
 export async function deleteCategory(req: Request, res: Response) {
   const id = req.params.id;
 
