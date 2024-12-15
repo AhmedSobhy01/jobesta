@@ -14,65 +14,6 @@ import {
 import Pagination from '@/components/Common/Pagination';
 import ErrorModule from '@/components/ErrorModule';
 
-const NOTIFICATIONS: INotifications[] = [
-  {
-    type: 'proposal_accepted',
-    message: 'your proposal have been proposal_accepted',
-    isRead: false,
-    createdAt: '2 days ago',
-    url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
-  },
-  {
-    type: 'proposal_rejected',
-    message: 'your proposal have been proposal_rejected',
-    isRead: false,
-    createdAt: '2 days ago',
-    url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
-  },
-  {
-    type: 'milestone_completed',
-    message: 'your proposal have been milestone_completed',
-    isRead: false,
-    createdAt: '2 days ago',
-    url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
-  },
-  {
-    type: 'payment_received',
-    message: 'your proposal have been payment_received',
-    isRead: false,
-    createdAt: '2 days ago',
-    url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
-  },
-  {
-    type: 'message_received',
-    message: 'your proposal have been message_received',
-    isRead: false,
-    createdAt: '2 days ago',
-    url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
-  },
-  {
-    type: 'review_received',
-    message: 'your proposal have been review_received',
-    isRead: false,
-    createdAt: '2 days ago',
-    url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
-  },
-  {
-    type: 'badge_earned',
-    message: 'your proposal have been badge_earned',
-    isRead: false,
-    createdAt: '2 days ago',
-    url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
-  },
-  {
-    type: 'withdrawal_requested',
-    message: 'your proposal have been withdrawal_requested',
-    isRead: false,
-    createdAt: '2 days ago',
-    url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
-  },
-];
-
 const NotificationsPage = () => {
   const navigate = useNavigate();
   const loaderData = useLoaderData();
@@ -134,10 +75,10 @@ const NotificationsPage = () => {
           Notifications
         </h1>
 
-        {NOTIFICATIONS.length > 0 ? (
+        {loaderData.notifications.length > 0 ? (
           <>
             <ul className="space-y-2">
-              {NOTIFICATIONS.map(
+              {loaderData.notifications.map(
                 (notification: INotifications, index: number) => {
                   return (
                     <li
