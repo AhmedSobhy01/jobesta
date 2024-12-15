@@ -25,7 +25,7 @@ const Sidebar: React.FC = () => {
       </nav>
 
       <div className="mt-auto p-4 text-center text-sm text-gray-600 dark:text-gray-400">
-        <span>&copy; 2024 Jobesta</span>
+        <span>&copy; {new Date().getFullYear()} Jobesta</span>
       </div>
     </div>
   );
