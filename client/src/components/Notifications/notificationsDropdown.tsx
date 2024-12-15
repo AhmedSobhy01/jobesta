@@ -22,6 +22,7 @@ interface INotifications {
   message: string;
   isRead: boolean;
   createdAt: string;
+  url: string;
 }
 
 // const NOTIFICATIONS: INotifications[] = [
@@ -30,48 +31,56 @@ interface INotifications {
 //     message: 'your proposal have been proposal_accepted',
 //     isRead: false,
 //     createdAt: '2 days ago',
+//     url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
 //   },
 //   {
 //     type: 'proposal_rejected',
 //     message: 'your proposal have been proposal_rejected',
 //     isRead: false,
 //     createdAt: '2 days ago',
+//     url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
 //   },
 //   {
 //     type: 'milestone_completed',
 //     message: 'your proposal have been milestone_completed',
 //     isRead: false,
 //     createdAt: '2 days ago',
+//     url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
 //   },
 //   {
 //     type: 'payment_received',
 //     message: 'your proposal have been payment_received',
 //     isRead: false,
 //     createdAt: '2 days ago',
+//     url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
 //   },
 //   {
 //     type: 'message_received',
 //     message: 'your proposal have been message_received',
 //     isRead: false,
 //     createdAt: '2 days ago',
+//     url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
 //   },
 //   {
 //     type: 'review_received',
 //     message: 'your proposal have been review_received',
 //     isRead: false,
 //     createdAt: '2 days ago',
+//     url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
 //   },
 //   {
 //     type: 'badge_earned',
 //     message: 'your proposal have been badge_earned',
 //     isRead: false,
 //     createdAt: '2 days ago',
+//     url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
 //   },
 //   {
 //     type: 'withdrawal_requested',
-//     message: ' withdrawal_requested',
+//     message: 'your proposal have been withdrawal_requested',
 //     isRead: false,
 //     createdAt: '2 days ago',
+//     url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
 //   },
 // ];
 
@@ -118,7 +127,8 @@ const NotificationsDropdown: React.FC & {
             {notifications.length > 0 ? (
               notifications.map(
                 (notification: INotifications, index: number) => (
-                  <div
+                  <Link
+                    to={notification.url}
                     key={index}
                     className="flex px-4 py-2 gap-4 justify-center text-gray-700 dark:text-gray-200 hover:text-green-700 dark:hover:text-green-700 hover:bg-gray-100 dark:hover:bg-gray-800"
                   >
@@ -128,7 +138,7 @@ const NotificationsDropdown: React.FC & {
                     <div className="w-44 cursor-pointer">
                       {notification.message}
                     </div>
-                  </div>
+                  </Link>
                 ),
               )
             ) : (

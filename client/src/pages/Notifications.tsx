@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLoaderData } from 'react-router';
+import { Link, useLoaderData } from 'react-router';
 import { getAuthJwtToken, getAuthRefreshToken } from '@/utils/auth';
 import {
   FaCheckCircle,
@@ -17,6 +17,7 @@ interface INotifications {
   message: string;
   isRead: boolean;
   createdAt: string;
+  url: string;
 }
 
 interface IPagination {
@@ -32,48 +33,56 @@ interface IPagination {
 //     message: 'your proposal have been proposal_accepted',
 //     isRead: false,
 //     createdAt: '2 days ago',
+//     url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
 //   },
 //   {
 //     type: 'proposal_rejected',
 //     message: 'your proposal have been proposal_rejected',
 //     isRead: false,
 //     createdAt: '2 days ago',
+//     url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
 //   },
 //   {
 //     type: 'milestone_completed',
 //     message: 'your proposal have been milestone_completed',
 //     isRead: false,
 //     createdAt: '2 days ago',
+//     url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
 //   },
 //   {
 //     type: 'payment_received',
 //     message: 'your proposal have been payment_received',
 //     isRead: false,
 //     createdAt: '2 days ago',
+//     url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
 //   },
 //   {
 //     type: 'message_received',
 //     message: 'your proposal have been message_received',
 //     isRead: false,
 //     createdAt: '2 days ago',
+//     url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
 //   },
 //   {
 //     type: 'review_received',
 //     message: 'your proposal have been review_received',
 //     isRead: false,
 //     createdAt: '2 days ago',
+//     url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
 //   },
 //   {
 //     type: 'badge_earned',
 //     message: 'your proposal have been badge_earned',
 //     isRead: false,
 //     createdAt: '2 days ago',
+//     url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
 //   },
 //   {
 //     type: 'withdrawal_requested',
 //     message: 'your proposal have been withdrawal_requested',
 //     isRead: false,
 //     createdAt: '2 days ago',
+//     url: 'https://drive.google.com/drive/u/0/folders/1Dd4C5h0tQgYutvyW03oRKSM5fMIrTeGV',
 //   },
 // ];
 
@@ -82,6 +91,7 @@ const NotificationsPage = () => {
   const [notifications, setNotifications] = useState(
     loaderData?.notifications || [],
   );
+  console.log(notifications);
 
   const [paginationData, setPaginationData] = useState<IPagination>(
     loaderData?.pagination || {
@@ -91,7 +101,6 @@ const NotificationsPage = () => {
       perPage: 10,
     },
   );
-  console.log(paginationData);
 
   useEffect(() => {
     async function fetchNotifications(page: number) {
@@ -188,17 +197,19 @@ const NotificationsPage = () => {
                       key={index}
                       className="flex items-center p-4 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md hover:bg-gray-200 dark:hover:bg-gray-700"
                     >
-                      <div className="mr-4 text-xl text-blue-500 dark:text-blue-400">
-                        {getIconByType(notification.type)}
-                      </div>
-                      <div>
-                        <p className="text-gray-800 dark:text-gray-200">
-                          {notification.message}
-                        </p>
-                        <span className="text-sm text-gray-500 dark:text-gray-400 block">
-                          {notification.createdAt}
-                        </span>
-                      </div>
+                      <Link className="w-full" to={notification.url}>
+                        <div className="mr-4 text-xl text-blue-500 dark:text-blue-400">
+                          {getIconByType(notification.type)}
+                        </div>
+                        <div>
+                          <p className="text-gray-800 dark:text-gray-200">
+                            {notification.message}
+                          </p>
+                          <span className="text-sm text-gray-500 dark:text-gray-400 block">
+                            {notification.createdAt}
+                          </span>
+                        </div>
+                      </Link>
                     </li>
                   );
                 },
