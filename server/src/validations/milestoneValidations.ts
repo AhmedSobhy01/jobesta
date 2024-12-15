@@ -13,7 +13,7 @@ export const completeMilestoneValidationRules = [
     .withMessage('Milestone order must be a number')
     .custom(async (value, { req }) => {
       const milestoneQuery = await db.query(
-        `SELECT p.status proposal_status, j.status job_status, m.status milestone_status FROM milestones m
+        `SELECT p.status proposal_status, j.status job_status, m.status milestone_status, j.client_id client_id FROM milestones m
         JOIN proposals p ON m.job_id = p.job_id AND m.freelancer_id = p.freelancer_id
         JOIN jobs j ON m.job_id = j.id
         WHERE m.job_id = $1 AND m.freelancer_id = $2 AND m.order = $3`,
@@ -22,6 +22,9 @@ export const completeMilestoneValidationRules = [
 
       if (milestoneQuery.rows.length === 0)
         throw new Error('Milestone does not exist');
+
+      if (milestoneQuery.rows[0].client_id !== req.user!.id)
+        throw new Error('You are not authorized to complete this milestone');
 
       if (milestoneQuery.rows[0].milestone_status !== 'pending')
         throw new Error('Milestone has already been completed');
