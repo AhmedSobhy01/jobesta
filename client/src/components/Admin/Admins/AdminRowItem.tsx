@@ -92,9 +92,11 @@ const AdminRowItem: React.FC<{
             <FontAwesomeIcon icon={faPenToSquare} />
           </button>
 
-          <button type="button" onClick={deleteAdmin}>
-            <FontAwesomeIcon icon={faTrash} />
-          </button>
+          {admin.username !== user.username && (
+            <button type="button" onClick={deleteAdmin}>
+              <FontAwesomeIcon icon={faTrash} />
+            </button>
+          )}
         </td>
       </tr>
     </>
