@@ -90,6 +90,5 @@ interface Message {
     lastName: string;
     profilePicture: string;
     username: string;
-    isFreelancer: boolean;
   };
 }

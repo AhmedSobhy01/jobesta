@@ -27,7 +27,6 @@ export async function getMessages(req: Request, res: Response) {
             '+' +
             message!.last_name,
         username: message.username,
-        isFreelancer: req.params.freelancerId === message.account_id,
       },
     }));
 
@@ -80,7 +79,6 @@ export async function sendMessage(req: Request, res: Response) {
                 '+' +
                 req.user!.last_name,
             username: req.user!.username,
-            isFreelancer: req.params.freelancerId === req.user!.id,
           },
         },
       },
