@@ -8,23 +8,28 @@ import jobestaLogo from '@/assets/jobesta-logo.png';
 import { useContext } from 'react';
 import UserContext from '@/store/userContext';
 import ProfileDropdown from '@/components/Profile/ProfileDropdown';
+import NotificationsDropdown from '@/components/Notifications/NotificationsDropdown';
 
 const MainNavigationBar: React.FC<{
   dropdownOpen: {
+    isDropdownBellOpen: boolean;
     isDropdownBarOpen: boolean;
     isDropdownProfileOpen: boolean;
   };
   setDropdownOpenMenu: (newFreelancer: {
     isDropdownBarOpen: boolean;
     isDropdownProfileOpen: boolean;
+    isDropdownBellOpen: boolean;
   }) => void;
 }> = ({ dropdownOpen, setDropdownOpenMenu }) => {
   const { refreshToken, role } = useContext(UserContext);
-  const { isDropdownBarOpen, isDropdownProfileOpen } = dropdownOpen;
+  const { isDropdownBarOpen, isDropdownProfileOpen, isDropdownBellOpen } =
+    dropdownOpen;
 
   function handleBarClick() {
     setDropdownOpenMenu({
       isDropdownBarOpen: !isDropdownBarOpen,
+      isDropdownBellOpen: false,
       isDropdownProfileOpen: false,
     });
   }
@@ -32,11 +37,13 @@ const MainNavigationBar: React.FC<{
   function handleProfileClick() {
     setDropdownOpenMenu({
       isDropdownBarOpen: false,
+      isDropdownBellOpen: false,
       isDropdownProfileOpen: !isDropdownProfileOpen,
     });
   }
   function handleBellClick() {
     setDropdownOpenMenu({
+      isDropdownBellOpen: !isDropdownBellOpen,
       isDropdownBarOpen: false,
       isDropdownProfileOpen: false,
     });
@@ -70,14 +77,17 @@ const MainNavigationBar: React.FC<{
                     Create Job
                   </Link>
                 )}
+                <div className="relative">
+                  <NavButton
+                    focus={false}
+                    handleClick={handleBellClick}
+                    wideHidden={false}
+                  >
+                    <FontAwesomeIcon icon={faBell} />
+                  </NavButton>
 
-                <NavButton
-                  focus={false}
-                  handleClick={handleBellClick}
-                  wideHidden={false}
-                >
-                  <FontAwesomeIcon icon={faBell} />
-                </NavButton>
+                  {isDropdownBellOpen && <NotificationsDropdown />}
+                </div>
                 <div className="relative">
                   <NavButton
                     focus={isDropdownProfileOpen}

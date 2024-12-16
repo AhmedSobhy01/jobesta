@@ -71,11 +71,6 @@ const CreateJobForm = () => {
     setIsSubmitting(false);
   };
 
-  if (!user || user.role != 'client') {
-    navigate('/');
-    return null;
-  }
-
   if (!categoriesStatus) {
     return (
       <ErrorModule

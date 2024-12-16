@@ -93,6 +93,16 @@ export async function generateRefreshToken(
       process.env.JWT_REFRESH_SECRET as string,
     ) as JwtPayload;
 
+    const accountQuery = await db.query(
+      'SELECT * FROM accounts WHERE id = $1',
+      [decoded.id],
+    );
+
+    if (accountQuery.rowCount === 0) {
+      res.status(404).json({ status: false, message: 'User not found' });
+      return;
+    }
+
     const jwtToken = jwt.sign(
       { id: decoded.id },
       process.env.JWT_SECRET as string,

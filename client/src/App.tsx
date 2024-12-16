@@ -16,8 +16,12 @@ import ProfilePage from '@/pages/Profile';
 import { FreelancerContextProvider } from '@/store/freelancerContext';
 import Dashboard from '@/pages/Admin/Dashboard';
 import Clients from '@/pages/Admin/Clients';
+import Admins from '@/pages/Admin/Admins';
+import Freelancers from '@/pages/Admin/Freelancers';
 import Categories from '@/pages/Admin/Categories';
 import CreateJobForm from '@/pages/CreateJobForm';
+import Notifications from '@/pages/Notifications';
+import ManageJob from '@/pages/ManageJob';
 
 const router = createBrowserRouter([
   {
@@ -37,11 +41,21 @@ const router = createBrowserRouter([
             loader: CreateJobForm.loader,
           },
           {
+            path: ':jobId/manage',
+            element: <ManageJob />,
+            loader: ManageJob.loader,
+          },
+          {
             path: ':jobId',
             element: <Job />,
             loader: Job.loader,
           },
         ],
+      },
+      {
+        path: '/notifications',
+        element: <Notifications />,
+        loader: Notifications.loader,
       },
       { path: 'contacts', element: <Contacts /> },
       {
@@ -76,6 +90,14 @@ const router = createBrowserRouter([
       {
         path: 'clients',
         element: <Clients />,
+      },
+      {
+        path: 'admins',
+        element: <Admins />,
+      },
+      {
+        path: 'freelancers',
+        element: <Freelancers />,
       },
       {
         path: 'categories',

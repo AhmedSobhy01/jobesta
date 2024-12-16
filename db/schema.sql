@@ -150,7 +150,8 @@ CREATE TABLE "notifications" (
   "message" VARCHAR(255) NOT NULL,
   "is_read" BOOLEAN NOT NULL DEFAULT false,
   "account_id" INTEGER NOT NULL,
-  "created_at" TIMESTAMP NOT NULL DEFAULT (now())
+  "created_at" TIMESTAMP NOT NULL DEFAULT (now()),
+  "url" VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE "withdrawals" (
@@ -179,6 +180,7 @@ CREATE TABLE "messages" (
   "attachment_path" VARCHAR(255),
   "job_id" INTEGER NOT NULL,
   "freelancer_id" INTEGER NOT NULL,
+  "account_id" INTEGER NOT NULL,
   "sent_at" TIMESTAMP NOT NULL DEFAULT (now())
 );
 
@@ -211,6 +213,8 @@ ALTER TABLE "reviews" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id"
 
 ALTER TABLE "messages" ADD FOREIGN KEY ("job_id", "freelancer_id") REFERENCES "proposals" ("job_id", "freelancer_id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
+ALTER TABLE "messages" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
 ALTER TABLE "milestones" ADD FOREIGN KEY ("job_id", "freelancer_id") REFERENCES "proposals" ("job_id", "freelancer_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE "payments" ADD FOREIGN KEY ("job_id", "freelancer_id", "milestone_order") REFERENCES "milestones" ("job_id", "freelancer_id", "order") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -225,7 +229,7 @@ ALTER TABLE "jobs" ADD FOREIGN KEY ("client_id") REFERENCES "accounts" ("id") ON
 
 
 INSERT INTO "accounts" ("first_name", "last_name", "username", "email", "password", "role") 
-VALUES ('admin','1','admin','admin@example.com','$2b$10$xNb2FgHuAHY/AiaHdsdpVevhaQwYFbhbnNrXICSqCjDSE71fbnUgK','admin');
+VALUES ('admin','1','admin','admin@example.com','$2b$10$PULvnFnlNpW1oaWcaRA1mefM1QhCuaOMCCw81GtUeJhvUV/stomfu','admin');
 
 INSERT INTO "categories" ("name", "description")
 VALUES ('Web Development','Web Development'),

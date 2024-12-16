@@ -80,7 +80,33 @@ interface Proposal {
   milestones: Milestone[];
 }
 
-interface Badge{
+interface Message {
+  id: number;
+  message: string;
+  attachmentPath: string | null;
+  sentAt: string;
+  sender: {
+    firstName: string;
+    lastName: string;
+    profilePicture: string;
+    username: string;
+  };
+}
+
+interface Message {
+  id: number;
+  message: string;
+  attachmentPath: string | null;
+  sentAt: string;
+  sender: {
+    firstName: string;
+    lastName: string;
+    profilePicture: string;
+    username: string;
+  };
+}
+
+interface Badge {
   id: number;
   name: string;
   description: string;

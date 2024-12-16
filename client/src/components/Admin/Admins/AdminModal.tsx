@@ -6,18 +6,18 @@ import { toast } from 'react-toastify';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router';
 
-const ClientModal: React.FC<{
-  client?: Account;
+const AdminModal: React.FC<{
+  admin?: Account;
   onClose: () => void;
-}> = ({ client, onClose }) => {
+}> = ({ admin, onClose }) => {
   const navigate = useNavigate();
   const user = useContext(UserContext);
-  const isUpdate = !!client;
+  const isUpdate = !!admin;
 
-  const [firstName, setFirstName] = useState(client?.firstName || '');
-  const [lastName, setLastName] = useState(client?.lastName || '');
-  const [username, setUsername] = useState(client?.username || '');
-  const [email, setEmail] = useState(client?.email || '');
+  const [firstName, setFirstName] = useState(admin?.firstName || '');
+  const [lastName, setLastName] = useState(admin?.lastName || '');
+  const [username, setUsername] = useState(admin?.username || '');
+  const [email, setEmail] = useState(admin?.email || '');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
@@ -37,7 +37,7 @@ const ClientModal: React.FC<{
     setErrors(null);
     setIsSubmitting(true);
 
-    const clientData: {
+    const adminData: {
       role: string;
       firstName: string;
       lastName: string;
@@ -46,7 +46,7 @@ const ClientModal: React.FC<{
       password?: string;
       confirmPassword?: string;
     } = {
-      role: 'client',
+      role: 'admin',
       firstName,
       lastName,
       username,
@@ -56,21 +56,18 @@ const ClientModal: React.FC<{
     };
 
     if (password.trim() === '') {
-      delete clientData.password;
-      delete clientData.confirmPassword;
+      delete adminData.password;
+      delete adminData.confirmPassword;
     }
 
-    fetch(
-      `${import.meta.env.VITE_API_URL}/admin/accounts/${client?.id || ''}`,
-      {
-        method: isUpdate ? 'PUT' : 'POST',
-        headers: {
-          Authorization: `Bearer ${user.jwtToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(clientData),
+    fetch(`${import.meta.env.VITE_API_URL}/admin/accounts/${admin?.id || ''}`, {
+      method: isUpdate ? 'PUT' : 'POST',
+      headers: {
+        Authorization: `Bearer ${user.jwtToken}`,
+        'Content-Type': 'application/json',
       },
-    )
+      body: JSON.stringify(adminData),
+    })
       .then((res) => {
         if (!res.ok && res.status !== 422)
           throw new Error('Something went wrong!');
@@ -90,7 +87,7 @@ const ClientModal: React.FC<{
       })
       .then((data) => {
         toast(data.message, { type: 'success' });
-        navigate('/admin/clients?reload=true');
+        navigate('/admin/admins?reload=true');
         onClose();
       })
       .catch((error) => {
@@ -106,7 +103,7 @@ const ClientModal: React.FC<{
   return createPortal(
     <div
       className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
-      onMouseDown={handleModalClick}
+      onClick={handleModalClick}
     >
       <div className="bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative max-h-[90vh] overflow-y-auto">
         <button
@@ -117,7 +114,7 @@ const ClientModal: React.FC<{
         </button>
 
         <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
-          {isUpdate ? 'Update Client' : 'Create Client'}
+          {isUpdate ? 'Update Admin' : 'Create Admin'}
         </h2>
 
         <div className="mb-4">
@@ -251,8 +248,8 @@ const ClientModal: React.FC<{
             {isSubmitting
               ? 'Loading...'
               : isUpdate
-                ? 'Update Client'
-                : 'Create Client'}
+                ? 'Update Admin'
+                : 'Create Admin'}
           </button>
         </div>
       </div>
@@ -261,4 +258,4 @@ const ClientModal: React.FC<{
   );
 };
 
-export default ClientModal;
+export default AdminModal;
