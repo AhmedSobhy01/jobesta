@@ -18,7 +18,8 @@ import Dashboard from '@/pages/Admin/Dashboard';
 import Clients from '@/pages/Admin/Clients';
 import Freelancers from '@/pages/Admin/Freelancers';
 import CreateJobForm from '@/pages/CreateJobForm';
-import ManageJob from './pages/ManageJob';
+import Notifications from '@/pages/Notifications';
+import ManageJob from '@/pages/ManageJob';
 
 const router = createBrowserRouter([
   {
@@ -48,6 +49,11 @@ const router = createBrowserRouter([
             loader: Job.loader,
           },
         ],
+      },
+      {
+        path: '/notifications',
+        element: <Notifications />,
+        loader: Notifications.loader,
       },
       { path: 'contacts', element: <Contacts /> },
       {

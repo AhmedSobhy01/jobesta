@@ -6,7 +6,7 @@ export async function getNotifications(
   res: Response,
 ): Promise<void> {
   const account_id = req.user!.id;
-  let queryString = `SELECT n.id, n.type, n.message, n.is_read, n.created_at FROM notifications n WHERE account_id = ${account_id}`;
+  let queryString = `SELECT n.id, n.type, n.url, n.message, n.is_read, n.created_at FROM notifications n WHERE account_id = ${account_id}`;
 
   const countQuery = `SELECT COUNT(*) FROM notifications n WHERE account_id = ${account_id}`;
 
@@ -34,6 +34,7 @@ export async function getNotifications(
         message: notification.message,
         isRead: notification.is_read,
         createdAt: notification.created_at,
+        url: notification.url,
       };
     });
 

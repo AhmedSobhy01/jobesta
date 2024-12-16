@@ -150,7 +150,8 @@ CREATE TABLE "notifications" (
   "message" VARCHAR(255) NOT NULL,
   "is_read" BOOLEAN NOT NULL DEFAULT false,
   "account_id" INTEGER NOT NULL,
-  "created_at" TIMESTAMP NOT NULL DEFAULT (now())
+  "created_at" TIMESTAMP NOT NULL DEFAULT (now()),
+  "url" VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE "withdrawals" (

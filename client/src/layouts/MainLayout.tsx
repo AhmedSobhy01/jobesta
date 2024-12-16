@@ -16,6 +16,7 @@ function MainLayout() {
   const [dropdownOpen, setDropdownOpenMenu] = useState({
     isDropdownBarOpen: false,
     isDropdownProfileOpen: false,
+    isDropdownBellOpen: false,
   });
   const userData = useLoaderData();
 
@@ -31,6 +32,7 @@ function MainLayout() {
 
     if (!isNavClick || (isNavClick && !isButtonClick)) {
       setDropdownOpenMenu({
+        isDropdownBellOpen: false,
         isDropdownBarOpen: false,
         isDropdownProfileOpen: false,
       });
