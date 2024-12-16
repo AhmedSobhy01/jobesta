@@ -45,7 +45,7 @@ const Admins = () => {
       }
 
       const data = await res.json();
-      setAdmins((prevClients) => [...prevClients, ...data.data.accounts]);
+      setAdmins((prevAdmins) => [...prevAdmins, ...data.data.accounts]);
       setPagination(data.data.pagination);
 
       setLoading(false);

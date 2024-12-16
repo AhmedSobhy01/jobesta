@@ -37,7 +37,7 @@ const AdminModal: React.FC<{
     setErrors(null);
     setIsSubmitting(true);
 
-    const clientData: {
+    const adminData: {
       role: string;
       firstName: string;
       lastName: string;
@@ -56,8 +56,8 @@ const AdminModal: React.FC<{
     };
 
     if (password.trim() === '') {
-      delete clientData.password;
-      delete clientData.confirmPassword;
+      delete adminData.password;
+      delete adminData.confirmPassword;
     }
 
     fetch(`${import.meta.env.VITE_API_URL}/admin/accounts/${admin?.id || ''}`, {
@@ -66,7 +66,7 @@ const AdminModal: React.FC<{
         Authorization: `Bearer ${user.jwtToken}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(clientData),
+      body: JSON.stringify(adminData),
     })
       .then((res) => {
         if (!res.ok && res.status !== 422)

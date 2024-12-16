@@ -85,11 +85,10 @@ const router = createBrowserRouter([
         element: <Clients />,
       },
       {
-
         path: 'admins',
         element: <Admins />,
       },
-        {
+      {
         path: 'freelancers',
         element: <Freelancers />,
       },
