@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import db from '../../db/db.js';
+import { IPreviousWork } from '../../models/model.js';
 
 export async function getAccounts(req: Request, res: Response) {
   try {
@@ -38,7 +39,12 @@ export async function getAccounts(req: Request, res: Response) {
         lastName: account.last_name,
         username: account.username,
         email: account.email,
-        profilePicture: account.profile_picture,
+        profilePicture:
+          account.profile_picture ||
+          'https://ui-avatars.com/api/?name=' +
+            account.first_name +
+            '+' +
+            account.last_name,
         isBanned: account.is_banned,
         role: account.role,
         createdAt: account.created_at,
@@ -78,9 +84,38 @@ export async function createAccount(req: Request, res: Response) {
     );
 
     if (role === 'freelancer') {
-      await db.query('INSERT INTO freelancers (account_id) VALUES ($1)', [
-        userIdQuery.rows[0].id,
-      ]);
+      const freelancerDataQuery = await db.query(
+        'INSERT INTO freelancers (account_id) VALUES ($1) RETURNING id',
+        [userIdQuery.rows[0].id],
+      );
+      const { bio, skills, previousWork } = req.body;
+
+      const freelancerId = freelancerDataQuery.rows[0].id;
+
+      if (bio) {
+        await db.query('UPDATE freelancers SET bio = $1 WHERE id = $2', [
+          bio,
+          freelancerId,
+        ]);
+      }
+
+      for (const skill of skills) {
+        await db.query(
+          'INSERT INTO skills (name,freelancer_id) VALUES ($1,$2)',
+          [skill, freelancerId],
+        );
+      }
+      if (previousWork.length !== 0)
+        previousWork.sort(
+          (a: IPreviousWork, b: IPreviousWork) => a.order - b.order,
+        );
+
+      for (const [index, work] of previousWork.entries()) {
+        await db.query(
+          'INSERT INTO previous_works (title,description,url,"order",freelancer_id) VALUES ($1,$2,$3,$4,$5)',
+          [work.title, work.description, work.url, index + 1, freelancerId],
+        );
+      }
     }
 
     res.status(201).json({ message: 'Account created', status: true });
@@ -96,8 +131,8 @@ export async function updateAccount(req: Request, res: Response) {
   const { firstName, lastName, username, email, password } = req.body;
 
   try {
-    await db.query(
-      'UPDATE accounts SET first_name = $1, last_name = $2, username = $3, email = $4 WHERE id = $5',
+    const accountQuery = await db.query(
+      'UPDATE accounts SET first_name = $1, last_name = $2, username = $3, email = $4 WHERE id = $5 RETURNING role',
       [firstName, lastName, username, email, accountId],
     );
 
@@ -109,6 +144,48 @@ export async function updateAccount(req: Request, res: Response) {
         hashedPassword,
         accountId,
       ]);
+    }
+
+    if (accountQuery.rows[0].role === 'freelancer') {
+      const { bio, skills, previousWork } = req.body;
+      const freelancerDataQuery = await db.query(
+        'SELECT id FROM freelancers WHERE account_id = $1',
+        [accountId],
+      );
+
+      const freelancerId = freelancerDataQuery.rows[0].id;
+
+      await db.query('UPDATE freelancers SET bio = $1 WHERE id = $2', [
+        bio,
+        freelancerId,
+      ]);
+
+      await db.query('DELETE FROM skills WHERE freelancer_id = $1', [
+        freelancerId,
+      ]);
+
+      for (const skill of skills) {
+        await db.query(
+          'INSERT INTO skills (name,freelancer_id) VALUES ($1,$2)',
+          [skill, freelancerId],
+        );
+      }
+
+      await db.query('DELETE FROM previous_works WHERE freelancer_id = $1', [
+        freelancerId,
+      ]);
+
+      if (previousWork.length !== 0)
+        previousWork.sort(
+          (a: IPreviousWork, b: IPreviousWork) => a.order - b.order,
+        );
+
+      for (const [index, work] of previousWork.entries()) {
+        await db.query(
+          'INSERT INTO previous_works (title,description,url,"order",freelancer_id) VALUES ($1,$2,$3,$4,$5)',
+          [work.title, work.description, work.url, index + 1, freelancerId],
+        );
+      }
     }
 
     res.status(200).json({ message: 'Account updated', status: true });
@@ -155,5 +232,58 @@ export async function unbanAccount(req: Request, res: Response) {
     res.status(200).json({ message: 'Account unbanned', status: true });
   } catch {
     res.status(500).json({ message: 'Failed to unban account', status: false });
+  }
+}
+
+export async function getFreelancer(req: Request, res: Response) {
+  const { accountId } = req.params;
+
+  try {
+    const freelancerDataQuery = await db.query(
+      'SELECT id,bio FROM freelancers WHERE account_id = $1',
+      [accountId],
+    );
+
+    const { id: freelancerId, bio } = freelancerDataQuery.rows[0];
+
+    const skillsQuery = await db.query(
+      'SELECT name FROM skills WHERE freelancer_id = $1',
+      [freelancerId],
+    );
+
+    const skills = skillsQuery.rows.map((skill) => skill.name);
+
+    const previousWorkQuery = await db.query(
+      'SELECT title,description,url,"order" FROM previous_works WHERE freelancer_id = $1',
+      [freelancerId],
+    );
+
+    const previousWork = previousWorkQuery.rows.map((work) => {
+      return {
+        order: work.order,
+        title: work.title,
+        description: work.description,
+        url: work.url,
+      };
+    });
+
+    previousWork.sort((a, b) => a.order - b.order);
+
+    res.status(200).json({
+      status: true,
+      message: 'Freelancer fetched',
+      data: {
+        freelancer: {
+          id: freelancerId,
+          bio,
+          skills,
+          previousWork,
+        },
+      },
+    });
+  } catch {
+    res
+      .status(500)
+      .json({ message: 'Failed to fetch freelancer', status: false });
   }
 }

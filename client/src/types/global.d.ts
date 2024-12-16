@@ -79,3 +79,16 @@ interface Proposal {
   freelancer?: Freelancer;
   milestones: Milestone[];
 }
+
+interface Message {
+  id: number;
+  message: string;
+  attachmentPath: string | null;
+  sentAt: string;
+  sender: {
+    firstName: string;
+    lastName: string;
+    profilePicture: string;
+    username: string;
+  };
+}
