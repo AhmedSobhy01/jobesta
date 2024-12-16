@@ -6,6 +6,7 @@ import {
   deleteAccount,
   banAccount,
   unbanAccount,
+  getFreelancer,
 } from '../../controllers/adminControllers/accountsController.js';
 import {
   getAccountsValidationRules,
@@ -14,6 +15,7 @@ import {
   deleteAccountValidationRules,
   banAccountValidationRules,
   unbanAccountValidationRules,
+  getFreelancerValidationRules,
 } from '../../validations/adminValidations/accountsValidation.js';
 import { validateRequest } from '../../middlewares/validationMiddleware.js';
 
@@ -24,6 +26,13 @@ accountsRouter.get(
   getAccountsValidationRules,
   validateRequest,
   getAccounts,
+);
+
+accountsRouter.get(
+  '/freelancer/:accountId',
+  getFreelancerValidationRules,
+  validateRequest,
+  getFreelancer,
 );
 
 accountsRouter.post(

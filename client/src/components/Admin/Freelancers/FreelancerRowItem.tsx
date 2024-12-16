@@ -9,22 +9,21 @@ import {
   faTrash,
   faEye,
 } from '@fortawesome/free-solid-svg-icons';
-
-import ClientModal from '@/components/Admin/Clients/ClientModal';
+import FreelancerModal from '@/components/Admin/Freelancers/FreelancerModal';
 import UserContext from '@/store/userContext';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router';
 
-const ClientRowItem: React.FC<{
-  client: Account;
-}> = ({ client }) => {
+const FreelancerRowItem: React.FC<{
+  freelancer: Account;
+}> = ({ freelancer }) => {
   const navigate = useNavigate();
   const user = useContext(UserContext);
 
   const [isEditAccountModalOpen, setIsEditAccountModalOpen] = useState(false);
 
-  const banClient = () => {
+  const banFreelancer = () => {
     Swal.fire({
       title: 'Are you sure?',
       icon: 'warning',
@@ -32,13 +31,13 @@ const ClientRowItem: React.FC<{
       confirmButtonColor: '#F44336',
       cancelButtonColor: '#3085d6',
       cancelButtonText: 'Cancel',
-      confirmButtonText: 'Yes, ban client',
+      confirmButtonText: 'Yes, ban freelancer',
       showLoaderOnConfirm: true,
       allowOutsideClick: () => !Swal.isLoading(),
       backdrop: true,
       preConfirm: () => {
         fetch(
-          `${import.meta.env.VITE_API_URL}/admin/accounts/ban/${client.id}`,
+          `${import.meta.env.VITE_API_URL}/admin/accounts/ban/${freelancer.id}`,
           {
             method: 'POST',
             headers: {
@@ -47,22 +46,22 @@ const ClientRowItem: React.FC<{
           },
         )
           .then((response) => {
-            if (!response.ok) throw new Error('Failed to ban client');
+            if (!response.ok) throw new Error('Failed to ban freelancer');
 
             return response.json();
           })
           .then((data) => {
             toast(data.message, { type: 'success' });
-            navigate('/admin/clients?reload=true');
+            navigate('/admin/freelancers?reload=true');
           })
           .catch(() => {
-            toast('Failed to ban client', { type: 'error' });
+            toast('Failed to ban freelancer', { type: 'error' });
           });
       },
     });
   };
 
-  const unbanClient = () => {
+  const unbanFreelancer = () => {
     Swal.fire({
       title: 'Are you sure?',
       icon: 'warning',
@@ -70,13 +69,13 @@ const ClientRowItem: React.FC<{
       confirmButtonColor: '#F44336',
       cancelButtonColor: '#3085d6',
       cancelButtonText: 'Cancel',
-      confirmButtonText: 'Yes, unban client',
+      confirmButtonText: 'Yes, unban freelancer',
       showLoaderOnConfirm: true,
       allowOutsideClick: () => !Swal.isLoading(),
       backdrop: true,
       preConfirm: () => {
         fetch(
-          `${import.meta.env.VITE_API_URL}/admin/accounts/unban/${client.id}`,
+          `${import.meta.env.VITE_API_URL}/admin/accounts/unban/${freelancer.id}`,
           {
             method: 'POST',
             headers: {
@@ -85,22 +84,22 @@ const ClientRowItem: React.FC<{
           },
         )
           .then((response) => {
-            if (!response.ok) throw new Error('Failed to unban client');
+            if (!response.ok) throw new Error('Failed to unban freelancer');
 
             return response.json();
           })
           .then((data) => {
             toast(data.message, { type: 'success' });
-            navigate('/admin/clients?reload=true');
+            navigate('/admin/freelancers?reload=true');
           })
           .catch(() => {
-            toast('Failed to unban client', { type: 'error' });
+            toast('Failed to unban freelancer', { type: 'error' });
           });
       },
     });
   };
 
-  const deleteClient = () => {
+  const deleteFreelancer = () => {
     Swal.fire({
       title: 'Are you sure?',
       icon: 'warning',
@@ -108,28 +107,31 @@ const ClientRowItem: React.FC<{
       confirmButtonColor: '#F44336',
       cancelButtonColor: '#3085d6',
       cancelButtonText: 'Cancel',
-      confirmButtonText: 'Yes, delete client',
+      confirmButtonText: 'Yes, delete freelancer',
       showLoaderOnConfirm: true,
       allowOutsideClick: () => !Swal.isLoading(),
       backdrop: true,
       preConfirm: () => {
-        fetch(`${import.meta.env.VITE_API_URL}/admin/accounts/${client.id}`, {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Bearer ${user.jwtToken}`,
+        fetch(
+          `${import.meta.env.VITE_API_URL}/admin/accounts/${freelancer.id}`,
+          {
+            method: 'DELETE',
+            headers: {
+              Authorization: `Bearer ${user.jwtToken}`,
+            },
           },
-        })
+        )
           .then((response) => {
-            if (!response.ok) throw new Error('Failed to delete client');
+            if (!response.ok) throw new Error('Failed to delete freelancer');
 
             return response.json();
           })
           .then((data) => {
             toast(data.message, { type: 'success' });
-            navigate('/admin/clients?reload=true');
+            navigate('/admin/freelancers?reload=true');
           })
           .catch(() => {
-            toast('Failed to delete client', { type: 'error' });
+            toast('Failed to delete freelancer', { type: 'error' });
           });
       },
     });
@@ -138,8 +140,8 @@ const ClientRowItem: React.FC<{
   return (
     <>
       {isEditAccountModalOpen && (
-        <ClientModal
-          client={client}
+        <FreelancerModal
+          freelancer={freelancer}
           onClose={() => setIsEditAccountModalOpen(false)}
         />
       )}
@@ -149,22 +151,22 @@ const ClientRowItem: React.FC<{
           scope="row"
           className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
         >
-          {client.id}
+          {freelancer.id}
         </th>
-        <td className="px-6 py-4 whitespace-nowrap">{client.firstName}</td>
-        <td className="px-6 py-4 whitespace-nowrap">{client.lastName}</td>
-        <td className="px-6 py-4 whitespace-nowrap">{client.username}</td>
-        <td className="px-6 py-4 whitespace-nowrap">{client.email}</td>
+        <td className="px-6 py-4 whitespace-nowrap">{freelancer.firstName}</td>
+        <td className="px-6 py-4 whitespace-nowrap">{freelancer.lastName}</td>
+        <td className="px-6 py-4 whitespace-nowrap">{freelancer.username}</td>
+        <td className="px-6 py-4 whitespace-nowrap">{freelancer.email}</td>
         <td className="px-6 py-4 whitespace-nowrap">
-          {client.isBanned ? (
+          {freelancer.isBanned ? (
             <FontAwesomeIcon icon={faCheck} />
           ) : (
             <FontAwesomeIcon icon={faTimes} />
           )}
         </td>
-        <td className="px-6 py-4 whitespace-nowrap">{client.createdAt}</td>
+        <td className="px-6 py-4 whitespace-nowrap">{freelancer.createdAt}</td>
         <td className="px-6 py-4 space-x-5 rtl:space-x-reverse whitespace-nowrap">
-          <Link to={`/users/${client.username}`}>
+          <Link to={`/users/${freelancer.username}`}>
             <FontAwesomeIcon icon={faEye} />
           </Link>
 
@@ -172,17 +174,25 @@ const ClientRowItem: React.FC<{
             <FontAwesomeIcon icon={faPenToSquare} />
           </button>
 
-          {client.isBanned ? (
-            <button type="button" onClick={unbanClient} title="Unban client">
+          {freelancer.isBanned ? (
+            <button
+              type="button"
+              onClick={unbanFreelancer}
+              title="Unban freelancer"
+            >
               <FontAwesomeIcon icon={faCheck} />
             </button>
           ) : (
-            <button type="button" onClick={banClient} title="Ban client">
+            <button
+              type="button"
+              onClick={banFreelancer}
+              title="Ban freelancer"
+            >
               <FontAwesomeIcon icon={faBan} />
             </button>
           )}
 
-          <button type="button" onClick={deleteClient}>
+          <button type="button" onClick={deleteFreelancer}>
             <FontAwesomeIcon icon={faTrash} />
           </button>
         </td>
@@ -191,4 +201,4 @@ const ClientRowItem: React.FC<{
   );
 };
 
-export default ClientRowItem;
+export default FreelancerRowItem;

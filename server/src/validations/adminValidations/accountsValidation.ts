@@ -1,11 +1,86 @@
 import { body, param, query } from 'express-validator';
 import db from '../../db/db.js';
+import { IPreviousWork } from '../../models/model.js';
 
 export const getAccountsValidationRules = [
   query('role')
     .optional()
     .isIn(['admin', 'freelancer', 'client'])
     .withMessage('Role must be either admin or freelancer or client'),
+];
+
+export const freelancerDataValidationRules = [
+  body('bio')
+    .optional()
+    .trim()
+    .isString()
+    .withMessage('Bio must be a string')
+    .isLength({ max: 1023 })
+    .withMessage('Bio must not exceed 1023 characters'),
+
+  body('skills')
+    .optional()
+    .isArray()
+    .withMessage('Skills must be an array')
+    .custom((skills) => {
+      if (new Set(skills).size !== skills.length) {
+        throw new Error('Skills must be unique');
+      }
+
+      return true;
+    }),
+
+  body('skills.*')
+    .trim()
+    .isString()
+    .withMessage('Skill must be a string')
+    .notEmpty()
+    .withMessage('Skill must not be empty')
+    .isLength({ max: 255 })
+    .withMessage('Skill must not exceed 255 characters'),
+
+  body('previousWork')
+    .optional()
+    .isArray()
+    .withMessage('Previous work must be an array')
+    .custom((previousWork) => {
+      if (
+        new Set(previousWork.map((work: IPreviousWork) => work.order)).size !==
+        previousWork.length
+      ) {
+        throw new Error('Previous work order must be unique');
+      }
+
+      return true;
+    }),
+
+  body('previousWork.*.title')
+    .trim()
+    .notEmpty()
+    .withMessage('Title must not be empty')
+    .isString()
+    .withMessage('Title must be a string')
+    .isLength({ max: 255 })
+    .withMessage('Title must not exceed 255 characters'),
+
+  body('previousWork.*.description')
+    .trim()
+    .notEmpty()
+    .withMessage('Description must not be empty')
+    .isString()
+    .withMessage('Description must be a string')
+    .isLength({ max: 1000 })
+    .withMessage('Description must not exceed 1000 characters'),
+
+  body('previousWork.*.url')
+    .optional()
+    .trim()
+    .isURL()
+    .withMessage('URL must be a valid URL'),
+
+  body('previousWork.*.order')
+    .isInt({ min: 1 })
+    .withMessage('Order must be a positive integer'),
 ];
 
 export const createAccountValidationRules = [
@@ -92,6 +167,7 @@ export const createAccountValidationRules = [
     .withMessage('Role is required')
     .isIn(['client', 'freelancer', 'admin'])
     .withMessage('Role must be either client or freelancer or admin'),
+  ...freelancerDataValidationRules,
 ];
 
 export const updateAccountValidationRules = [
@@ -173,6 +249,7 @@ export const updateAccountValidationRules = [
 
       return true;
     }),
+  ...freelancerDataValidationRules,
 ];
 
 export const deleteAccountValidationRules = [
@@ -249,5 +326,22 @@ export const unbanAccountValidationRules = [
       if (!accountsQuery.rows[0].is_banned) throw 'Account is not banned';
 
       return true;
+    }),
+];
+
+export const getFreelancerValidationRules = [
+  param('accountId')
+    .notEmpty()
+    .withMessage('Account id must not be empty')
+    .isNumeric()
+    .withMessage('Account id must be a number')
+    .custom(async (accountId) => {
+      const query = await db.query(
+        'SELECT id FROM freelancers WHERE account_id = $1',
+        [accountId],
+      );
+      if (query.rowCount === 0) {
+        throw new Error('No freelancer found with this id');
+      }
     }),
 ];

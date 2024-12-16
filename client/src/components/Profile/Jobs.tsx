@@ -1,3 +1,5 @@
+import { Link } from 'react-router';
+
 const Jobs: React.FC<{ job: IJob }> = ({ job }) => {
   const {
     title,
@@ -28,16 +30,22 @@ const Jobs: React.FC<{ job: IJob }> = ({ job }) => {
   }
 
   return (
-    <div className="bg-inherit shadow-md rounded-lg p-6 w-80 space-y-4 border border-gray-200">
+    <Link
+      to={`/jobs/${job.id}`}
+      className="bg-inherit shadow-md rounded-lg p-6 w-80 space-y-4 border border-gray-200"
+    >
       <div className="flex justify-between items-center">
         <h2 className="text-lg dark:text-gray-200 hover:text-green-500 font-semibold text-gray-800">
           {title || 'No Title'}
         </h2>
         {status && (
           <span
-            className={`px-3 py-1 rounded-full text-sm font-medium ${statusColor}`}
+            className={`px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap ${statusColor}`}
           >
-            {status}
+            {status
+              .split('_')
+              .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+              .join(' ')}
           </span>
         )}
       </div>
@@ -78,7 +86,7 @@ const Jobs: React.FC<{ job: IJob }> = ({ job }) => {
       <p className="text-gray-500 dark:text-gray-100 text-xs">
         Posted: {createdAt || 'N/A'}
       </p>
-    </div>
+    </Link>
   );
 };
 
