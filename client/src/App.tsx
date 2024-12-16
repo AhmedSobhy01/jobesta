@@ -18,6 +18,7 @@ import Dashboard from '@/pages/Admin/Dashboard';
 import Clients from '@/pages/Admin/Clients';
 import Admins from '@/pages/Admin/Admins';
 import Freelancers from '@/pages/Admin/Freelancers';
+import Categories from '@/pages/Admin/Categories';
 import CreateJobForm from '@/pages/CreateJobForm';
 import Notifications from '@/pages/Notifications';
 import ManageJob from '@/pages/ManageJob';
@@ -97,6 +98,10 @@ const router = createBrowserRouter([
       {
         path: 'freelancers',
         element: <Freelancers />,
+      },
+      {
+        path: 'categories',
+        element: <Categories />,
       },
     ],
   },

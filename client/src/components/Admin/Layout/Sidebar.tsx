@@ -1,4 +1,9 @@
-import { faHome, faUser } from '@fortawesome/free-solid-svg-icons';
+import {
+  faHome,
+  faLayerGroup,
+  faUser,
+  faCertificate,
+} from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import jobestaLogo from '@/assets/jobesta-logo.png';
 import SidebarButton from '@/components/Admin/Layout/SidebarButton';
@@ -18,7 +23,7 @@ const Sidebar: React.FC = () => {
         </Link>
       </div>
 
-      <nav className="mt-6 space-y-2">
+      <nav className="mt-4 space-y-3">
         <SidebarButton icon={faHome} text="Dashboard" route="/admin" />
         <SidebarButton icon={faUser} text="Clients" route="/admin/clients" />
         <SidebarButton icon={faUser} text="Admins" route="/admin/admins" />
@@ -27,10 +32,20 @@ const Sidebar: React.FC = () => {
           text="Freelancers"
           route="/admin/freelancers"
         />
+        <SidebarButton
+          icon={faLayerGroup}
+          text="Categories"
+          route="/admin/categories"
+        />
+        <SidebarButton
+          icon={faCertificate}
+          text="Badges"
+          route="/admin/badges"
+        />
       </nav>
 
       <div className="mt-auto p-4 text-center text-sm text-gray-600 dark:text-gray-400">
-        <span>&copy; 2024 Jobesta</span>
+        <span>&copy; {new Date().getFullYear()} Jobesta</span>
       </div>
     </div>
   );

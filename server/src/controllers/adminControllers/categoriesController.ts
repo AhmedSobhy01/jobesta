@@ -3,11 +3,46 @@ import db from '../../db/db.js';
 
 export async function getCategories(req: Request, res: Response) {
   try {
-    const categories = await db.query('SELECT * FROM categories');
+    let categoriesQueryString = 'SELECT * FROM categories';
+    const countQuery = 'SELECT COUNT(*) FROM categories';
+
+    const limit = parseInt(process.env.ADMIN_PAGINATION_LIMIT || '10');
+
+    const totalItemsQuery = await db.query(countQuery);
+    const totalItems = parseInt(totalItemsQuery.rows[0].count);
+    const totalPages = Math.ceil(totalItems / limit);
+
+    const page =
+      parseInt(req.query.page as string) > 0 &&
+      parseInt(req.query.page as string) <= totalPages
+        ? parseInt(req.query.page as string)
+        : 1;
+    const offset = (page - 1) * limit;
+
+    categoriesQueryString += ` LIMIT ${limit} OFFSET ${offset}`;
+
+    const result = await db.query(categoriesQueryString);
+
+    const categories = result.rows.map((category) => {
+      return {
+        id: category.id,
+        name: category.name,
+        description: category.description,
+      };
+    });
+
     res.json({
       status: true,
       message: 'Categories fetched',
-      data: { categories: categories.rows },
+      data: {
+        categories,
+        pagination: {
+          currentPage: page,
+          totalItems,
+          totalPages,
+          perPage: limit,
+        },
+      },
     });
   } catch {
     res.status(500).json({
@@ -30,6 +65,24 @@ export async function createCategory(req: Request, res: Response) {
     res.status(500).json({
       status: false,
       message: 'An error occurred while creating category',
+    });
+  }
+}
+
+export async function updateCategory(req: Request, res: Response) {
+  const id = req.params.id;
+  const { name, description } = req.body;
+
+  try {
+    await db.query(
+      'UPDATE categories SET name = $1, description = $2 WHERE id = $3',
+      [name, description, id],
+    );
+    res.json({ status: true, message: 'Category updated' });
+  } catch {
+    res.status(500).json({
+      status: false,
+      message: 'An error occurred while updating category',
     });
   }
 }
