@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Link, LoaderFunctionArgs, useNavigate } from 'react-router';
+import { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router';
 import { getAuthJwtToken, getAuthRefreshToken } from '@/utils/auth';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -12,20 +12,11 @@ import {
   faStar,
   faTrophy,
 } from '@fortawesome/free-solid-svg-icons';
-import ErrorModule from '../ErrorModule';
+import { toast } from 'react-toastify';
 
-const NotificationsDropdown: React.FC<{
-  setDropdownOpenMenu: (newFreelancer: {
-    isDropdownBarOpen: boolean;
-    isDropdownProfileOpen: boolean;
-    isDropdownBellOpen: boolean;
-  }) => void;
-}> & {
-  loader?: (args: LoaderFunctionArgs) => Promise<unknown>;
-} = ({ setDropdownOpenMenu }) => {
+const NotificationsDropdown = () => {
   const [notifications, setNotifications] = useState([]);
   const [error, setError] = useState('');
-  const navigate = useNavigate();
 
   const getIconByType = (type: string) => {
     switch (type) {
@@ -67,6 +58,8 @@ const NotificationsDropdown: React.FC<{
         );
     }
   };
+
+  const fetchDataRef = useRef(false);
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -142,40 +135,38 @@ const NotificationsDropdown: React.FC<{
 
         if (!userResponse.ok) {
           setError(notificationsData.message);
+          toast(notificationsData.message, {
+            type: 'error',
+          });
           return;
         }
 
         setNotifications(notificationsData.data.notifications);
       } catch {
         setError('An error occurred while fetching notifications data.');
+        toast('An error occurred while fetching notifications data.', {
+          type: 'error',
+        });
       }
+      fetchDataRef.current = true;
     };
 
-    fetchNotifications();
-  }, [navigate]);
+    if (fetchDataRef.current === false) {
+      fetchDataRef.current = true;
+      fetchNotifications();
+    }
+  }, []);
 
   return (
     <>
-      {error && (
-        <ErrorModule
-          errorMessage={error}
-          onClose={() => {
-            setError('');
-            setDropdownOpenMenu({
-              isDropdownBarOpen: false,
-              isDropdownBellOpen: false,
-              isDropdownProfileOpen: false,
-            });
-            navigate('/');
-          }}
-        />
-      )}
       <div className="relative">
         <div className="absolute right-0 mt-2 bg-white dark:bg-gray-900 dark:border-gray-700 border border-gray-200 rounded-xl shadow-lg z-10">
           <div className="flex flex-col min-w-[16rem] h-fit">
             {' '}
             <div className="flex-grow py-2">
-              {notifications.length > 0 ? (
+              {error && <p className="text-red-500 text-center">{error}</p>}
+              {!error &&
+                notifications.length > 0 &&
                 notifications
                   .slice(0, 5)
                   .map((notification: INotifications, index: number) => (
@@ -191,8 +182,9 @@ const NotificationsDropdown: React.FC<{
                         {notification.message}
                       </div>
                     </Link>
-                  ))
-              ) : (
+                  ))}
+
+              {!error && notifications.length === 0 && (
                 <div className="px-4 py-2 text-gray-500 dark:text-gray-400">
                   No notifications available
                 </div>
