@@ -16,6 +16,7 @@ import ProfilePage from '@/pages/Profile';
 import { FreelancerContextProvider } from '@/store/freelancerContext';
 import Dashboard from '@/pages/Admin/Dashboard';
 import Clients from '@/pages/Admin/Clients';
+import Freelancers from '@/pages/Admin/Freelancers';
 import CreateJobForm from '@/pages/CreateJobForm';
 import ManageJob from './pages/ManageJob';
 
@@ -81,6 +82,10 @@ const router = createBrowserRouter([
       {
         path: 'clients',
         element: <Clients />,
+      },
+      {
+        path: 'freelancers',
+        element: <Freelancers />,
       },
     ],
   },
