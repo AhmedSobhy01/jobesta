@@ -1,4 +1,3 @@
-import FreelancerContext from '@/store/freelancerContext';
 import UserContext from '@/store/userContext';
 import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -14,8 +13,6 @@ interface ProfileBioData {
       role: string | null;
       isBanned: string | null;
       profilePicture?: string;
-      jwtToken: string | null;
-      refreshToken: string | null;
     };
     freelancer: {
       balance?: number;
@@ -45,10 +42,9 @@ const ProfileBio: React.FC<ProfileBioData> = ({
   freelancerAccountData,
 }) => {
   const param = useParams();
-  const freelancerData = useContext(FreelancerContext);
   const userData = useContext(UserContext);
   const [newBio, setNewBio] = useState<string | undefined>(
-    freelancerData.bio || '',
+    freelancerAccountData.bio || '',
   );
   const [isEditingBio, setIsEditingBio] = useState(false);
 

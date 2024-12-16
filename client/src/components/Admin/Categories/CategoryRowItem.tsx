@@ -1,17 +1,16 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
 import CategoryModal from '@/components/Admin/Categories/CategoryModal';
-import UserContext from '@/store/userContext';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
+import { getAuthJwtToken } from '@/utils/auth';
 
 const CategoryRowItem: React.FC<{
   category: JobCategory;
 }> = ({ category }) => {
   const navigate = useNavigate();
-  const user = useContext(UserContext);
 
   const [isEditAccountModalOpen, setIsEditAccountModalOpen] = useState(false);
 
@@ -33,7 +32,7 @@ const CategoryRowItem: React.FC<{
           {
             method: 'DELETE',
             headers: {
-              Authorization: `Bearer ${user.jwtToken}`,
+              Authorization: `Bearer ${getAuthJwtToken()}`,
             },
           },
         )

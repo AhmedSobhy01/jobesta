@@ -12,6 +12,7 @@ import AdminModal from '@/components/Admin/Admins/AdminModal';
 import UserContext from '@/store/userContext';
 import { toast } from 'react-toastify';
 import { useNavigate, Link } from 'react-router';
+import { getAuthJwtToken } from '@/utils/auth';
 
 const AdminRowItem: React.FC<{
   admin: Account;
@@ -37,7 +38,7 @@ const AdminRowItem: React.FC<{
         fetch(`${import.meta.env.VITE_API_URL}/admin/accounts/${admin.id}`, {
           method: 'DELETE',
           headers: {
-            Authorization: `Bearer ${user.jwtToken}`,
+            Authorization: `Bearer ${getAuthJwtToken()}`,
           },
         })
           .then((response) => {

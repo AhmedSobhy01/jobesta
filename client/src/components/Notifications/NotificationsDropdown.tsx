@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
-import { getAuthJwtToken, getAuthRefreshToken } from '@/utils/auth';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCircleCheck,
@@ -14,6 +13,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 import NotificationsDropdownSkeleton from '../Skeletons/NotificationsDropdownSkeleton';
+import { getAuthJwtToken } from '@/utils/auth';
 
 const NotificationsDropdown = () => {
   const [loading, setLoading] = useState(true);
@@ -65,84 +65,23 @@ const NotificationsDropdown = () => {
 
   useEffect(() => {
     const fetchNotifications = async () => {
-      const jwtToken = getAuthJwtToken();
-      const refreshToken = getAuthRefreshToken();
-
-      if (!refreshToken || refreshToken === 'EXPIRED') {
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('jwtToken');
-        localStorage.removeItem('jwtTokenExpiration');
-        setError('User not authenticated');
-        return;
-      }
-
       try {
         setLoading(true);
         setError('');
 
-        let newJwtToken = jwtToken;
-
-        // Refresh JWT token if expired
-        if (!jwtToken || jwtToken === 'EXPIRED') {
-          localStorage.removeItem('jwtToken');
-
-          const authData = { refreshToken };
-          const response = await fetch(
-            `${import.meta.env.VITE_API_URL}/auth/refresh`,
-            {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(authData),
-            },
-          );
-
-          if (response.status === 403) {
-            localStorage.removeItem('refreshToken');
-            localStorage.removeItem('refreshTokenExpiration');
-            setError('Refresh token expired. Please log in again.');
-            setLoading(false);
-            fetchDataRef.current = false;
-            return;
-          }
-
-          const resData = await response.json();
-
-          if (!response.ok) {
-            setError(resData.message);
-            setLoading(false);
-            fetchDataRef.current = false;
-            return;
-          }
-
-          newJwtToken = resData.data.jwtToken;
-          if (newJwtToken) localStorage.setItem('jwtToken', newJwtToken);
-
-          const jwtTokenExpiration = new Date();
-          jwtTokenExpiration.setHours(jwtTokenExpiration.getHours() + 1);
-          localStorage.setItem(
-            'jwtTokenExpiration',
-            jwtTokenExpiration.toISOString(),
-          );
-        }
-
-        const userResponse = await fetch(
+        const response = await fetch(
           `${import.meta.env.VITE_API_URL}/notifications?page=1`,
           {
             headers: {
               'Content-Type': 'application/json',
-              Authorization: `Bearer ${newJwtToken}`,
+              Authorization: `Bearer ${getAuthJwtToken()}`,
             },
           },
         );
 
-        if (userResponse.status === 401) {
-          localStorage.removeItem('jwtToken');
-          localStorage.removeItem('jwtTokenExpiration');
-        }
+        const notificationsData = await response.json();
 
-        const notificationsData = await userResponse.json();
-
-        if (!userResponse.ok) {
+        if (!response.ok) {
           setError(notificationsData.message);
           toast(notificationsData.message, {
             type: 'error',

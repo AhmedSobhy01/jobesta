@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -10,16 +10,15 @@ import {
   faEye,
 } from '@fortawesome/free-solid-svg-icons';
 import FreelancerModal from '@/components/Admin/Freelancers/FreelancerModal';
-import UserContext from '@/store/userContext';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router';
+import { getAuthJwtToken } from '@/utils/auth';
 
 const FreelancerRowItem: React.FC<{
   freelancer: Account;
 }> = ({ freelancer }) => {
   const navigate = useNavigate();
-  const user = useContext(UserContext);
 
   const [isEditAccountModalOpen, setIsEditAccountModalOpen] = useState(false);
 
@@ -41,7 +40,7 @@ const FreelancerRowItem: React.FC<{
           {
             method: 'POST',
             headers: {
-              Authorization: `Bearer ${user.jwtToken}`,
+              Authorization: `Bearer ${getAuthJwtToken()}`,
             },
           },
         )
@@ -79,7 +78,7 @@ const FreelancerRowItem: React.FC<{
           {
             method: 'POST',
             headers: {
-              Authorization: `Bearer ${user.jwtToken}`,
+              Authorization: `Bearer ${getAuthJwtToken()}`,
             },
           },
         )
@@ -117,7 +116,7 @@ const FreelancerRowItem: React.FC<{
           {
             method: 'DELETE',
             headers: {
-              Authorization: `Bearer ${user.jwtToken}`,
+              Authorization: `Bearer ${getAuthJwtToken()}`,
             },
           },
         )

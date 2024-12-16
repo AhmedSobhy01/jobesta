@@ -1,7 +1,7 @@
-import UserContext from '@/store/userContext';
+import { getAuthJwtToken } from '@/utils/auth';
 import { faTrash, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 
@@ -13,7 +13,6 @@ const ProposalModal: React.FC<{
   const isUpdate = !!proposal;
 
   const navigate = useNavigate();
-  const user = useContext(UserContext);
 
   const [coverLetter, setCoverLetter] = useState(proposal?.coverLetter || '');
   const [milestones, setMilestones] = useState<Milestone[]>(
@@ -66,7 +65,7 @@ const ProposalModal: React.FC<{
     fetch(`${import.meta.env.VITE_API_URL}/proposals/${job.id}`, {
       method: isUpdate ? 'PUT' : 'POST',
       headers: {
-        Authorization: `Bearer ${user.jwtToken}`,
+        Authorization: `Bearer ${getAuthJwtToken()}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(proposalData),

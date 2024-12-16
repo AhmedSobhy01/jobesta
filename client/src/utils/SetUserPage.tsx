@@ -10,13 +10,11 @@ export function SetUserPage() {
     const accountId = null;
     const firstName = null;
     const lastName = null;
-    const username = undefined;
+    const username = null;
     const email = null;
     const role = null;
     const isBanned = null;
-    const profilePicture = undefined;
-    const jwtToken = localStorage.getItem('jwtToken') || '';
-    const refreshToken = localStorage.getItem('refreshToken') || '';
+    const profilePicture = null;
 
     setUser({
       accountId,
@@ -27,8 +25,6 @@ export function SetUserPage() {
       role,
       isBanned,
       profilePicture,
-      jwtToken,
-      refreshToken,
     });
 
     const redirectTo =

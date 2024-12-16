@@ -1,5 +1,5 @@
 import { Link, useLoaderData, useNavigate } from 'react-router';
-import { getAuthJwtToken, getAuthRefreshToken } from '@/utils/auth';
+import { getAuthJwtToken } from '@/utils/auth';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCircleCheck,
@@ -123,18 +123,6 @@ NotificationsPage.loader = async function loader({
 }: {
   request: Request;
 }) {
-  const jwtToken = getAuthJwtToken();
-  const refreshToken = getAuthRefreshToken();
-
-  if (!refreshToken || refreshToken === 'EXPIRED') {
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('jwtToken');
-    localStorage.removeItem('jwtTokenExpiration');
-    return {
-      notifications: [],
-      pagination: { currentPage: 1, totalPages: 1, totalItems: 0, perPage: 10 },
-    };
-  }
   const url = new URL(request.url);
   const queryParams = url.searchParams;
   const page = queryParams.get('page') || '1';
@@ -145,7 +133,7 @@ NotificationsPage.loader = async function loader({
       {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${jwtToken}`,
+          Authorization: `Bearer ${getAuthJwtToken()}`,
         },
       },
     );

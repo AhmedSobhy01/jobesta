@@ -1,11 +1,11 @@
 import React from 'react';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import UserContext from '@/store/userContext';
 import { useNavigate } from 'react-router';
 import ErrorModule from '@/components/ErrorModule';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { getAuthJwtToken } from '@/utils/auth';
 
 const SkeletonLoader = () => (
   <div className="animate-pulse">
@@ -14,7 +14,6 @@ const SkeletonLoader = () => (
 );
 
 const EditJobModal = ({ job, onClose }: { job: Job; onClose: () => void }) => {
-  const user = useContext(UserContext);
   const navigate = useNavigate();
 
   const [globalError, setGlobalError] = useState<string | null>(null);
@@ -70,7 +69,7 @@ const EditJobModal = ({ job, onClose }: { job: Job; onClose: () => void }) => {
         {
           method: 'PUT',
           headers: {
-            Authorization: `Bearer ${user.jwtToken}`,
+            Authorization: `Bearer ${getAuthJwtToken()}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({

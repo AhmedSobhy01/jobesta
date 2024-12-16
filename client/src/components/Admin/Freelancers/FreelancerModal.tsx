@@ -1,17 +1,16 @@
-import UserContext from '@/store/userContext';
 import { faXmark, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useContext, useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { toast } from 'react-toastify';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router';
+import { getAuthJwtToken } from '@/utils/auth';
 
 const FreelancerModal: React.FC<{
   freelancer?: Account;
   onClose: () => void;
 }> = ({ freelancer, onClose }) => {
   const navigate = useNavigate();
-  const user = useContext(UserContext);
   const isUpdate = !!freelancer;
 
   const [firstName, setFirstName] = useState(freelancer?.firstName || '');
@@ -38,7 +37,7 @@ const FreelancerModal: React.FC<{
           {
             method: 'GET',
             headers: {
-              Authorization: `Bearer ${user.jwtToken}`,
+              Authorization: `Bearer ${getAuthJwtToken()}`,
               'Content-Type': 'application/json',
             },
           },
@@ -54,7 +53,7 @@ const FreelancerModal: React.FC<{
       }
       fetchDataRef.current = false;
     })();
-  }, [freelancer, isUpdate, user.jwtToken]);
+  }, [freelancer, isUpdate]);
 
   const handleClose = () => {
     if (isSubmitting) return;
@@ -140,7 +139,7 @@ const FreelancerModal: React.FC<{
         {
           method: isUpdate ? 'PUT' : 'POST',
           headers: {
-            Authorization: `Bearer ${user.jwtToken}`,
+            Authorization: `Bearer ${getAuthJwtToken()}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(accountData),

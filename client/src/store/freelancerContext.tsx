@@ -1,33 +1,13 @@
 import { createContext, useCallback, useState } from 'react';
 
 interface FreelancerContextType {
-  freelancerId?: string;
-  balance?: number;
-  bio?: string;
-  previousWork?: IPreviousWork[];
-  skills?: string[];
-  badges?: IBadge[];
-  jobs?: IJob[];
-  setFreelancer: (newFreelancer: {
-    freelancerId?: string;
-    balance?: number;
-    bio?: string;
-    previousWork?: IPreviousWork[];
-    skills?: string[];
-    badges?: IBadge[];
-    jobs?: IJob[];
-  }) => void;
+  balance: number | null;
+  setFreelancer: (newFreelancer: { balance: number | null }) => void;
 }
 
 // Create the context with a default value
 const FreelancerContext = createContext<FreelancerContextType>({
-  freelancerId: undefined,
-  balance: undefined,
-  bio: undefined,
-  previousWork: undefined,
-  skills: undefined,
-  badges: undefined,
-  jobs: undefined,
+  balance: null,
   setFreelancer: () => {},
 });
 
@@ -35,46 +15,20 @@ export const FreelancerContextProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
   const [freelancerState, setFreelancerState] = useState<{
-    freelancerId?: string;
-    balance?: number;
-    bio?: string;
-    previousWork?: IPreviousWork[];
-    skills?: string[];
-    badges?: IBadge[];
-    jobs?: IJob[];
+    balance: number | null;
   }>({
-    freelancerId: undefined,
-    balance: undefined,
-    bio: undefined,
-    previousWork: undefined,
-    skills: undefined,
-    badges: undefined,
-    jobs: undefined,
+    balance: null,
   });
 
   const setFreelancer = useCallback(
-    (newFreelancer: {
-      freelancerId?: string;
-      balance?: number;
-      bio?: string;
-      previousWork?: IPreviousWork[];
-      skills?: string[];
-      badges?: IBadge[];
-      jobs?: IJob[];
-    }) => {
+    (newFreelancer: { balance: number | null }) => {
       setFreelancerState(newFreelancer);
     },
     [setFreelancerState],
   );
 
   const freelancerContextValue = {
-    freelancerId: freelancerState.freelancerId,
     balance: freelancerState.balance,
-    bio: freelancerState.bio,
-    previousWork: freelancerState.previousWork,
-    skills: freelancerState.skills,
-    badges: freelancerState.badges,
-    jobs: freelancerState.jobs,
     setFreelancer,
   };
 
