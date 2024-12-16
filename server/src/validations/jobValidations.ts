@@ -216,7 +216,7 @@ export const acceptProposalValidationRules = [
     .custom(async (freelancerId, { req }) => {
       const proposalQuery = await db.query(
         'SELECT * FROM proposals WHERE job_id = $1 AND freelancer_id = $2',
-        [req.jobId, freelancerId],
+        [req.params!.jobId, freelancerId],
       );
 
       if (proposalQuery.rows.length === 0) {

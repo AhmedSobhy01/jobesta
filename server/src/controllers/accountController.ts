@@ -161,7 +161,12 @@ export async function getUserByUsername(
         firstName: job.first_name,
         lastName: job.last_name,
         username: job.username,
-        profilePicture: job.profile_picture,
+        profilePicture:
+          job.profile_picture ||
+          'https://ui-avatars.com/api/?name=' +
+            job.first_name +
+            '+' +
+            job.last_name,
       },
     }));
 

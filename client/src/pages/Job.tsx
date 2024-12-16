@@ -9,6 +9,7 @@ import {
   faHourglassHalf,
   faInfoCircle,
   faLayerGroup,
+  faListCheck,
   faMoneyBillWave,
   faPenToSquare,
   faTrash,
@@ -25,7 +26,15 @@ function Job() {
   const navigate = useNavigate();
   const user = useContext(UserContext);
 
-  const { status: loaderStatus, error: loaderError, job } = useLoaderData();
+  const {
+    status: loaderStatus,
+    error: loaderError,
+    job,
+  } = useLoaderData() as {
+    status: boolean;
+    error?: string;
+    job: Job;
+  };
 
   const [isProposalModalOpen, setProposalModalOpen] = useState(false);
 
@@ -250,6 +259,18 @@ function Job() {
                         <span>Reopen Job</span>
                       </button>
                     )}
+
+                  {(user.username === job.client.username ||
+                    user.username == job?.myProposal?.freelancer?.username) &&
+                    job.status === 'in_progress' && (
+                      <Link
+                        to={`/jobs/${job.id}/manage`}
+                        className="text-black bg-emerald-200 border border-emerald-200 rounded-full hover:border-black justify-center px-8 py-1.5 flex items-center gap-2 mt-5"
+                      >
+                        <FontAwesomeIcon icon={faListCheck} />
+                        <span>Manage Job</span>
+                      </Link>
+                    )}
                 </div>
               </div>
             </div>
@@ -332,7 +353,7 @@ function Job() {
             <p className="mt-5">{job.description}</p>
           </div>
 
-          {(job.proposals.length > 0 ||
+          {((job.proposals && job.proposals.length > 0) ||
             job?.myProposal ||
             job.client.username === user.username) && <Proposals job={job} />}
         </div>

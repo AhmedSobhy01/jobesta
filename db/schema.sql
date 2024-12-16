@@ -179,6 +179,7 @@ CREATE TABLE "messages" (
   "attachment_path" VARCHAR(255),
   "job_id" INTEGER NOT NULL,
   "freelancer_id" INTEGER NOT NULL,
+  "account_id" INTEGER NOT NULL,
   "sent_at" TIMESTAMP NOT NULL DEFAULT (now())
 );
 
@@ -210,6 +211,8 @@ ALTER TABLE "reviews" ADD FOREIGN KEY ("job_id", "freelancer_id") REFERENCES "pr
 ALTER TABLE "reviews" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 ALTER TABLE "messages" ADD FOREIGN KEY ("job_id", "freelancer_id") REFERENCES "proposals" ("job_id", "freelancer_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+ALTER TABLE "messages" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 ALTER TABLE "milestones" ADD FOREIGN KEY ("job_id", "freelancer_id") REFERENCES "proposals" ("job_id", "freelancer_id") ON DELETE CASCADE ON UPDATE CASCADE;
 
