@@ -13,8 +13,10 @@ import {
   faTrophy,
 } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
+import NotificationsDropdownSkeleton from '../Skeletons/NotificationsDropdownSkeleton';
 
 const NotificationsDropdown = () => {
+  const [loading, setLoading] = useState(true);
   const [notifications, setNotifications] = useState([]);
   const [error, setError] = useState('');
 
@@ -75,6 +77,9 @@ const NotificationsDropdown = () => {
       }
 
       try {
+        setLoading(true);
+        setError('');
+
         let newJwtToken = jwtToken;
 
         // Refresh JWT token if expired
@@ -95,6 +100,8 @@ const NotificationsDropdown = () => {
             localStorage.removeItem('refreshToken');
             localStorage.removeItem('refreshTokenExpiration');
             setError('Refresh token expired. Please log in again.');
+            setLoading(false);
+            fetchDataRef.current = false;
             return;
           }
 
@@ -102,6 +109,8 @@ const NotificationsDropdown = () => {
 
           if (!response.ok) {
             setError(resData.message);
+            setLoading(false);
+            fetchDataRef.current = false;
             return;
           }
 
@@ -138,6 +147,8 @@ const NotificationsDropdown = () => {
           toast(notificationsData.message, {
             type: 'error',
           });
+          setLoading(false);
+          fetchDataRef.current = false;
           return;
         }
 
@@ -148,7 +159,9 @@ const NotificationsDropdown = () => {
           type: 'error',
         });
       }
-      fetchDataRef.current = true;
+
+      setLoading(false);
+      fetchDataRef.current = false;
     };
 
     if (fetchDataRef.current === false) {
@@ -164,6 +177,7 @@ const NotificationsDropdown = () => {
           <div className="flex flex-col min-w-[16rem] h-fit">
             {' '}
             <div className="flex-grow py-2">
+              {loading && <NotificationsDropdownSkeleton />}
               {error && <p className="text-red-500 text-center">{error}</p>}
               {!error &&
                 notifications.length > 0 &&
@@ -184,7 +198,7 @@ const NotificationsDropdown = () => {
                     </Link>
                   ))}
 
-              {!error && notifications.length === 0 && (
+              {!error && !loading && notifications.length === 0 && (
                 <div className="px-4 py-2 text-gray-500 dark:text-gray-400">
                   No notifications available
                 </div>
