@@ -21,7 +21,6 @@ import CreateJobForm from '@/pages/CreateJobForm';
 import Notifications from '@/pages/Notifications';
 import ManageJob from '@/pages/ManageJob';
 
-
 const router = createBrowserRouter([
   {
     path: '/',
