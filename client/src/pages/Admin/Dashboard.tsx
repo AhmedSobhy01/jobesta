@@ -78,7 +78,7 @@ const Dashboard: React.FC & {
           />
         <StatsCard
           title="Total Accepted Proposals"
-          value={statistics.totalProposals}
+          value={statistics.totalAcceptedProposals}
           icon={faChartSimple}
           color='cyan'
         />
