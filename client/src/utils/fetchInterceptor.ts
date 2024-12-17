@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify';
 import {
   clearTokens,
   getAuthJwtToken,
@@ -5,13 +6,7 @@ import {
   refreshJwtToken,
 } from './auth';
 
-declare global {
-  interface Window {
-    _fetch: typeof fetch;
-  }
-}
-
-(window as typeof window)._fetch = window.fetch;
+const _fetch = window.fetch;
 
 window.fetch = async (
   url: RequestInfo | URL,
@@ -19,7 +14,7 @@ window.fetch = async (
 ): Promise<Response> => {
   options.headers = options.headers || {};
 
-  let res = await window._fetch(url, options);
+  let res = await _fetch(url, options);
 
   if (
     Object.keys(options.headers).includes('Authorization') &&
@@ -37,14 +32,20 @@ window.fetch = async (
       await refreshJwtToken(refreshToken);
     } catch {
       clearTokens();
-      window.location.href = '/login';
+
+      if (!url.toString().endsWith('/me')) window.location.replace('/login');
+      else
+        toast.error('Your session has expired. Please log in again.', {
+          type: 'error',
+        });
+
       return res;
     }
 
     (options.headers as Record<string, string>).Authorization =
       `Bearer ${getAuthJwtToken()}`;
 
-    res = await window._fetch(url, options);
+    res = await _fetch(url, options);
   }
 
   return res;

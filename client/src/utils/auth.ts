@@ -1,5 +1,3 @@
-import { toast } from 'react-toastify';
-
 export function getJwtTokenDuration() {
   const tokenExpiration = localStorage.getItem('jwtTokenExpiration');
 
@@ -91,69 +89,30 @@ export async function refreshJwtToken(refreshToken: string) {
   return newJwtToken;
 }
 
-export async function fetchCurrentUser() {
+export async function getCurrentUser() {
   try {
     const jwtToken = getAuthJwtToken();
+    const refreshToken = getAuthRefreshToken();
 
-    const response = await window._fetch(
-      `${import.meta.env.VITE_API_URL}/account/me`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${jwtToken}`,
-        },
+    if (
+      (!jwtToken || jwtToken === 'EXPIRED') &&
+      (!refreshToken || refreshToken === 'EXPIRED')
+    ) {
+      throw new Error('No token');
+    }
+
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/account/me`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${jwtToken}`,
       },
-    );
+    });
 
     if (!response.ok) throw new Error('Failed to fetch user data');
 
     const resData = await response.json();
 
     return resData.data;
-  } catch {
-    return null;
-  }
-}
-
-export async function getCurrentUser() {
-  try {
-    let jwtToken = getAuthJwtToken();
-    const refreshToken = getAuthRefreshToken();
-
-    if (
-      (!jwtToken || jwtToken === 'EXPIRED') &&
-      (!refreshToken || refreshToken === 'EXPIRED')
-    )
-      return null;
-
-    let currentUser = null;
-    if (jwtToken && jwtToken !== 'EXPIRED')
-      currentUser = await fetchCurrentUser();
-
-    if (currentUser) return currentUser;
-
-    if (refreshToken && refreshToken !== 'EXPIRED') {
-      localStorage.removeItem('jwtToken');
-      localStorage.removeItem('jwtTokenExpiration');
-
-      try {
-        jwtToken = await refreshJwtToken(refreshToken);
-      } catch {
-        clearTokens();
-
-        toast('Failed to refresh token. Please log in again.', {
-          type: 'error',
-        });
-
-        return null;
-      }
-    } else {
-      clearTokens();
-      return null;
-    }
-
-    const userData: User = await fetchCurrentUser();
-    return userData;
   } catch {
     return null;
   }
