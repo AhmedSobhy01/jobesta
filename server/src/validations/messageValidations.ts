@@ -16,7 +16,8 @@ const paramsValidation = [
 
       if (
         proposalQuery.rows.length === 0 ||
-        (proposalQuery.rows[0].client_id !== req.user.id &&
+        (req.user.role !== 'admin' &&
+          proposalQuery.rows[0].client_id !== req.user.id &&
           proposalQuery.rows[0].account_id !== req.user.id)
       )
         throw new Error('Proposal does not exist');
@@ -51,12 +52,18 @@ export const deleteMessageValidationRules = [
     .withMessage('Message ID must be a number')
     .custom(async (value, { req }) => {
       const messageQuery = await db.query(
-        'SELECT m.id FROM messages m WHERE m.id = $1 AND m.job_id = $2 AND m.freelancer_id = $3',
+        'SELECT m.id, m.account_id FROM messages m WHERE m.id = $1 AND m.job_id = $2 AND m.freelancer_id = $3',
         [value, req.params!.jobId, req.params!.freelancerId],
       );
 
       if (messageQuery.rows.length === 0)
         throw new Error('Message does not exist');
+
+      if (
+        req.user.role !== 'admin' &&
+        messageQuery.rows[0].account_id !== req.user.id
+      )
+        throw new Error('Unauthorized');
 
       return true;
     }),
