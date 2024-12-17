@@ -40,6 +40,7 @@ app.use(express.static('public'));
 
 // Serve static files from the 'uploads' directory
 app.use('/uploads', express.static('uploads'));
+app.use('/public', express.static('public'));
 
 // Register the routes
 app.use('/account', accountRoutes);
