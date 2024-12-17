@@ -51,6 +51,7 @@ interface Job {
   title: string;
   description: string;
   category: JobCategory;
+  proposalsCount?: number;
   createdAt: string;
   client: {
     firstName: string;
@@ -58,6 +59,7 @@ interface Job {
     username: string;
     profilePicture: string;
   };
+  freelancer?: Freelancer;
   myProposal?: Proposal;
   proposals?: Proposal[];
 }

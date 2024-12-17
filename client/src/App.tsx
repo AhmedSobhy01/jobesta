@@ -22,6 +22,7 @@ import Categories from '@/pages/Admin/Categories';
 import CreateJobForm from '@/pages/CreateJobForm';
 import Notifications from '@/pages/Notifications';
 import ManageJob from '@/pages/ManageJob';
+import AdminJobs from '@/pages/Admin/Jobs';
 
 const router = createBrowserRouter([
   {
@@ -100,6 +101,10 @@ const router = createBrowserRouter([
       {
         path: 'categories',
         element: <Categories />,
+      },
+      {
+        path: 'jobs',
+        element: <AdminJobs />,
       },
     ],
   },
