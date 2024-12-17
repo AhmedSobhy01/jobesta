@@ -1,17 +1,16 @@
-import UserContext from '@/store/userContext';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router';
+import { getAuthJwtToken } from '@/utils/auth';
 
 const CategoryModal: React.FC<{
   category?: JobCategory;
   onClose: () => void;
 }> = ({ category, onClose }) => {
   const navigate = useNavigate();
-  const user = useContext(UserContext);
   const isUpdate = !!category;
 
   const [name, setName] = useState(category?.name || '');
@@ -46,7 +45,7 @@ const CategoryModal: React.FC<{
       {
         method: isUpdate ? 'PUT' : 'POST',
         headers: {
-          Authorization: `Bearer ${user.jwtToken}`,
+          Authorization: `Bearer ${getAuthJwtToken()}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(categoryData),

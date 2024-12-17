@@ -1,5 +1,4 @@
 import ErrorModule from '@/components/ErrorModule';
-import FreelancerContext from '@/store/freelancerContext';
 import UserContext from '@/store/userContext';
 import React, { useContext, useEffect, useState } from 'react';
 import {
@@ -9,13 +8,13 @@ import {
   useParams,
 } from 'react-router-dom';
 import EditProfileModal from '@/components/Profile/EditProfileModal';
-import { getAuthJwtToken, getAuthRefreshToken } from '@/utils/auth';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import ProfilePicture from '@/components/Profile/ProfilePicture';
 import ProfileBio from '@/components/Profile/ProfileBio';
 import Badge from '@/components/Profile/Badge';
 import Jobs from '@/components/Profile/Jobs';
+import { getAuthJwtToken } from '@/utils/auth';
 
 const activeCss =
   'text-green-700   font-semibold pb-2 border-b-2 border-gray-800 dark:text-green-700';
@@ -27,8 +26,17 @@ const ProfilePage: React.FC & {
 } = () => {
   //contexts
   const userData = useContext(UserContext);
-  const freelancerData = useContext(FreelancerContext);
-  const { setFreelancer } = useContext(FreelancerContext);
+
+  const [freelancerData, setFreelancer] = useState<
+    | {
+        bio: string;
+        skills: string[];
+        previousWork: IPreviousWork[];
+        badges: IBadge[];
+        jobs: IJob[];
+      }
+    | undefined
+  >();
   //nav and params
   const navigate = useNavigate();
   const param = useParams();
@@ -129,19 +137,8 @@ const ProfilePage: React.FC & {
     newPreviousWork?: IPreviousWork;
     newSkill?: string;
   }) {
-    const jwtToken = getAuthJwtToken();
-    const refreshToken = getAuthRefreshToken();
-
-    if (!refreshToken || refreshToken === 'EXPIRED') {
-      localStorage.removeItem('refreshToken');
-      localStorage.removeItem('refreshToken');
-      localStorage.removeItem('jwtToken');
-      localStorage.removeItem('jwtTokenExpiration');
-      navigate('/login');
-    }
-
     let allPrevWork = [
-      ...(freelancerData.previousWork ? freelancerData.previousWork : []),
+      ...(freelancerData?.previousWork ? freelancerData.previousWork : []),
     ];
 
     if (data.newPreviousWork) {
@@ -156,11 +153,11 @@ const ProfilePage: React.FC & {
     }));
 
     const allSkills = [
-      ...(freelancerData.skills ? freelancerData.skills : []),
+      ...(freelancerData?.skills ? freelancerData.skills : []),
       data.newSkill,
     ];
 
-    let newbio = freelancerData.bio;
+    let newbio = freelancerData?.bio;
 
     if (data.updatingBio && data.newBio === '') {
       newbio = '';
@@ -172,50 +169,17 @@ const ProfilePage: React.FC & {
     const newData = {
       bio: newbio,
       previousWork: allPrevWork,
-      skills: data.newSkill ? allSkills : freelancerData.skills,
+      skills: data.newSkill ? allSkills : freelancerData?.skills,
     };
 
     try {
-      let newJwtToken = jwtToken;
-      if (!jwtToken || jwtToken === 'EXPIRED') {
-        localStorage.removeItem('jwtToken');
-        localStorage.removeItem('jwtTokenExpiration');
-
-        const authData = { refreshToken };
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/auth/refresh`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(authData),
-          },
-        );
-
-        const resData = await response.json();
-
-        if (!response.ok) {
-          setError(true);
-          setErrorMessage(resData.message);
-          return;
-        }
-
-        newJwtToken = resData.data.jwtToken;
-        if (newJwtToken) localStorage.setItem('jwtToken', newJwtToken);
-
-        const jwtTokenExpiration = new Date();
-        jwtTokenExpiration.setHours(jwtTokenExpiration.getHours() + 1);
-        localStorage.setItem(
-          'jwtTokenExpiration',
-          jwtTokenExpiration.toISOString(),
-        );
-      }
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/freelancer/me`,
         {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${jwtToken}`,
+            Authorization: `Bearer ${getAuthJwtToken()}`,
           },
           body: JSON.stringify(newData),
         },
@@ -227,15 +191,15 @@ const ProfilePage: React.FC & {
         if (!resData.status) {
           if (response.status === 422) {
             if (data.newSkill) {
-              const index = freelancerData.skills
+              const index = freelancerData?.skills
                 ? freelancerData.skills.length
                 : 0;
               const obj = `skills[${index}]`;
-              if (freelancerData.skills && resData.errors[obj]) {
+              if (freelancerData?.skills && resData.errors[obj]) {
                 throw new Error(resData.errors[obj]);
               }
-            } else if (data.newPreviousWork && freelancerData.previousWork) {
-              const index = freelancerData.previousWork
+            } else if (data.newPreviousWork) {
+              const index = freelancerData?.previousWork
                 ? freelancerData.previousWork.length
                 : 0;
               const titObj = `previousWork[${index}].title`;

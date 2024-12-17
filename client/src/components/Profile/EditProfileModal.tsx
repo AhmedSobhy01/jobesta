@@ -1,5 +1,5 @@
 import UserContext from '@/store/userContext';
-import { getAuthJwtToken, getAuthRefreshToken } from '@/utils/auth';
+import { getAuthJwtToken } from '@/utils/auth';
 import React, { useContext, useState } from 'react';
 import { ActionFunctionArgs, useNavigate } from 'react-router-dom';
 
@@ -49,64 +49,19 @@ const EditProfileModal: React.FC<EditProfileModalProps> & {
       email: data.email,
     };
 
-    const jwtToken = getAuthJwtToken();
-    const refreshToken = getAuthRefreshToken();
-
-    if (!refreshToken || refreshToken === 'EXPIRED') {
-      localStorage.removeItem('refreshToken');
-      localStorage.removeItem('refreshToken');
-      localStorage.removeItem('jwtToken');
-      localStorage.removeItem('jwtTokenExpiration');
-      navigate('/login');
-    }
-
     if (data.password !== '') {
       newData.password = data.password;
       newData.confirmPassword = data.confirmPassword;
     }
 
     try {
-      let newJwtToken = jwtToken;
-      if (!jwtToken || jwtToken === 'EXPIRED') {
-        localStorage.removeItem('jwtToken');
-        localStorage.removeItem('jwtTokenExpiration');
-
-        const authData = { refreshToken };
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/auth/refresh`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(authData),
-          },
-        );
-
-        const resData = await response.json();
-
-        if (!response.ok) {
-          setError(true);
-          setErrorMessage(resData.message);
-          return;
-        }
-
-        newJwtToken = resData.data.jwtToken;
-        if (newJwtToken) localStorage.setItem('jwtToken', newJwtToken);
-
-        const jwtTokenExpiration = new Date();
-        jwtTokenExpiration.setHours(jwtTokenExpiration.getHours() + 1);
-        localStorage.setItem(
-          'jwtTokenExpiration',
-          jwtTokenExpiration.toISOString(),
-        );
-      }
-
       const response = await fetch(
         import.meta.env.VITE_API_URL + '/account/me',
         {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + jwtToken,
+            Authorization: 'Bearer ' + getAuthJwtToken(),
           },
           body: JSON.stringify(newData),
         },

@@ -6,9 +6,7 @@ interface User {
   email: string | null;
   role: string | null;
   isBanned: string | null;
-  profilePicture?: string;
-  jwtToken: string | null;
-  refreshToken: string | null;
+  profilePicture: string | null;
 }
 
 interface Freelancer {

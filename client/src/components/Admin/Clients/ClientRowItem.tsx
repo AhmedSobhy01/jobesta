@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -11,16 +11,15 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import ClientModal from '@/components/Admin/Clients/ClientModal';
-import UserContext from '@/store/userContext';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router';
+import { getAuthJwtToken } from '@/utils/auth';
 
 const ClientRowItem: React.FC<{
   client: Account;
 }> = ({ client }) => {
   const navigate = useNavigate();
-  const user = useContext(UserContext);
 
   const [isEditAccountModalOpen, setIsEditAccountModalOpen] = useState(false);
 
@@ -42,7 +41,7 @@ const ClientRowItem: React.FC<{
           {
             method: 'POST',
             headers: {
-              Authorization: `Bearer ${user.jwtToken}`,
+              Authorization: `Bearer ${getAuthJwtToken()}`,
             },
           },
         )
@@ -80,7 +79,7 @@ const ClientRowItem: React.FC<{
           {
             method: 'POST',
             headers: {
-              Authorization: `Bearer ${user.jwtToken}`,
+              Authorization: `Bearer ${getAuthJwtToken()}`,
             },
           },
         )
@@ -116,7 +115,7 @@ const ClientRowItem: React.FC<{
         fetch(`${import.meta.env.VITE_API_URL}/admin/accounts/${client.id}`, {
           method: 'DELETE',
           headers: {
-            Authorization: `Bearer ${user.jwtToken}`,
+            Authorization: `Bearer ${getAuthJwtToken()}`,
           },
         })
           .then((response) => {

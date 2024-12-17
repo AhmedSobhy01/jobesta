@@ -1,8 +1,8 @@
 import { Form, useLoaderData, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import ErrorModule from '@/components/ErrorModule';
-import { useContext, useState } from 'react';
-import UserContext from '@/store/userContext';
+import { useState } from 'react';
+import { getAuthJwtToken } from '@/utils/auth';
 
 const CreateJobForm = () => {
   const {
@@ -16,7 +16,6 @@ const CreateJobForm = () => {
   }>();
 
   const navigate = useNavigate();
-  const user = useContext(UserContext);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string } | null>({});
@@ -33,7 +32,7 @@ const CreateJobForm = () => {
       const response = await fetch(import.meta.env.VITE_API_URL + '/jobs', {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${user.jwtToken}`,
+          Authorization: `Bearer ${getAuthJwtToken()}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({

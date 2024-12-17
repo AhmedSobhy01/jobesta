@@ -15,27 +15,16 @@ export function Logout() {
     localStorage.removeItem('refreshTokenExpiration');
 
     const accountId = null;
-    const freelancerId = undefined;
-    const balance = undefined;
-    const bio = undefined;
-    const previousWork = undefined;
-    const skills = undefined;
     const firstName = null;
     const lastName = null;
-    const username = undefined;
+    const username = null;
     const email = null;
     const role = null;
     const isBanned = null;
-    const profilePicture = undefined;
-    const jwtToken = null;
-    const refreshToken = null;
+    const profilePicture = null;
 
     setFreelancer({
-      freelancerId,
-      balance,
-      bio,
-      previousWork,
-      skills,
+      balance: null,
     });
 
     setUser({
@@ -47,8 +36,6 @@ export function Logout() {
       role,
       isBanned,
       profilePicture,
-      jwtToken,
-      refreshToken,
     });
 
     navigate('/');

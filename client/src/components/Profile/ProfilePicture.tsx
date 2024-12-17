@@ -1,4 +1,4 @@
-import { getAuthJwtToken, getAuthRefreshToken } from '@/utils/auth';
+import { getAuthJwtToken } from '@/utils/auth';
 import { FormEventHandler, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -20,8 +20,6 @@ interface ProfilePictureData {
       role: string | null;
       isBanned: string | null;
       profilePicture?: string;
-      jwtToken: string | null;
-      refreshToken: string | null;
     };
     freelancer: {
       balance?: number;
@@ -66,58 +64,13 @@ const ProfilePicture: React.FC<ProfilePictureData> = ({
       const formData = new FormData();
       formData.append('file', file);
 
-      const jwtToken = getAuthJwtToken();
-      const refreshToken = getAuthRefreshToken();
-
-      if (!refreshToken || refreshToken === 'EXPIRED') {
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('refreshTokenExpiration');
-        localStorage.removeItem('jwtToken');
-        localStorage.removeItem('jwtTokenExpiration');
-        navigate('/login');
-      }
-
       try {
-        let newJwtToken = jwtToken;
-        if (!jwtToken || jwtToken === 'EXPIRED') {
-          localStorage.removeItem('jwtToken');
-          localStorage.removeItem('jwtTokenExpiration');
-
-          const authData = { refreshToken };
-          const response = await fetch(
-            `${import.meta.env.VITE_API_URL}/auth/refresh`,
-            {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(authData),
-            },
-          );
-
-          const resData = await response.json();
-
-          if (!response.ok) {
-            setError(true);
-            setErrorMessage(resData.message);
-            return;
-          }
-
-          newJwtToken = resData.data.jwtToken;
-          if (newJwtToken) localStorage.setItem('jwtToken', newJwtToken);
-
-          const jwtTokenExpiration = new Date();
-          jwtTokenExpiration.setHours(jwtTokenExpiration.getHours() + 1);
-          localStorage.setItem(
-            'jwtTokenExpiration',
-            jwtTokenExpiration.toISOString(),
-          );
-        }
-
         const response = await fetch(
           import.meta.env.VITE_API_URL + '/account/me/profile-picture',
           {
             method: 'PUT',
             headers: {
-              Authorization: 'Bearer ' + newJwtToken,
+              Authorization: 'Bearer ' + getAuthJwtToken(),
             },
             body: formData,
           },

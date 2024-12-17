@@ -2,15 +2,14 @@ import FreelancerModal from '@/components/Admin/Freelancers/FreelancerModal';
 import FreelancerRowItem from '@/components/Admin/Freelancers/FreelancerRowItem';
 import TableLoader from '@/components/Common/TableLoader';
 import TableSkeleton from '@/components/Skeletons/TableSkeleton';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import ErrorModule from '@/components/ErrorModule';
 import { useNavigate, useSearchParams } from 'react-router';
-import UserContext from '@/store/userContext';
+import { getAuthJwtToken } from '@/utils/auth';
 
 const Freelancers = () => {
   const navigate = useNavigate();
-  const user = useContext(UserContext);
 
   const [globalError, setGlobalError] = useState<string | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -35,7 +34,7 @@ const Freelancers = () => {
         `${import.meta.env.VITE_API_URL}/admin/accounts?page=${currentPage}&role=freelancer`,
         {
           headers: {
-            Authorization: `Bearer ${user.jwtToken}`,
+            Authorization: `Bearer ${getAuthJwtToken()}`,
           },
         },
       );
@@ -74,7 +73,7 @@ const Freelancers = () => {
       fetchDataRef.current = true;
       fetchData();
     }
-  }, [user.jwtToken, currentPage, searchParams, navigate, setSearchParams]);
+  }, [currentPage, searchParams, navigate, setSearchParams]);
 
   if (globalError)
     return (

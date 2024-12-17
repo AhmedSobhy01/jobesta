@@ -27,7 +27,6 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <MainLayout />,
-    loader: MainLayout.loader,
     children: [
       { index: true, element: <Home /> },
       { path: 'about', element: <About /> },
@@ -81,7 +80,6 @@ const router = createBrowserRouter([
   {
     path: 'admin',
     element: <AdminLayout />,
-    loader: AdminLayout.loader,
     children: [
       {
         index: true,

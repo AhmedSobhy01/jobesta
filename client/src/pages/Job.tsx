@@ -21,6 +21,7 @@ import Proposals from '@/components/Jobs/Proposals';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 import EditJobModal from '@/components/Jobs/EditJobModal';
+import { getAuthJwtToken } from '@/utils/auth';
 
 function Job() {
   const navigate = useNavigate();
@@ -65,7 +66,7 @@ function Job() {
           fetch(import.meta.env.VITE_API_URL + '/jobs/' + job.id, {
             method: 'DELETE',
             headers: {
-              Authorization: `Bearer ${user.jwtToken}`,
+              Authorization: `Bearer ${getAuthJwtToken()}`,
               'Content-Type': 'application/json',
             },
           })
@@ -115,7 +116,7 @@ function Job() {
           fetch(import.meta.env.VITE_API_URL + '/jobs/' + job.id + '/reopen', {
             method: 'PUT',
             headers: {
-              Authorization: `Bearer ${user.jwtToken}`,
+              Authorization: `Bearer ${getAuthJwtToken()}`,
               'Content-Type': 'application/json',
             },
           })
@@ -369,7 +370,7 @@ Job.loader = async ({ params }: LoaderFunctionArgs) => {
       {
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
+          Authorization: `Bearer ${getAuthJwtToken()}`,
           'Content-Type': 'application/json',
         },
       },

@@ -2,15 +2,14 @@ import AdminModal from '@/components/Admin/Admins/AdminModal';
 import AdminRowItem from '@/components/Admin/Admins/AdminRowItem.tsx';
 import TableLoader from '@/components/Common/TableLoader';
 import TableSkeleton from '@/components/Skeletons/TableSkeleton';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import ErrorModule from '@/components/ErrorModule';
 import { useNavigate, useSearchParams } from 'react-router';
-import UserContext from '@/store/userContext';
+import { getAuthJwtToken } from '@/utils/auth';
 
 const Admins = () => {
   const navigate = useNavigate();
-  const user = useContext(UserContext);
 
   const [globalError, setGlobalError] = useState<string | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -34,7 +33,7 @@ const Admins = () => {
         `${import.meta.env.VITE_API_URL}/admin/accounts?page=${currentPage}&role=admin`,
         {
           headers: {
-            Authorization: `Bearer ${user.jwtToken}`,
+            Authorization: `Bearer ${getAuthJwtToken()}`,
           },
         },
       );
@@ -71,7 +70,7 @@ const Admins = () => {
       fetchDataRef.current = true;
       fetchData();
     }
-  }, [user.jwtToken, currentPage, searchParams, navigate, setSearchParams]);
+  }, [currentPage, searchParams, navigate, setSearchParams]);
 
   if (globalError)
     return (

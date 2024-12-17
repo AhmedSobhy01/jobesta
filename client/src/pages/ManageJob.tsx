@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { getAuthJwtToken } from '@/utils/auth';
 
 function ManageJob() {
   const navigate = useNavigate();
@@ -50,7 +51,7 @@ function ManageJob() {
         {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${user.jwtToken}`,
+            Authorization: `Bearer ${getAuthJwtToken()}`,
           },
         },
       );
@@ -84,7 +85,7 @@ function ManageJob() {
     const intervalId = setInterval(fetchMessages, 5000);
 
     return () => clearInterval(intervalId);
-  }, [job.id, proposal, user.jwtToken, messages.length]);
+  }, [job.id, proposal, messages.length]);
 
   const [message, setMessage] = useState('');
   const [attachment, setAttachment] = useState<File | null>(null);
@@ -122,7 +123,7 @@ function ManageJob() {
       {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${user.jwtToken}`,
+          Authorization: `Bearer ${getAuthJwtToken()}`,
         },
         body: formData,
       },
@@ -183,7 +184,7 @@ function ManageJob() {
           {
             method: 'DELETE',
             headers: {
-              Authorization: `Bearer ${user.jwtToken}`,
+              Authorization: `Bearer ${getAuthJwtToken()}`,
             },
           },
         )
@@ -224,7 +225,7 @@ function ManageJob() {
           {
             method: 'PUT',
             headers: {
-              Authorization: `Bearer ${user.jwtToken}`,
+              Authorization: `Bearer ${getAuthJwtToken()}`,
             },
           },
         )
@@ -616,7 +617,7 @@ ManageJob.loader = async ({ params }: LoaderFunctionArgs) => {
     {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
+        Authorization: `Bearer ${getAuthJwtToken()}`,
       },
     },
   );

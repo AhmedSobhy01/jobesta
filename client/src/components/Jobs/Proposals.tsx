@@ -15,6 +15,7 @@ import ProposalModal from '@/components/Proposals/ProposalModal';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
+import { getAuthJwtToken } from '@/utils/auth';
 
 const Proposals: React.FC<{ job: Job }> = ({ job }) => {
   const user = useContext(UserContext);
@@ -56,7 +57,7 @@ const Proposals: React.FC<{ job: Job }> = ({ job }) => {
           fetch(import.meta.env.VITE_API_URL + '/proposals/' + job.id, {
             method: 'DELETE',
             headers: {
-              Authorization: `Bearer ${user.jwtToken}`,
+              Authorization: `Bearer ${getAuthJwtToken()}`,
               'Content-Type': 'application/json',
             },
           })
@@ -108,7 +109,7 @@ const Proposals: React.FC<{ job: Job }> = ({ job }) => {
             {
               method: 'POST',
               headers: {
-                Authorization: `Bearer ${user.jwtToken}`,
+                Authorization: `Bearer ${getAuthJwtToken()}`,
                 'Content-Type': 'application/json',
               },
             },

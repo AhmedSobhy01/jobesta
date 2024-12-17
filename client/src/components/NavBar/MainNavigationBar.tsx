@@ -22,7 +22,7 @@ const MainNavigationBar: React.FC<{
     isDropdownBellOpen: boolean;
   }) => void;
 }> = ({ dropdownOpen, setDropdownOpenMenu }) => {
-  const { refreshToken, role } = useContext(UserContext);
+  const { username, role } = useContext(UserContext);
   const { isDropdownBarOpen, isDropdownProfileOpen, isDropdownBellOpen } =
     dropdownOpen;
 
@@ -67,7 +67,7 @@ const MainNavigationBar: React.FC<{
           </Link>
 
           <div className="flex justify-between md:w-auto md:order-2 space-x-3 relative">
-            {refreshToken && (
+            {username && (
               <>
                 {role == 'client' && (
                   <Link
@@ -101,7 +101,7 @@ const MainNavigationBar: React.FC<{
                 </div>
               </>
             )}
-            {!refreshToken && (
+            {!username && (
               <div className="flex gap-3">
                 <Link
                   to="/login"
