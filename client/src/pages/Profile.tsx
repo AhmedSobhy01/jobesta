@@ -198,8 +198,8 @@ const ProfilePage: React.FC & {
               if (freelancerData?.skills && resData.errors[obj]) {
                 throw new Error(resData.errors[obj]);
               }
-            } else if (data.newPreviousWork && freelancerData?.previousWork) {
-              const index = freelancerData.previousWork
+            } else if (data.newPreviousWork) {
+              const index = freelancerData?.previousWork
                 ? freelancerData.previousWork.length
                 : 0;
               const titObj = `previousWork[${index}].title`;
