@@ -9,8 +9,7 @@ export async function getCategories(
     const categoriesQuery = await db.query(`
       SELECT c.id, c.name, c.description, COUNT(j.id) as jobs_count
       FROM categories c
-      LEFT JOIN jobs j ON c.id = j.category_id
-      WHERE j.status = 'open'
+      LEFT JOIN jobs j ON c.id = j.category_id AND j.status = 'open'
       GROUP BY c.id, c.name, c.description
     `);
 
