@@ -74,13 +74,13 @@ const Dashboard: React.FC & {
           title="Total Proposals"
           value={statistics.totalProposals}
           icon={faChartSimple}
-          color='cyan'
-          />
+          color="cyan"
+        />
         <StatsCard
           title="Total Accepted Proposals"
           value={statistics.totalAcceptedProposals}
           icon={faChartSimple}
-          color='cyan'
+          color="cyan"
         />
       </div>
       <div className="flex flex-wrap gap-4 w-full">
@@ -88,19 +88,19 @@ const Dashboard: React.FC & {
           title="Total Jobs"
           value={statistics.totalJobs}
           icon={faBriefcase}
-          color='orange'
-          />
+          color="orange"
+        />
         <StatsCard
           title="Total Open Jobs"
           value={statistics.totalOpenJobs}
           icon={faBriefcase}
-          color='orange'
-          />
+          color="orange"
+        />
         <StatsCard
           title="Total Completed Jobs"
           value={statistics.totalCompletedJobs}
           icon={faBriefcase}
-          color='orange'
+          color="orange"
         />
       </div>
     </div>

@@ -13,6 +13,6 @@ adminRoutes.use(authenticate, checkIfAdmin);
 adminRoutes.use('/categories', categoriesRouter);
 adminRoutes.use('/badges', badgesRouter);
 adminRoutes.use('/accounts', accountsRouter);
-adminRoutes.get('/statistics',getStatistics)
+adminRoutes.get('/statistics', getStatistics);
 
 export default adminRoutes;
