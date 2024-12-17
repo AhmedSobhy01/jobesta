@@ -10,6 +10,7 @@ export async function getCategories(
       SELECT c.id, c.name, c.description, COUNT(j.id) as jobs_count
       FROM categories c
       LEFT JOIN jobs j ON c.id = j.category_id
+      WHERE j.status = 'open'
       GROUP BY c.id, c.name, c.description
     `);
 
