@@ -1,15 +1,125 @@
-import { faChartSimple } from '@fortawesome/free-solid-svg-icons';
+import {
+  faChartSimple,
+  faUser,
+  faCommentDots,
+  faLayerGroup,
+  faBriefcase,
+} from '@fortawesome/free-solid-svg-icons';
 import StatsCard from '@/components/Admin/StatCard';
+import {
+  LoaderFunctionArgs,
+  useLoaderData,
+  useNavigate,
+} from 'react-router-dom';
+import ErrorModule from '@/components/ErrorModule';
+import { getAuthJwtToken } from '@/utils/auth';
 
-function Dashboard() {
+const Dashboard: React.FC & {
+  loader?: (args: LoaderFunctionArgs) => Promise<unknown>;
+} = () => {
+  const navigate = useNavigate();
+
+  const {
+    status: loaderStatus,
+    error: loaderError,
+    data: { statistics },
+  } = useLoaderData() as {
+    status: boolean;
+    error?: string;
+    data: {
+      statistics: {
+        totalClients: number;
+        totalFreelancers: number;
+        totalJobs: number;
+        totalProposals: number;
+        totalCategories: number;
+        totalReviews: number;
+        totalOpenJobs: number;
+        totalCompletedJobs: number;
+        totalAcceptedProposals: number;
+      };
+    };
+  };
+
+  if (!loaderStatus) {
+    return (
+      <ErrorModule onClose={() => navigate('/')} errorMessage={loaderError} />
+    );
+  }
+
   return (
     <div className="mt-3 flex flex-wrap gap-4">
-      <StatsCard title="Total Clients" value="100" icon={faChartSimple} />
-      <StatsCard title="Total Freelancers" value="200" icon={faChartSimple} />
-      <StatsCard title="Total Jobs" value="300" icon={faChartSimple} />
-      <StatsCard title="Total Proposals" value="400" icon={faChartSimple} />
+      <StatsCard
+        title="Total Clients"
+        value={statistics.totalClients}
+        icon={faUser}
+      />
+      <StatsCard
+        title="Total Freelancers"
+        value={statistics.totalFreelancers}
+        icon={faUser}
+      />
+      <StatsCard
+        title="Total Reviews"
+        value={statistics.totalReviews}
+        icon={faCommentDots}
+      />
+      <StatsCard
+        title="Total Categories"
+        value={statistics.totalCategories}
+        icon={faLayerGroup}
+      />
+      <div className="flex flex-wrap gap-4 w-full">
+        <StatsCard
+          title="Total Proposals"
+          value={statistics.totalProposals}
+          icon={faChartSimple}
+        />
+        <StatsCard
+          title="Total Accepted Proposals"
+          value={statistics.totalProposals}
+          icon={faChartSimple}
+        />
+      </div>
+      <div className="flex flex-wrap gap-4 w-full">
+        <StatsCard
+          title="Total Jobs"
+          value={statistics.totalJobs}
+          icon={faBriefcase}
+        />
+        <StatsCard
+          title="Total Open Jobs"
+          value={statistics.totalOpenJobs}
+          icon={faBriefcase}
+        />
+        <StatsCard
+          title="Total Completed Jobs"
+          value={statistics.totalCompletedJobs}
+          icon={faBriefcase}
+        />
+      </div>
     </div>
   );
-}
+};
 
 export default Dashboard;
+
+Dashboard.loader = async function loader(): Promise<unknown> {
+  try {
+    const res = await fetch(
+      `${import.meta.env.VITE_API_URL}/admin/statistics`,
+      {
+        headers: {
+          Authorization: `Bearer ${getAuthJwtToken()}`,
+        },
+      },
+    );
+    const data = await res.json();
+    if (!data.status || !res.ok) {
+      throw new Error(data.message);
+    }
+    return data;
+  } catch (err) {
+    return { status: false, error: (err as Error).message };
+  }
+};

@@ -7,7 +7,7 @@ function StatsCard({
   icon,
 }: {
   title: string;
-  value: string;
+  value: number;
   icon: IconDefinition;
 }) {
   return (

@@ -84,6 +84,7 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Dashboard />,
+        loader: Dashboard.loader
       },
       {
         path: 'clients',
