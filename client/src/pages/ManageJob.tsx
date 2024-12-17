@@ -617,7 +617,7 @@ ManageJob.loader = async ({ params }: LoaderFunctionArgs) => {
     {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('jwtToken')}`,
+        Authorization: `Bearer ${getAuthJwtToken()}`,
       },
     },
   );
