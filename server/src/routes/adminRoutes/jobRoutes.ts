@@ -3,29 +3,39 @@ import {
   getJobs,
   updateJob,
   deleteJob,
+  reopenJob,
 } from '../../controllers/adminControllers/jobController.js';
-import { authenticate } from '../../middlewares/authMiddleware.js';
 import { validateRequest } from '../../middlewares/validationMiddleware.js';
 import {
   updateJobValidationRules,
   deleteJobValidationRules,
+  reopenJobValidationRules,
+  closeJobValidationRules,
 } from '../../validations/adminValidations/jobValidations.js';
+import { closeJob } from '../../controllers/jobController.js';
 
 const jobRouter = Router();
 
 jobRouter.get('/', getJobs);
 
 jobRouter.put(
-  '/:jobId',
-  authenticate,
-  updateJobValidationRules,
+  '/:jobId/reopen',
+  reopenJobValidationRules,
   validateRequest,
-  updateJob,
+  reopenJob,
 );
+
+jobRouter.put(
+  '/:jobId/close',
+  closeJobValidationRules,
+  validateRequest,
+  closeJob,
+);
+
+jobRouter.put('/:jobId', updateJobValidationRules, validateRequest, updateJob);
 
 jobRouter.delete(
   '/:jobId',
-  authenticate,
   deleteJobValidationRules,
   validateRequest,
   deleteJob,

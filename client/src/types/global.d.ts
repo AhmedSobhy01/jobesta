@@ -90,6 +90,7 @@ interface Message {
     lastName: string;
     profilePicture: string;
     username: string;
+    isAdmin: boolean;
   };
 }
 

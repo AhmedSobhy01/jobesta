@@ -132,7 +132,7 @@ const Jobs = () => {
                 </tr>
               </thead>
               <tbody>
-                {loading && <TableSkeleton columns={7} />}
+                {loading && <TableSkeleton columns={10} />}
 
                 {jobs.map((job: Job) => (
                   <JobRowItem key={job.id} job={job} />
