@@ -120,6 +120,26 @@ export async function getUserByUsername(
 
     const userData = userDataQuery.rows[0];
 
+    const reviewSender = await db.query(
+      'SELECT p.freelancer_id AS senderid, a.username AS senderusername FROM jobs j JOIN proposals p ON p.job_id = j.id JOIN freelancers f ON p.freelancer_id = f.id JOIN accounts a ON f.account_id = a.id WHERE p.status = $1 AND j.status = $2 AND j.client_id = $3',
+      ['accepted', 'completed', userDataQuery.rows[0].id],
+    );
+    const reviewResult = await db.query(
+      'SELECT * FROM reviews r WHERE r.freelancer_id = $1',
+      [reviewSender.rows[0].senderid],
+    );
+
+    const reviewSenderUsername = reviewSender.rows[0].senderusername;
+
+    const reviews = reviewResult.rows.map((review) => {
+      return {
+        senderUsername: reviewSenderUsername,
+        rating: review.rating,
+        comment: review.comment,
+        createdAt: review.created_at,
+      };
+    });
+
     let jobsQueryString = `SELECT j.id, j.status, j.budget, j.duration, j.title, j.description, j.created_at, client.first_name, client.last_name, client.username, client.profile_picture, c.id category_id, c.name category_name ,c.description category_description 
       FROM jobs j 
       JOIN accounts client ON client.id = j.client_id
@@ -188,6 +208,7 @@ export async function getUserByUsername(
             '+' +
             userData!.last_name,
         jobs,
+        reviews,
       },
     });
   } catch {

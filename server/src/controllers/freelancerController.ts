@@ -21,6 +21,27 @@ export async function getFreelancerByUsername(req: Request, res: Response) {
 
     const freelancerData = freelancerDataQuery.rows[0];
 
+    const reviewSender = await db.query(
+      'SELECT j.client_id AS senderid, a.username AS senderusername FROM propsals p JOIN jobs j ON p.job_id = j.id JOIN acccounts a ON a.id = j.client_id WHERE p.status = accepted AND j.status = completed AND p.freelancer_id = $1',
+      [freelancerData.rows[0].id],
+    );
+
+    const reviewResult = await db.query(
+      'SELECT * FROM reviews r WHERE r.account_id = $1',
+      [reviewSender.rows[0].senderid],
+    );
+
+    const reviewSenderUsername = reviewSender.rows[0].senderusername;
+
+    const reviews = reviewResult.rows.map((review) => {
+      return {
+        senderUsername: reviewSenderUsername,
+        rating: review.rating,
+        comment: review.comment,
+        createdAt: review.created_at,
+      };
+    });
+
     const skillsQuery = await db.query(
       'SELECT name FROM skills WHERE freelancer_id = $1',
       [freelancerData.id],
@@ -55,6 +76,7 @@ export async function getFreelancerByUsername(req: Request, res: Response) {
       previousWork,
       skills,
       badges,
+      reviews,
     };
 
     res
