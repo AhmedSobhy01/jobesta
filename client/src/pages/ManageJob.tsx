@@ -523,7 +523,7 @@ function ManageJob() {
                         setMessage(e.target.value);
                         setMessageError('');
                       }}
-                      onKeyPress={(e) => {
+                      onKeyDown={(e) => {
                         if (e.key === 'Enter') handleSendMessage();
                       }}
                     />

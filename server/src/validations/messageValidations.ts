@@ -1,6 +1,6 @@
 import { body, param } from 'express-validator';
 import db from '../db/db.js';
-import { upload } from '../middlewares/imageUploadMiddleware.js';
+import { upload } from '../middlewares/fileUploadMiddleware.js';
 
 const paramsValidation = [
   param('jobId').isNumeric().withMessage('Job ID must be a number'),
