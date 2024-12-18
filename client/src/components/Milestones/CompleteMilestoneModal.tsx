@@ -2,6 +2,7 @@ import { getAuthJwtToken } from '@/utils/auth';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { toast } from 'react-toastify';
 
 const CompleteMilestoneModal: React.FC<{
@@ -86,7 +87,7 @@ const CompleteMilestoneModal: React.FC<{
       });
   };
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
       onMouseDown={handleModalClick}
@@ -184,7 +185,8 @@ const CompleteMilestoneModal: React.FC<{
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body as HTMLElement,
   );
 };
 
