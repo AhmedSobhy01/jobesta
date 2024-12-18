@@ -214,6 +214,36 @@ export async function getJobById(req: Request, res: Response) {
       }
     }
 
+    const reviewss = await db.query(
+      `
+        SELECT * FROM reviews WHERE job_id = $1
+        `,
+      [req.params.id],
+    );
+
+    job.reviews = await Promise.all(
+      reviewss.rows?.map(async (review) => {
+        const result = await db.query(`SELECT * FROM accounts WHERE id = $1`, [
+          review.account_id,
+        ]);
+
+        return {
+          rating: review.rating,
+          comment: review.comment,
+          createdAt: review.created_at,
+          sender: {
+            firstName: result.rows[0]?.first_name,
+            lastName: result.rows[0]?.last_name,
+            username: result.rows[0]?.username,
+            role: result.rows[0]?.role,
+            profilePicture:
+              result.rows[0]?.profile_picture ||
+              `https://ui-avatars.com/api/?name=${result.rows[0]?.first_name}+${result.rows[0]?.last_name}`,
+          },
+        };
+      }),
+    );
+
     if (
       req.user &&
       req.user.role == 'client' &&

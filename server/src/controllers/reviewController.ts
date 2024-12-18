@@ -3,13 +3,7 @@ import db from '../db/db.js';
 
 export async function createReview(req: Request, res: Response): Promise<void> {
   const { rating, comment } = req.body;
-  console.log(
-    rating,
-    comment,
-    req.params.jobId,
-    req.params.freelancer_id,
-    req.user!.id,
-  );
+
   try {
     await db.query(
       'INSERT INTO reviews (rating, comment, job_id, freelancer_id, account_id) VALUES ($1, $2, $3, $4, $5)',
@@ -28,5 +22,21 @@ export async function createReview(req: Request, res: Response): Promise<void> {
     });
   } catch {
     res.status(500).json({ status: false, message: 'Error creating review' });
+  }
+}
+
+export async function deleteReview(req: Request, res: Response): Promise<void> {
+  try {
+    await db.query(
+      'DELETE FROM reviews WHERE job_id = $1 AND freelancer_id = $2 AND account_id = $3',
+      [req.params.jobId, req.params.freelancerId, req.user!.id],
+    );
+
+    res.status(201).json({
+      status: true,
+      message: 'Review deleted',
+    });
+  } catch {
+    res.status(500).json({ status: false, message: 'Error deleting review' });
   }
 }
