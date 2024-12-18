@@ -15,14 +15,13 @@ import {
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import ProposalModal from '@/components/Proposals/ProposalModal';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import UserContext from '@/store/userContext';
 import Proposals from '@/components/Jobs/Proposals';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 import EditJobModal from '@/components/Jobs/EditJobModal';
 import { getAuthJwtToken } from '@/utils/auth';
-import ReviewModal from '@/components/Jobs/AddReviewModal';
 import Review from '@/components/Jobs/Review';
 
 function Job() {
