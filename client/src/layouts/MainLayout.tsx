@@ -16,6 +16,9 @@ function MainLayout() {
     isDropdownProfileOpen: false,
     isDropdownBellOpen: false,
   });
+
+  const [loading, setLoading] = useState(false);
+
   // Reset dropdowns only when clicking outside of navigation
   const handleClick = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
@@ -36,6 +39,7 @@ function MainLayout() {
   const fetchDataRef = useRef(false);
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       let userData: User | null = null;
 
       try {
@@ -82,6 +86,7 @@ function MainLayout() {
         });
       }
 
+      setLoading(false);
       fetchDataRef.current = false;
     };
 
@@ -96,6 +101,7 @@ function MainLayout() {
       <ToastContainer />
 
       <MainNavigationBar
+        loadingProfile={loading}
         dropdownOpen={dropdownOpen}
         setDropdownOpenMenu={setDropdownOpenMenu}
       />

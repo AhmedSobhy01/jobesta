@@ -13,6 +13,8 @@ const AdminLayout = () => {
     isDropdownProfileOpen: false,
   });
 
+  const [loading, setLoading] = useState(false);
+
   // Reset dropdowns only when clicking outside of navigation
   const handleClick = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
@@ -31,6 +33,7 @@ const AdminLayout = () => {
   const fetchDataRef = useRef(false);
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       let userData: User | null = null;
 
       try {
@@ -50,6 +53,7 @@ const AdminLayout = () => {
         profilePicture: userData?.profilePicture || null,
       });
 
+      setLoading(false);
       fetchDataRef.current = false;
     };
 
@@ -67,6 +71,7 @@ const AdminLayout = () => {
 
       <div className="flex flex-col flex-1">
         <NavBar
+          loadingProfile={loading}
           dropdownOpen={dropdownOpen}
           setDropdownOpenMenu={setDropdownOpenMenu}
         />
