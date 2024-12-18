@@ -11,7 +11,7 @@ import FullPageLoader from '@/components/FullPageLoader';
 function MainLayout() {
   const { state } = useNavigation();
 
-  const { setUser } = useContext(UserContext);
+  const { setUser, isUserLoading } = useContext(UserContext);
   const { setFreelancer } = useContext(FreelancerContext);
 
   const [dropdownOpen, setDropdownOpenMenu] = useState({
@@ -52,6 +52,7 @@ function MainLayout() {
       }
 
       setUser({
+        isUserLoading: false,
         accountId: userData?.accountId || null,
         firstName: userData?.firstName || null,
         lastName: userData?.lastName || null,
@@ -103,7 +104,7 @@ function MainLayout() {
     <div className="h-screen dark:bg-gray-900 bg-white" onClick={handleClick}>
       <ToastContainer />
 
-      {state === 'loading' && <FullPageLoader />}
+      {(state === 'loading' || isUserLoading) && <FullPageLoader />}
 
       <MainNavigationBar
         loadingProfile={loading}
@@ -111,9 +112,7 @@ function MainLayout() {
         setDropdownOpenMenu={setDropdownOpenMenu}
       />
 
-      <main>
-        <Outlet />
-      </main>
+      <main>{!isUserLoading && <Outlet />}</main>
     </div>
   );
 }

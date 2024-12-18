@@ -1,6 +1,7 @@
 import { createContext, useCallback, useState } from 'react';
 
 interface UserContextType {
+  isUserLoading: boolean;
   accountId: string | null;
   firstName: string | null;
   lastName: string | null;
@@ -11,6 +12,7 @@ interface UserContextType {
   profilePicture: string | null;
   setUsername: (username: string | null) => void;
   setUser: (newUser: {
+    isUserLoading: boolean;
     accountId: string | null;
     firstName: string | null;
     lastName: string | null;
@@ -24,6 +26,7 @@ interface UserContextType {
 
 // Create the context with a default value
 const UserContext = createContext<UserContextType>({
+  isUserLoading: true,
   accountId: null,
   firstName: null,
   lastName: null,
@@ -40,6 +43,7 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [userState, setUserState] = useState<{
+    isUserLoading: boolean;
     accountId: string | null;
     firstName: string | null;
     lastName: string | null;
@@ -49,6 +53,7 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
     isBanned: string | null;
     profilePicture: string | null;
   }>({
+    isUserLoading: true,
     accountId: null,
     firstName: null,
     lastName: null,
@@ -68,6 +73,7 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const setUser = useCallback(
     (newUser: {
+      isUserLoading: boolean;
       accountId: string | null;
       firstName: string | null;
       lastName: string | null;
@@ -83,6 +89,7 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 
   const userContextValue = {
+    isUserLoading: userState.isUserLoading,
     accountId: userState.accountId,
     firstName: userState.firstName,
     lastName: userState.lastName,

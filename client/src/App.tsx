@@ -23,6 +23,7 @@ import CreateJobForm from '@/pages/CreateJobForm';
 import Notifications from '@/pages/Notifications';
 import ManageJob from '@/pages/ManageJob';
 import NotFound from '@/pages/NotFound';
+import AuthMiddleware from '@/components/AuthMiddleware';
 
 const router = createBrowserRouter([
   {
@@ -37,12 +38,20 @@ const router = createBrowserRouter([
           { path: '', element: <Jobs />, loader: Jobs.loader },
           {
             path: 'create',
-            element: <CreateJobForm />,
+            element: (
+              <AuthMiddleware>
+                <CreateJobForm />
+              </AuthMiddleware>
+            ),
             loader: CreateJobForm.loader,
           },
           {
             path: ':jobId/manage',
-            element: <ManageJob />,
+            element: (
+              <AuthMiddleware>
+                <ManageJob />
+              </AuthMiddleware>
+            ),
             loader: ManageJob.loader,
           },
           {
@@ -54,7 +63,11 @@ const router = createBrowserRouter([
       },
       {
         path: '/notifications',
-        element: <Notifications />,
+        element: (
+          <AuthMiddleware>
+            <Notifications />
+          </AuthMiddleware>
+        ),
         loader: Notifications.loader,
       },
       { path: 'contacts', element: <Contacts /> },

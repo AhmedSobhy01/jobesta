@@ -24,11 +24,11 @@ function ManageJob() {
     job: Job;
   }>();
 
-  const [jobStatus, setJobStatus] = useState<string>(job.status);
+  const [jobStatus, setJobStatus] = useState<string>(job?.status);
 
   const [proposal, setProposal] = useState<Proposal | null>(
-    job.proposals!.find((p) => p.status === 'accepted') ??
-      job.myProposal ??
+    job?.proposals!.find((p) => p.status === 'accepted') ??
+      job?.myProposal ??
       null,
   );
 
@@ -47,7 +47,7 @@ function ManageJob() {
       const oldMessagesLength = messages.length;
 
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/messages/${job.id}/${proposal!.freelancer!.id}`,
+        `${import.meta.env.VITE_API_URL}/messages/${job?.id}/${proposal?.freelancer?.id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -85,7 +85,7 @@ function ManageJob() {
     const intervalId = setInterval(fetchMessages, 5000);
 
     return () => clearInterval(intervalId);
-  }, [job.id, proposal, messages.length]);
+  }, [job?.id, proposal, messages.length]);
 
   const [message, setMessage] = useState('');
   const [attachment, setAttachment] = useState<File | null>(null);
@@ -626,6 +626,12 @@ ManageJob.loader = async ({ params }: LoaderFunctionArgs) => {
     return { status: false, error: 'Failed to fetch job details' };
 
   const data = await response.json();
+
+  if (
+    (data.data.job.proposals!.find((p: Proposal) => p.status === 'accepted') ||
+      data.data.job.myProposal) === null
+  )
+    return { status: false, error: 'Failed to fetch job details' };
 
   return { status: true, job: data.data.job };
 };
