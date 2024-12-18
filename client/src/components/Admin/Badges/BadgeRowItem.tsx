@@ -27,7 +27,11 @@ const BadgeRowItem: React.FC<{
         <td className="px-6 py-4 whitespace-nowrap">{badge.name}</td>
         <td className="px-6 py-4 whitespace-nowrap">{badge.description}</td>
         <td className="px-6 py-4 whitespace-nowrap">
-          <img className='w-16 rounded-lg' src={import.meta.env.VITE_API_URL + '/' + badge.icon} alt="" />
+          <img
+            className="w-16 rounded-lg"
+            src={import.meta.env.VITE_API_URL + '/' + badge.icon}
+            alt=""
+          />
         </td>
 
         <td className="px-6 py-4 space-x-5 rtl:space-x-reverse whitespace-nowrap">
