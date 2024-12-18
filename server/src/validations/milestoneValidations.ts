@@ -1,4 +1,4 @@
-import { param } from 'express-validator';
+import { body, param } from 'express-validator';
 import db from '../db/db.js';
 
 export const completeMilestoneValidationRules = [
@@ -34,6 +34,40 @@ export const completeMilestoneValidationRules = [
 
       if (milestoneQuery.rows[0].job_status !== 'in_progress')
         throw new Error('Job is not in progress');
+
+      return true;
+    }),
+
+  body('card')
+    .isString()
+    .withMessage('Card number must be a string')
+    .isLength({ min: 16, max: 16 })
+    .withMessage('Card number must be 16 characters long')
+    .custom((value) => {
+      if (!/^\d+$/.test(value))
+        throw new Error('Card number must only contain numbers');
+
+      return true;
+    }),
+
+  body('expiry')
+    .isString()
+    .withMessage('Expiration date must be a string')
+    .custom((value) => {
+      if (!/^\d{4}-\d{2}$/.test(value))
+        throw new Error('Expiration date must be in the format YYYY-MM');
+
+      return true;
+    }),
+
+  body('cvv')
+    .isString()
+    .withMessage('CVV must be a string')
+    .isLength({ min: 3, max: 3 })
+    .withMessage('CVV must be 3 characters long')
+    .custom((value) => {
+      if (!/^\d+$/.test(value))
+        throw new Error('CVV must only contain numbers');
 
       return true;
     }),

@@ -121,12 +121,12 @@ CREATE TABLE "milestones" (
 );
 
 CREATE TABLE "payments" (
-  "stripe_id" INTEGER NOT NULL,
   "status" payment_status NOT NULL DEFAULT 'pending',
   "job_id" INTEGER NOT NULL,
   "freelancer_id" INTEGER NOT NULL,
   "milestone_order" INTEGER NOT NULL,
   "client_id" INTEGER NOT NULL,
+  "stripe_id" VARCHAR(255),
   "created_at" TIMESTAMP NOT NULL DEFAULT (now()),
   PRIMARY KEY ("job_id", "freelancer_id", "milestone_order")
 );
