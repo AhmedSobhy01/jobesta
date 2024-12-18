@@ -100,7 +100,7 @@ const BadgeModal: React.FC<{
       className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
       onClick={handleModalClick}
     >
-      <div className="bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-lg shadow-lg md:w-fit md:min-w-[32rem] w-full mx-16 p-6 relative max-h-[90vh] overflow-y-auto">
         <button
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-800 focus:outline-none"
           onClick={handleClose}
@@ -169,7 +169,7 @@ const BadgeModal: React.FC<{
           />
           <div className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none">
             {attachment && (
-              <div className="flex items-center">
+              <div className="flex items-center overflow-hidden">
                 <img src={preview} alt="" className="w-20 my-4 rounded-lg" />
                 <span className="ml-4">{attachment.name}</span>
               </div>
