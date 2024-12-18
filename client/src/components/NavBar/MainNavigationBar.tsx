@@ -9,8 +9,10 @@ import { useContext } from 'react';
 import UserContext from '@/store/userContext';
 import ProfileDropdown from '@/components/Profile/ProfileDropdown';
 import NotificationsDropdown from '@/components/Notifications/NotificationsDropdown';
+import NavBarProfileSkeleton from '../Skeletons/NavBarProfileSkeleton';
 
 const MainNavigationBar: React.FC<{
+  loadingProfile: boolean;
   dropdownOpen: {
     isDropdownBellOpen: boolean;
     isDropdownBarOpen: boolean;
@@ -21,7 +23,7 @@ const MainNavigationBar: React.FC<{
     isDropdownProfileOpen: boolean;
     isDropdownBellOpen: boolean;
   }) => void;
-}> = ({ dropdownOpen, setDropdownOpenMenu }) => {
+}> = ({ loadingProfile, dropdownOpen, setDropdownOpenMenu }) => {
   const { username, role } = useContext(UserContext);
   const { isDropdownBarOpen, isDropdownProfileOpen, isDropdownBellOpen } =
     dropdownOpen;
@@ -67,41 +69,45 @@ const MainNavigationBar: React.FC<{
           </Link>
 
           <div className="flex justify-between md:w-auto md:order-2 space-x-3 relative">
-            {username && (
-              <>
-                {role == 'client' && (
-                  <Link
-                    to="/jobs/create"
-                    className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-500 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-green-700 dark:hover:bg-green-800 dark:focus:ring-green-800 flex items-center justify-center"
-                  >
-                    Create Job
-                  </Link>
-                )}
-                <div className="relative">
-                  <NavButton
-                    focus={false}
-                    handleClick={handleBellClick}
-                    wideHidden={false}
-                  >
-                    <FontAwesomeIcon icon={faBell} />
-                  </NavButton>
+            {loadingProfile ? (
+              <NavBarProfileSkeleton />
+            ) : (
+              username && (
+                <>
+                  {role == 'client' && (
+                    <Link
+                      to="/jobs/create"
+                      className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-500 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-green-700 dark:hover:bg-green-800 dark:focus:ring-green-800 flex items-center justify-center"
+                    >
+                      Create Job
+                    </Link>
+                  )}
+                  <div className="relative">
+                    <NavButton
+                      focus={false}
+                      handleClick={handleBellClick}
+                      wideHidden={false}
+                    >
+                      <FontAwesomeIcon icon={faBell} />
+                    </NavButton>
 
-                  {isDropdownBellOpen && <NotificationsDropdown />}
-                </div>
-                <div className="relative">
-                  <NavButton
-                    focus={isDropdownProfileOpen}
-                    handleClick={handleProfileClick}
-                    wideHidden={false}
-                  >
-                    <FontAwesomeIcon icon={faCircleUser} />
-                  </NavButton>
+                    {isDropdownBellOpen && <NotificationsDropdown />}
+                  </div>
+                  <div className="relative">
+                    <NavButton
+                      focus={isDropdownProfileOpen}
+                      handleClick={handleProfileClick}
+                      wideHidden={false}
+                    >
+                      <FontAwesomeIcon icon={faCircleUser} />
+                    </NavButton>
 
-                  {isDropdownProfileOpen && <ProfileDropdown />}
-                </div>
-              </>
+                    {isDropdownProfileOpen && <ProfileDropdown />}
+                  </div>
+                </>
+              )
             )}
-            {!username && (
+            {!username && !loadingProfile && (
               <div className="flex gap-3">
                 <Link
                   to="/login"

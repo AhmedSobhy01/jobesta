@@ -87,9 +87,9 @@ const EditProfileModal: React.FC<EditProfileModalProps> & {
     }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    handleSubmitEditProfile(formData);
+    await handleSubmitEditProfile(formData);
     onClose();
   };
 

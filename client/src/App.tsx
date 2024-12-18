@@ -22,6 +22,7 @@ import Categories from '@/pages/Admin/Categories';
 import CreateJobForm from '@/pages/CreateJobForm';
 import Notifications from '@/pages/Notifications';
 import ManageJob from '@/pages/ManageJob';
+import NotFound from '@/pages/NotFound';
 
 const router = createBrowserRouter([
   {
@@ -76,7 +77,6 @@ const router = createBrowserRouter([
     path: '/logout',
     element: <Logout />,
   },
-
   {
     path: 'admin',
     element: <AdminLayout />,
@@ -103,6 +103,7 @@ const router = createBrowserRouter([
       },
     ],
   },
+  { path: '*', element: <NotFound /> },
 ]);
 
 function App() {
