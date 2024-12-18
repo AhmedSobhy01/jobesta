@@ -262,8 +262,10 @@ function Job() {
                     )}
 
                   {(user.username === job.client.username ||
-                    user.username == job?.myProposal?.freelancer?.username) &&
-                    job.status === 'in_progress' && (
+                    user.username == job?.myProposal?.freelancer?.username ||
+                    user.role === 'admin') &&
+                    (job.status === 'in_progress' ||
+                      job.status === 'completed') && (
                       <Link
                         to={`/jobs/${job.id}/manage`}
                         className="text-black bg-emerald-200 border border-emerald-200 rounded-full hover:border-black justify-center px-8 py-1.5 flex items-center gap-2 mt-5"
