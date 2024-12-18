@@ -6,6 +6,7 @@ import ErrorModule from '@/components/ErrorModule';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getAuthJwtToken } from '@/utils/auth';
+import { createPortal } from 'react-dom';
 
 const SkeletonLoader = () => (
   <div className="animate-pulse">
@@ -116,7 +117,7 @@ const EditJobModal = ({ job, onClose }: { job: Job; onClose: () => void }) => {
     );
   }
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
       onMouseDown={handleModalClick}
@@ -230,7 +231,8 @@ const EditJobModal = ({ job, onClose }: { job: Job; onClose: () => void }) => {
           </button>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body as HTMLElement,
   );
 };
 
