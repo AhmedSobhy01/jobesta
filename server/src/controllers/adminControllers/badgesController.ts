@@ -81,8 +81,7 @@ export async function updateBadge(req: Request, res: Response) {
       status: true,
       message: 'Badge updated',
     });
-  } catch (err) {
-    console.log(err);
+  } catch {
     res.status(500).json({
       status: false,
       message: 'An error occurred while updating badge',
