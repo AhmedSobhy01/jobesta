@@ -242,3 +242,8 @@ VALUES ('Web Development','Web Development'),
        ('Blockchain','Blockchain'),
        ('DevOps','DevOps'),
        ('Cloud Computing','Cloud Computing');
+
+INSERT INTO "badges" ("name", "description", "icon")
+VALUES ('Getting Started','Completed your first job','uploads/getting-started.png'),
+       ('On Time','Completed a job on time','uploads/on-time.png'),
+       ('Top Rated','Received a 5-star rating on 5 jobs','uploads/top-rated.png')
