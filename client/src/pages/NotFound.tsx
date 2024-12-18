@@ -9,14 +9,14 @@ const NotFound = () => {
       <div className="bg-emerald-500 px-2 text-sm rounded rotate-12 absolute">
         Page Not Found
       </div>
-      <button type="button" className="mt-5">
-        <div className="relative inline-block text-sm font-medium text-emerald-500 group focus:outline-none focus:ring">
+      <button className="mt-5">
+        <a className="relative inline-block text-sm font-medium text-emerald-500 group focus:outline-none focus:ring">
           <span className="absolute inset-0 transition-transform translate-x-0.5 translate-y-0.5 bg-emerald-500 group-hover:translate-y-0 group-hover:translate-x-0"></span>
 
           <span className="relative block px-8 py-3 bg-[#1A2238] border border-current">
             <Link to="/">Go Home</Link>
           </span>
-        </div>
+        </a>
       </button>
     </main>
   );
