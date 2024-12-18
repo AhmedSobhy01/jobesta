@@ -19,12 +19,7 @@ function Login() {
     !errors?.status && !!errors?.global,
   );
 
-  const [isCredentialError, setIsCredentialError] = useState(
-    !errors?.status && !!errors?.message,
-  );
-
   useEffect(() => {
-    setIsCredentialError(!!errors?.message);
     setIsGlobalError(!!errors?.global);
   }, [errors]);
 
@@ -35,7 +30,6 @@ function Login() {
 
   const handleCloseError = () => {
     setIsGlobalError(false);
-    setIsCredentialError(false);
   };
   return (
     <div className="justify-items-center">
@@ -43,12 +37,6 @@ function Login() {
         {isGlobalError && (
           <ErrorModule
             errorMessage={errors?.global}
-            onClose={handleCloseError}
-          />
-        )}
-        {isCredentialError && (
-          <ErrorModule
-            errorMessage={errors?.message}
             onClose={handleCloseError}
           />
         )}
@@ -66,7 +54,7 @@ function Login() {
             Login to Your Account
           </h2>
           <div className="flex flex-col max-w-md w-full px-8">
-            <Form method="post">
+            <Form method="post" noValidate>
               <div className="space-y-2.5">
                 <Input label="email" type="email" errorMessage={errors?.email}>
                   Email
@@ -87,6 +75,11 @@ function Login() {
                 </a>
               </div>
 
+              {errors?.message == 'Invalid credentials' && (
+                <p className="mb-2 text-md text-red-500">
+                  Invalid email or password
+                </p>
+              )}
               <button
                 type="submit"
                 className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring focus:ring-green-500"
