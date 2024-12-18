@@ -19,6 +19,7 @@ import Clients from '@/pages/Admin/Clients';
 import Admins from '@/pages/Admin/Admins';
 import Freelancers from '@/pages/Admin/Freelancers';
 import Categories from '@/pages/Admin/Categories';
+import Badges from '@/pages/Admin/Badges';
 import CreateJobForm from '@/pages/CreateJobForm';
 import Notifications from '@/pages/Notifications';
 import ManageJob from '@/pages/ManageJob';
@@ -100,6 +101,10 @@ const router = createBrowserRouter([
       {
         path: 'categories',
         element: <Categories />,
+      },
+      {
+        path: 'badges',
+        element: <Badges />,
       },
     ],
   },
