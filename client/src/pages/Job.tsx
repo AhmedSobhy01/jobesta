@@ -263,7 +263,8 @@ function Job() {
 
                   {(user.username === job.client.username ||
                     (job.myProposal &&
-                      job.myProposal.freelancer && user.username == job.myProposal.freelancer.username) ||
+                      job.myProposal.freelancer &&
+                      user.username == job.myProposal.freelancer.username) ||
                     user.role === 'admin') &&
                     (job.status === 'in_progress' ||
                       job.status === 'completed') && (
