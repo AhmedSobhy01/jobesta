@@ -121,7 +121,6 @@ CREATE TABLE "milestones" (
 );
 
 CREATE TABLE "payments" (
-  "stripe_id" INTEGER NOT NULL,
   "status" payment_status NOT NULL DEFAULT 'pending',
   "job_id" INTEGER NOT NULL,
   "freelancer_id" INTEGER NOT NULL,
