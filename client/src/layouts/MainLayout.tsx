@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigation } from 'react-router-dom';
 import MainNavigationBar from '@/components/NavBar/MainNavigationBar';
 import { useContext, useEffect, useRef, useState } from 'react';
 import UserContext from '@/store/userContext';
@@ -6,8 +6,11 @@ import { clearTokens, getAuthJwtToken, getCurrentUser } from '@/utils/auth';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import FreelancerContext from '@/store/freelancerContext';
+import FullPageLoader from '@/components/FullPageLoader';
 
 function MainLayout() {
+  const { state } = useNavigation();
+
   const { setUser } = useContext(UserContext);
   const { setFreelancer } = useContext(FreelancerContext);
 
@@ -100,11 +103,14 @@ function MainLayout() {
     <div className="h-screen dark:bg-gray-900 bg-white" onClick={handleClick}>
       <ToastContainer />
 
+      {state === 'loading' && <FullPageLoader />}
+
       <MainNavigationBar
         loadingProfile={loading}
         dropdownOpen={dropdownOpen}
         setDropdownOpenMenu={setDropdownOpenMenu}
       />
+
       <main>
         <Outlet />
       </main>
