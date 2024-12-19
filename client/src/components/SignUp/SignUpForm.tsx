@@ -96,6 +96,7 @@ SignUpForm.action = async function action({ request }: ActionFunctionArgs) {
     username: data.get('user-name'),
     email: data.get('email'),
     password: data.get('password'),
+    confirmPassword: data.get('confirm-password'),
     role: role,
   };
 

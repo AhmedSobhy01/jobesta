@@ -6,6 +6,19 @@ export interface IPreviousWork {
   url?: string;
 }
 
+export interface IReview {
+  rating: string;
+  comment: string;
+  createdAt: Date;
+  sender: {
+    firstName: string;
+    lastName: string;
+    username: string;
+    role: string;
+    profilePicture: string;
+  };
+}
+
 export interface IAccount {
   id: string;
   first_name: string;
@@ -44,6 +57,7 @@ export interface IProposal {
 }
 
 export interface IJob {
+  reviews?: IReview[];
   id: string;
   status: string;
   budget: number;
