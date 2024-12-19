@@ -244,22 +244,26 @@ export async function getJobById(req: Request, res: Response) {
       }),
     );
 
-    if (
-      req.user &&
-      req.user.role == 'client' &&
-      jobQuery.rows[0].client_id == req.user.id
-    ) {
-      job.myJob = true;
+    if (req.user && (req.user.role === 'client' || req.user.role === 'admin')) {
+      if (
+        req.user.role === 'client' &&
+        jobQuery.rows[0].client_id === req.user.id
+      ) {
+        job.myJob = true;
+      }
 
       const proposalQuery = await db.query(
-        `SELECT p.job_id, p.freelancer_id, p.status, p.cover_letter, p.created_at, a.username, a.first_name, a.last_name, a.profile_picture, m.order milestone_order, m.status milestone_status, m.name, m.duration,m.amount  FROM proposals p 
-        JOIN jobs j ON p.job_id = j.id 
-        JOIN freelancers f ON p.freelancer_id = f.id
-        JOIN milestones m ON m.job_id = j.id and m.freelancer_id = f.id 
-        JOIN accounts a ON f.account_id = a.id
-        WHERE p.job_id = $1 AND j.client_id = $2
-        ORDER BY m.order ASC`,
-        [req.params.id, req.user.id],
+        `SELECT p.job_id, p.freelancer_id, p.status, p.cover_letter, p.created_at, a.username, a.first_name, a.last_name, a.profile_picture, m.order milestone_order, m.status milestone_status, m.name, m.duration, m.amount 
+      FROM proposals p 
+      JOIN jobs j ON p.job_id = j.id 
+      JOIN freelancers f ON p.freelancer_id = f.id
+      JOIN milestones m ON m.job_id = j.id AND m.freelancer_id = f.id 
+      JOIN accounts a ON f.account_id = a.id
+      WHERE p.job_id = $1 ${req.user.role === 'client' ? 'AND j.client_id = $2' : ''}
+      ORDER BY m.order ASC`,
+        req.user.role === 'client'
+          ? [req.params.id, req.user.id]
+          : [req.params.id],
       );
 
       const proposalsObject = proposalQuery.rows.reduce<
@@ -277,10 +281,7 @@ export async function getJobById(req: Request, res: Response) {
               lastName: proposal.last_name,
               profilePicture:
                 proposal.profile_picture ||
-                'https://ui-avatars.com/api/?name=' +
-                  proposal.first_name +
-                  '+' +
-                  proposal.last_name,
+                `https://ui-avatars.com/api/?name=${proposal.first_name}+${proposal.last_name}`,
             },
             milestones: [],
           };

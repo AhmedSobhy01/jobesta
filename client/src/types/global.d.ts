@@ -52,6 +52,7 @@ interface Job {
   description: string;
   myJob: boolean;
   category: JobCategory;
+  proposalsCount?: number;
   createdAt: string;
   client: {
     firstName: string;
@@ -59,6 +60,7 @@ interface Job {
     username: string;
     profilePicture: string;
   };
+  freelancer?: Freelancer;
   myProposal?: Proposal;
   proposals?: Proposal[];
   reviews?: Review[];
@@ -103,6 +105,7 @@ interface Message {
     lastName: string;
     profilePicture: string;
     username: string;
+    isAdmin: boolean;
   };
 }
 
