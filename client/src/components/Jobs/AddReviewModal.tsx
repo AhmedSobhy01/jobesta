@@ -13,7 +13,7 @@ const ReviewModal = ({ job, onClose }: { job: Job; onClose: () => void }) => {
 
   const [errors, setErrors] = useState<{ [key: string]: string } | null>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  // Handle star hover and click
+
   const handleStarClick = (value: number) => setRating(value);
 
   const handleStarHover = (value: number) => setHover(value);
@@ -26,8 +26,8 @@ const ReviewModal = ({ job, onClose }: { job: Job; onClose: () => void }) => {
   };
 
   const handleSubmit = async () => {
-    if (rating === 0 || review.trim() === '') {
-      Swal.fire('Error', 'Please provide both a rating and a review.', 'error');
+    if (rating === 0) {
+      Swal.fire('Error', 'Please provide a rating', 'error');
       return;
     }
     setIsSubmitting(true);

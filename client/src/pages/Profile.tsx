@@ -45,7 +45,6 @@ const ProfilePage: React.FC & {
   //loader data
   const anyUserData = useLoaderData();
   console.log(anyUserData);
-
   //some states needed
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');

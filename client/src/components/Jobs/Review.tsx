@@ -4,7 +4,7 @@ import { faComments, faTrash } from '@fortawesome/free-solid-svg-icons';
 import UserContext from '@/store/userContext';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { getAuthJwtToken } from '@/utils/auth';
 import { humanReadable } from '@/utils/time';
 
@@ -116,9 +116,12 @@ const Reviews: React.FC<{ job: Job }> = ({ job }) => {
                     <h4 className="text-lg font-semibold">
                       {review.sender!.firstName} {review.sender!.lastName}
                     </h4>
-                    <p className="text-sm text-gray-400">
+                    <Link
+                      to={`/users/${review.sender!.username}`}
+                      className="text-sm hover:underline text-gray-400"
+                    >
                       {review.sender!.username}
-                    </p>
+                    </Link>
                   </div>
                 </div>
 
@@ -135,7 +138,7 @@ const Reviews: React.FC<{ job: Job }> = ({ job }) => {
                 </div>
 
                 <div className="w-1/6 text-center">
-                  <time dateTime="2022-12-26T05:54:30.717Z" className="">
+                  <time dateTime={review.createdAt} className="">
                     Posted {humanReadable(review.createdAt)}
                   </time>
                 </div>

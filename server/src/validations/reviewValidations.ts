@@ -18,7 +18,7 @@ export const createReviewValidtionRules = [
     .isString()
     .withMessage('Message must be a string')
     .isLength({ max: 255 })
-    .withMessage('Name must not exceed 255 characters'),
+    .withMessage('Message must not exceed 255 characters'),
 
   param('jobId')
     .isNumeric()

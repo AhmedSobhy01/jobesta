@@ -1,4 +1,5 @@
 import { humanReadable } from '@/utils/time';
+import { Link } from 'react-router-dom';
 
 const Review: React.FC<{ review: Review }> = ({ review }) => {
   return (
@@ -20,7 +21,12 @@ const Review: React.FC<{ review: Review }> = ({ review }) => {
               <h4 className="text-lg hover:text-green-700 font-semibold">
                 {review.sender!.firstName} {review.sender!.lastName}
               </h4>
-              <p className="text-sm text-gray-400">{review.sender!.username}</p>
+              <Link
+                to={`/users/${review.sender!.username}`}
+                className="text-sm hover:underline text-gray-400"
+              >
+                {review.sender!.username}
+              </Link>
             </div>
           </div>
 
@@ -33,7 +39,7 @@ const Review: React.FC<{ review: Review }> = ({ review }) => {
           </div>
 
           <div className="w-1/6 text-center">
-            <time dateTime="2022-12-26T05:54:30.717Z" className="">
+            <time dateTime={review.createdAt} className="">
               Posted {humanReadable(review.createdAt)}
             </time>
           </div>

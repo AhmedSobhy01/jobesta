@@ -5,16 +5,23 @@ export async function createReview(req: Request, res: Response): Promise<void> {
   const { rating, comment } = req.body;
 
   try {
-    await db.query(
-      'INSERT INTO reviews (rating, comment, job_id, freelancer_id, account_id) VALUES ($1, $2, $3, $4, $5)',
-      [
-        rating,
-        comment,
-        req.params.jobId,
-        req.params.freelancerId,
-        req.user!.id,
-      ],
-    );
+    if (comment) {
+      await db.query(
+        'INSERT INTO reviews (rating, comment, job_id, freelancer_id, account_id) VALUES ($1, $2, $3, $4, $5)',
+        [
+          rating,
+          comment,
+          req.params.jobId,
+          req.params.freelancerId,
+          req.user!.id,
+        ],
+      );
+    } else {
+      await db.query(
+        'INSERT INTO reviews (rating, job_id, freelancer_id, account_id) VALUES ($1, $2, $3, $4, $5)',
+        [rating, req.params.jobId, req.params.freelancerId, req.user!.id],
+      );
+    }
 
     res.status(201).json({
       status: true,

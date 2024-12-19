@@ -161,8 +161,6 @@ export async function getUserByUsername(
           ON r.job_id = p.job_id 
           AND p.job_id = j.id
           AND r.freelancer_id = p.freelancer_id
-        JOIN accounts a 
-          ON a.id = r.account_id
         WHERE r.account_id != $1
         `,
         [userData.id],
@@ -203,8 +201,8 @@ export async function getUserByUsername(
       avgReviewRating = await db.query(
         `
         SELECT AVG(rating) AS averagerating
-        from reviews
-        where freelancer_id = $1 AND account_id != $2`,
+        FROM reviews
+        WHERE freelancer_id = $1 AND account_id != $2`,
         [freelancerData.id, userData.id],
       );
     }
@@ -300,7 +298,8 @@ export async function getUserByUsername(
         avgReviewRating: avgReviewRating?.rows[0].averagerating,
       },
     });
-  } catch {
+  } catch (error) {
+    console.log(error);
     res.status(500).json({ status: false, message: 'Error fetching user' });
   }
 }
