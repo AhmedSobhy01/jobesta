@@ -3,6 +3,7 @@ import {
   faLayerGroup,
   faUser,
   faCertificate,
+  faSuitcase,
 } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import jobestaLogo from '@/assets/jobesta-logo.png';
@@ -42,6 +43,7 @@ const Sidebar: React.FC = () => {
           text="Badges"
           route="/admin/badges"
         />
+        <SidebarButton icon={faSuitcase} text="Jobs" route="/admin/jobs" />
       </nav>
 
       <div className="mt-auto p-4 text-center text-sm text-gray-600 dark:text-gray-400">

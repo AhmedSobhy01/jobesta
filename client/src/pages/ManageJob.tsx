@@ -285,7 +285,7 @@ function ManageJob() {
                       Job Category
                     </h4>
                     <p className="block text-lg font-semibold text-gray-800 dark:text-gray-200">
-                      {job.category.name}
+                      {job.category.name ?? 'Uncategorized'}
                     </p>
                   </div>
                 </div>
@@ -426,9 +426,10 @@ function ManageJob() {
                           }`}
                         >
                           <div className="flex items-center gap-2 w-full">
-                            {message.sender.username == user.username && (
+                            {(message.sender.username == user.username ||
+                              user.role === 'admin') && (
                               <button
-                                className="text-red-500 dark:text-red-400 focus:outline-none w-0 opacity-0 group-hover:w-auto group-hover:opacity-100 transition-opacity duration-100 ease-in-out"
+                                className={`text-red-500 dark:text-red-400 focus:outline-none w-0 opacity-0 group-hover:w-auto group-hover:opacity-100 transition-opacity duration-100 ease-in-out ${message.sender.username === user.username ? 'order-1' : 'order-2'}`}
                                 onClick={() => handleDeleteMessage(message.id)}
                               >
                                 <FontAwesomeIcon icon={faTrash} />
@@ -440,9 +441,29 @@ function ManageJob() {
                                 message.sender.username === user.username
                                   ? 'bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white'
                                   : 'bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white'
-                              }`}
+                              } ${message.sender.username === user.username ? 'order-2' : 'order-1'}`}
                               style={{ wordBreak: 'break-word' }}
                             >
+                              {message.sender.isAdmin && (
+                                <span className="text-xs font-bold -ml-2 mr-2 bg-red-500 text-white px-1 rounded-full">
+                                  Admin
+                                </span>
+                              )}
+                              {user.role == 'admin' &&
+                                message.sender.username ===
+                                  job.client.username && (
+                                  <span className="text-xs font-bold -ml-2 mr-2 bg-blue-500 text-white px-1 rounded-full">
+                                    Client
+                                  </span>
+                                )}
+                              {user.role == 'admin' &&
+                                message.sender.username ===
+                                  proposal?.freelancer?.username && (
+                                  <span className="text-xs font-bold -ml-2 mr-2 bg-green-500 text-white px-1 rounded-full">
+                                    Freelancer
+                                  </span>
+                                )}
+
                               {message.message}
                             </div>
                           </div>
