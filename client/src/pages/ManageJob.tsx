@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { getAuthJwtToken } from '@/utils/auth';
+import ReviewModal from '@/components/Jobs/AddReviewModal';
 import CompleteMilestoneModal from '@/components/Milestones/CompleteMilestoneModal';
 
 function ManageJob() {
@@ -71,8 +72,44 @@ function ManageJob() {
   const [messagesError, setMessagesError] = useState('');
   const messagesContainerRef = useRef<HTMLDivElement>(null);
 
+  const [isReviewModalOpen, setReviewModalOpen] = useState(false);
+
+  const handleReviewJob = () => {
+    Swal.fire({
+      title: 'This job has been completed. Would you like to add a review?',
+      icon: 'success',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#F44336',
+      confirmButtonText: 'Add Review',
+      cancelButtonText: 'Maybe Later',
+      showLoaderOnConfirm: true,
+      allowOutsideClick: () => !Swal.isLoading(),
+      backdrop: true,
+      preConfirm: () => {
+        setReviewModalOpen(true);
+      },
+    });
+  };
+
   const fetchDataRef = useRef(false);
   useEffect(() => {
+    if (user.username != null) {
+      const myReview = job.reviews?.reduce<Review | undefined>(
+        (acc, review) => {
+          if (review.sender.username === user.username) {
+            return review;
+          }
+          return acc;
+        },
+        undefined,
+      );
+
+      if (job.status === 'completed' && !myReview) {
+        handleReviewJob();
+      }
+    }
+
     const fetchMessages = async () => {
       if (fetchDataRef.current) return;
 
@@ -119,7 +156,14 @@ function ManageJob() {
     const intervalId = setInterval(fetchMessages, 5000);
 
     return () => clearInterval(intervalId);
-  }, [job.id, proposal, messages.length]);
+  }, [
+    job.id,
+    proposal,
+    messages.length,
+    user.username,
+    job.reviews,
+    job.status,
+  ]);
 
   const [message, setMessage] = useState('');
   const [attachment, setAttachment] = useState<File | null>(null);
@@ -249,6 +293,10 @@ function ManageJob() {
 
   return (
     <div className="py-10">
+      {isReviewModalOpen && (
+        <ReviewModal job={job} onClose={() => setReviewModalOpen(false)} />
+      )}
+
       {isCompleteMilestoneModalOpen && (
         <CompleteMilestoneModal
           jobId={job.id}
@@ -260,6 +308,9 @@ function ManageJob() {
         />
       )}
 
+      {isReviewModalOpen && (
+        <ReviewModal job={job} onClose={() => setReviewModalOpen(false)} />
+      )}
       <h1 className="text-center w-full max-w-screen-xl mx-auto px-5 text-3xl font-bold lg:text-4xl">
         Manage Job
       </h1>

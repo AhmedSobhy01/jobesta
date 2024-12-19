@@ -120,6 +120,112 @@ export async function getUserByUsername(
 
     const userData = userDataQuery.rows[0];
 
+    let reviewResult = null;
+    let avgReviewRating = null;
+
+    if (userData.role === 'client') {
+      reviewResult = await db.query(
+        `
+        SELECT 
+        r.rating,
+        r.comment,
+        r.created_at,
+        a.first_name,
+        a.last_name,
+        a.username,
+        a.profile_picture
+      FROM reviews r
+      JOIN jobs j 
+        ON j.client_id = $2
+        AND j.status = $3
+      JOIN proposals p 
+        ON r.job_id = p.job_id 
+        AND p.job_id = j.id
+        AND r.freelancer_id = p.freelancer_id
+        AND p.status = $1
+      JOIN accounts a 
+        ON a.id = r.account_id
+      WHERE r.account_id != $2
+      `,
+        ['accepted', userData.id, 'completed'],
+      );
+
+      avgReviewRating = await db.query(
+        `
+         SELECT 
+          AVG(r.rating) AS averagerating
+        FROM reviews r
+        JOIN jobs j 
+          ON j.client_id = $1
+        JOIN proposals p 
+          ON r.job_id = p.job_id 
+          AND p.job_id = j.id
+          AND r.freelancer_id = p.freelancer_id
+        WHERE r.account_id != $1
+        `,
+        [userData.id],
+      );
+    } else if (userData.role === 'freelancer') {
+      const result = await db.query(
+        'SELECT id FROM freelancers WHERE account_id = $1',
+        [userData.id],
+      );
+
+      const freelancerData = result.rows[0];
+
+      reviewResult = await db.query(
+        `
+        SELECT 
+          r.rating,
+          r.comment,
+          r.created_at,
+          a.first_name,
+          a.last_name,
+          a.username,
+          a.profile_picture
+        FROM reviews r
+        JOIN proposals p 
+          ON r.job_id = p.job_id 
+          AND p.freelancer_id = $3
+          AND p.status = $1
+        JOIN jobs j 
+          ON j.id = p.job_id 
+          AND j.status = $2
+        JOIN accounts a 
+          ON a.id = j.client_id
+        WHERE r.account_id = j.client_id
+        `,
+        ['accepted', 'completed', freelancerData.id],
+      );
+
+      avgReviewRating = await db.query(
+        `
+        SELECT AVG(rating) AS averagerating
+        FROM reviews
+        WHERE freelancer_id = $1 AND account_id != $2`,
+        [freelancerData.id, userData.id],
+      );
+    }
+
+    const reviews = reviewResult?.rows.map((review) => {
+      return {
+        sender: {
+          username: review.username,
+          firstName: review.first_name,
+          lastName: review.last_name,
+          profilePicture:
+            review.profile_picture ||
+            'https://ui-avatars.com/api/?name=' +
+              review.first_name +
+              '+' +
+              review.last_name,
+        },
+        rating: review.rating,
+        comment: review.comment,
+        createdAt: review.created_at,
+      };
+    });
+
     let jobsQueryString = `SELECT j.id, j.status, j.budget, j.duration, j.title, j.description, j.created_at, client.first_name, client.last_name, client.username, client.profile_picture, c.id category_id, c.name category_name ,c.description category_description 
       FROM jobs j 
       JOIN accounts client ON client.id = j.client_id
@@ -188,6 +294,8 @@ export async function getUserByUsername(
             '+' +
             userData!.last_name,
         jobs,
+        reviews,
+        avgReviewRating: avgReviewRating?.rows[0].averagerating,
       },
     });
   } catch {

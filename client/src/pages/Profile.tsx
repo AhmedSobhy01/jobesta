@@ -12,6 +12,7 @@ import ProfilePicture from '@/components/Profile/ProfilePicture';
 import Badge from '@/components/Profile/Badge';
 import Jobs from '@/components/Profile/Jobs';
 import EditFreelancerModal from '@/components/Profile/EditFreelancerModal';
+import Review from '@/components/Profile/Review';
 
 const activeCss =
   'text-emerald-700 font-semibold pb-2 border-b-2 border-gray-800 dark:text-emerald-700';
@@ -45,6 +46,7 @@ const ProfilePage: React.FC & {
     jobsActive: true,
     previousWorkActive: false,
     skillsActive: false,
+    reviewsActive: false,
   });
 
   const [isEditModalOpen, setEditModalOpen] = useState(false);
@@ -85,6 +87,7 @@ const ProfilePage: React.FC & {
       jobsActive: tab === 'jobs',
       previousWorkActive: tab === 'previousWork',
       skillsActive: tab === 'skills',
+      reviewsActive: tab === 'reviews',
     });
   }
 
@@ -183,11 +186,9 @@ const ProfilePage: React.FC & {
             {/* Reviews */}
             <div className="text-center">
               <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200">
-                0
+                {Number(anyUserData.user.avgReviewRating).toFixed(2)}
               </h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Reviews
-              </p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Rating</p>
             </div>
           </div>
         </div>
@@ -199,6 +200,12 @@ const ProfilePage: React.FC & {
               className={activeTab.jobsActive ? activeCss : notActiveCss}
             >
               Jobs
+            </button>
+            <button
+              onClick={() => handleTabClick('review')}
+              className={activeTab.reviewsActive ? activeCss : notActiveCss}
+            >
+              Reviews
             </button>
             {accountData.role === 'freelancer' && (
               <>
@@ -231,6 +238,18 @@ const ProfilePage: React.FC & {
         {activeTab.jobsActive && accountData.jobs?.length === 0 && (
           <div className="bg-white dark:bg-gray-900 p-5 rounded-xl shadow-md">
             <p className=" dark:text-gray-200">No Jobs Available</p>
+          </div>
+        )}
+        {activeTab.reviewsActive && anyUserData.user?.reviews.length > 0 && (
+          <div className="mt-6 gap-6 bg-white  dark:text-gray-200 dark:bg-gray-900 h-min p-5 rounded-xl shadow-md">
+            {anyUserData.user?.reviews.map((review: Review) => (
+              <Review key={review.sender?.username} review={review} />
+            ))}
+          </div>
+        )}
+        {activeTab.reviewsActive && anyUserData.user?.reviews.length === 0 && (
+          <div className="bg-white dark:bg-gray-900 p-5 rounded-xl shadow-md">
+            <p className=" dark:text-gray-200">No Reviews Available</p>
           </div>
         )}
         {activeTab.previousWorkActive && accountData.role === 'freelancer' && (
