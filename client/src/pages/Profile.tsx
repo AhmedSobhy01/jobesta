@@ -15,6 +15,7 @@ import ProfileBio from '@/components/Profile/ProfileBio';
 import Badge from '@/components/Profile/Badge';
 import Jobs from '@/components/Profile/Jobs';
 import { getAuthJwtToken } from '@/utils/auth';
+import Review from '@/components/Profile/Review';
 
 const activeCss =
   'text-green-700   font-semibold pb-2 border-b-2 border-gray-800 dark:text-green-700';
@@ -43,6 +44,7 @@ const ProfilePage: React.FC & {
 
   //loader data
   const anyUserData = useLoaderData();
+  console.log(anyUserData);
 
   //some states needed
   const [error, setError] = useState(false);
@@ -52,6 +54,7 @@ const ProfilePage: React.FC & {
     jobsActive: true,
     previousWorkActive: false,
     skillsActive: false,
+    reviewsActive: false,
   });
 
   //bio states
@@ -251,14 +254,24 @@ const ProfilePage: React.FC & {
       jobsActive: true,
       previousWorkActive: false,
       skillsActive: false,
+      reviewsActive: false,
     });
   }
 
+  function handleReviewsClick(): void {
+    setActiveComp({
+      reviewsActive: true,
+      jobsActive: false,
+      previousWorkActive: false,
+      skillsActive: false,
+    });
+  }
   function handleAboutClick(): void {
     setActiveComp({
       jobsActive: false,
       previousWorkActive: false,
       skillsActive: true,
+      reviewsActive: false,
     });
   }
 
@@ -267,6 +280,7 @@ const ProfilePage: React.FC & {
       jobsActive: false,
       previousWorkActive: true,
       skillsActive: false,
+      reviewsActive: false,
     });
   }
 
@@ -378,11 +392,9 @@ const ProfilePage: React.FC & {
             {/* Reviews */}
             <div className="text-center">
               <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200">
-                0
+                {Number(anyUserData.user.avgReviewRating).toFixed(2)}
               </h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Reviews
-              </p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Rating</p>
             </div>
           </div>
         </div>
@@ -394,6 +406,12 @@ const ProfilePage: React.FC & {
               className={activeComp.jobsActive ? activeCss : notActiveCss}
             >
               Jobs
+            </button>
+            <button
+              onClick={() => handleReviewsClick()}
+              className={activeComp.reviewsActive ? activeCss : notActiveCss}
+            >
+              Reviews
             </button>
             {accountData.role === 'freelancer' && (
               <>
@@ -426,6 +444,18 @@ const ProfilePage: React.FC & {
         {activeComp.jobsActive && accountData.jobs?.length === 0 && (
           <div className="bg-white dark:bg-gray-900 p-5 rounded-xl shadow-md">
             <p className=" dark:text-gray-200">No Jobs Available</p>
+          </div>
+        )}
+        {activeComp.reviewsActive && anyUserData.user?.reviews.length > 0 && (
+          <div className="mt-6 gap-6 bg-white hover:text-green-700 dark:text-gray-200 dark:bg-gray-900 h-min p-5 rounded-xl shadow-md">
+            {anyUserData.user?.reviews.map((review: Review) => (
+              <Review key={review.sender?.username} review={review} />
+            ))}
+          </div>
+        )}
+        {activeComp.reviewsActive && anyUserData.user?.reviews.length === 0 && (
+          <div className="bg-white dark:bg-gray-900 p-5 rounded-xl shadow-md">
+            <p className=" dark:text-gray-200">No Reviews Available</p>
           </div>
         )}
         {activeComp.previousWorkActive && accountData.role === 'freelancer' && (

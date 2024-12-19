@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
 import { getAuthJwtToken } from '@/utils/auth';
 
-const Proposals: React.FC<{ job: Job }> = ({ job }) => {
+const Reviews: React.FC<{ job: Job }> = ({ job }) => {
   const user = useContext(UserContext);
   const navigate = useNavigate();
 
@@ -159,4 +159,4 @@ const Proposals: React.FC<{ job: Job }> = ({ job }) => {
   );
 };
 
-export default Proposals;
+export default Reviews;

@@ -211,15 +211,17 @@ export async function getUserByUsername(
 
     const reviews = reviewResult?.rows.map((review) => {
       return {
-        senderUsername: review.username,
-        senderFirstName: review.first_name,
-        senderLastName: review.last_name,
-        senderProfilePicture:
-          review.profile_picture ||
-          'https://ui-avatars.com/api/?name=' +
-            review.first_name +
-            '+' +
-            review.last_name,
+        sender: {
+          username: review.username,
+          firstName: review.first_name,
+          lastName: review.last_name,
+          profilePicture:
+            review.profile_picture ||
+            'https://ui-avatars.com/api/?name=' +
+              review.first_name +
+              '+' +
+              review.last_name,
+        },
         rating: review.rating,
         comment: review.comment,
         createdAt: review.created_at,
