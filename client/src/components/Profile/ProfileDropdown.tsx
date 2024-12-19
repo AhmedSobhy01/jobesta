@@ -40,6 +40,9 @@ const ProfileDropdown: React.FC = () => {
               </NavBarItem>
             </li>
             <li>
+              <NavBarItem page={'/payments'}>My Payments</NavBarItem>
+            </li>
+            <li>
               <NavBarItem className="" page="/logout">
                 Logout
               </NavBarItem>
