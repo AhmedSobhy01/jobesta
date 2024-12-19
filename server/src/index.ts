@@ -8,6 +8,7 @@ import jobRoutes from './routes/jobRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import proposalRoutes from './routes/proposalRoutes.js';
 import { getCategories } from './controllers/categoriesController.js';
+import { getStatistics } from './controllers/statisticsController.js';
 import { FileUploadError } from './utils/errors.js';
 import { MulterError } from 'multer';
 import notificationRoutes from './routes/notificationRoutes.js';
@@ -53,6 +54,7 @@ app.use('/milestones', milestoneRoutes);
 app.use('/notifications', notificationRoutes);
 app.use('/proposals', proposalRoutes);
 app.get('/categories', getCategories);
+app.get('/statistics', getStatistics);
 app.use('/reviews', reviewRoutes);
 
 // Default Route: Sends a welcome message to the user (for health-checks)

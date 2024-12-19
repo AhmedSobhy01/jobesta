@@ -5,9 +5,15 @@ import {
   createReviewValidtionRules,
   deleteReviewValidtionRules,
 } from '../validations/reviewValidations.js';
-import { createReview, deleteReview } from '../controllers/reviewController.js';
+import {
+  getRecentReviews,
+  createReview,
+  deleteReview,
+} from '../controllers/reviewController.js';
 
 const reviewRouter = Router();
+
+reviewRouter.get('/recent', getRecentReviews);
 
 reviewRouter.post(
   '/:jobId/:freelancerId',
