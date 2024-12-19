@@ -135,8 +135,7 @@ export async function getJobs(req: Request, res: Response): Promise<void> {
         },
       },
     });
-  } catch (error) {
-    console.log(error);
+  } catch {
     res.status(500).json({ status: false, message: 'Error retrieving jobs' });
   }
 }
