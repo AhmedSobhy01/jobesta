@@ -1,21 +1,23 @@
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { toast } from 'react-toastify';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router';
 import { getAuthJwtToken } from '@/utils/auth';
+import UserContext from '@/store/userContext';
 
 const EditProfileModal: React.FC<{
-  profile: Account;
   onClose: () => void;
-}> = ({ profile: profile, onClose }) => {
+}> = ({ onClose }) => {
   const navigate = useNavigate();
 
-  const [firstName, setFirstName] = useState(profile.firstName);
-  const [lastName, setLastName] = useState(profile.lastName);
-  const [username, setUsername] = useState(profile.username);
-  const [email, setEmail] = useState(profile.email);
+  const userData = useContext(UserContext);
+
+  const [firstName, setFirstName] = useState(userData.firstName!);
+  const [lastName, setLastName] = useState(userData.lastName!);
+  const [username, setUsername] = useState(userData.username!);
+  const [email, setEmail] = useState(userData.email!);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
@@ -44,7 +46,7 @@ const EditProfileModal: React.FC<{
       password?: string;
       confirmPassword?: string;
     } = {
-      role: profile.role,
+      role: userData.role!,
       firstName,
       lastName,
       username,

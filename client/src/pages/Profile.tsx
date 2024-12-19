@@ -112,16 +112,6 @@ const ProfilePage: React.FC & {
       {isEditModalOpen && isMe && (
         <EditProfileModal
           onClose={handleModalClose}
-          profile={{
-            id: userData.accountId as unknown as number,
-            firstName: userData.firstName!,
-            lastName: userData.lastName!,
-            username: userData.username!,
-            email: userData.email!,
-            role: userData.role!,
-            isBanned: userData.isBanned!,
-            profilePicture: userData.profilePicture!,
-          }}
         />
       )}
       {isEditFreelancerModalOpen && isMe && freelancerData && (
