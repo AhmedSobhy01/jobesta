@@ -22,6 +22,16 @@ export async function completeMilestone(req: Request, res: Response) {
       ]);
     }
 
+    await db.query(
+      'INSERT INTO payments (job_id, freelancer_id, milestone_order, client_id) VALUES ($1, $2, $3, $4)',
+      [jobId, freelancerId, milestoneOrder, req.user!.id],
+    );
+
+    await db.query(
+      'UPDATE freelancers SET balance = balance + (SELECT amount FROM milestones WHERE job_id = $1 AND freelancer_id = $2 AND "order" = $3) WHERE id = $2',
+      [jobId, freelancerId, milestoneOrder],
+    );
+
     res.json({ status: true, message: 'Milestone completed' });
   } catch {
     res

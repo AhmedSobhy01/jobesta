@@ -5,7 +5,7 @@ import { promises as fs } from 'fs';
 export async function getMessages(req: Request, res: Response) {
   try {
     const result = await db.query(
-      `SELECT m.id, m.message, m.attachment_path, m.sent_at, a.first_name, a.last_name, a.profile_picture, a.username, m.account_id FROM messages m
+      `SELECT m.id, m.message, m.attachment_path, m.sent_at, a.first_name, a.last_name, a.profile_picture, a.username, m.account_id, a.role account_role FROM messages m
       JOIN accounts a ON m.account_id = a.id
       WHERE job_id = $1 AND freelancer_id = $2
       ORDER BY m.sent_at ASC`,
@@ -27,6 +27,7 @@ export async function getMessages(req: Request, res: Response) {
             '+' +
             message!.last_name,
         username: message.username,
+        isAdmin: message.account_role === 'admin',
       },
     }));
 
@@ -79,6 +80,7 @@ export async function sendMessage(req: Request, res: Response) {
                 '+' +
                 req.user!.last_name,
             username: req.user!.username,
+            isAdmin: req.user!.role === 'admin',
           },
         },
       },

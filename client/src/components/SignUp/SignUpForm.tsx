@@ -55,6 +55,15 @@ const SignUpForm: React.FC & {
             >
               Password
             </Input>
+
+            <Input
+              minLength={8}
+              label="confirm-password"
+              type="password"
+              errorMessage={errors?.confirmPassword}
+            >
+              Confirm Password
+            </Input>
           </div>
 
           <button className="w-full mt-4 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring focus:ring-green-500">
@@ -87,6 +96,7 @@ SignUpForm.action = async function action({ request }: ActionFunctionArgs) {
     username: data.get('user-name'),
     email: data.get('email'),
     password: data.get('password'),
+    confirmPassword: data.get('confirm-password'),
     role: role,
   };
 

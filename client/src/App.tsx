@@ -19,9 +19,11 @@ import Clients from '@/pages/Admin/Clients';
 import Admins from '@/pages/Admin/Admins';
 import Freelancers from '@/pages/Admin/Freelancers';
 import Categories from '@/pages/Admin/Categories';
+import Badges from '@/pages/Admin/Badges';
 import CreateJobForm from '@/pages/CreateJobForm';
 import Notifications from '@/pages/Notifications';
 import ManageJob from '@/pages/ManageJob';
+import AdminJobs from '@/pages/Admin/Jobs';
 import NotFound from '@/pages/NotFound';
 import AuthMiddleware from '@/components/AuthMiddleware';
 
@@ -97,6 +99,7 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Dashboard />,
+        loader: Dashboard.loader,
       },
       {
         path: 'clients',
@@ -113,6 +116,14 @@ const router = createBrowserRouter([
       {
         path: 'categories',
         element: <Categories />,
+      },
+      {
+        path: 'badges',
+        element: <Badges />,
+      },
+      {
+        path: 'jobs',
+        element: <AdminJobs />,
       },
     ],
   },

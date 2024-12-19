@@ -9,6 +9,8 @@ import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { getAuthJwtToken } from '@/utils/auth';
+import ReviewModal from '@/components/Jobs/AddReviewModal';
+import CompleteMilestoneModal from '@/components/Milestones/CompleteMilestoneModal';
 
 function ManageJob() {
   const navigate = useNavigate();
@@ -32,13 +34,82 @@ function ManageJob() {
       null,
   );
 
+  const [currentMilestone, setCurrentMilestone] = useState<Milestone | null>(
+    proposal?.milestones[0] ?? null,
+  );
+  const [isCompleteMilestoneModalOpen, setIsCompleteMilestoneModalOpen] =
+    useState(false);
+
+  const handleCompleteMilestoneModalClose = (success = false) => {
+    if (success) {
+      if (
+        proposal?.milestones?.filter(
+          (milestone) => milestone.status !== 'completed',
+        ).length === 1
+      )
+        setJobStatus('completed');
+
+      setProposal((prevProposal) => {
+        if (!prevProposal) return null;
+
+        return {
+          ...prevProposal,
+          milestones: prevProposal.milestones!.map((milestone) => {
+            if (milestone.order === currentMilestone?.order)
+              return { ...milestone, status: 'completed' };
+
+            return milestone;
+          }),
+        };
+      });
+    }
+
+    setIsCompleteMilestoneModalOpen(false);
+  };
+
   const [loadingMessages, setLoadingMessages] = useState(true);
   const [messages, setMessages] = useState<Message[]>([]);
   const [messagesError, setMessagesError] = useState('');
   const messagesContainerRef = useRef<HTMLDivElement>(null);
 
+  const [isReviewModalOpen, setReviewModalOpen] = useState(false);
+
+  const handleReviewJob = () => {
+    Swal.fire({
+      title: 'This job has been completed. Would you like to add a review?',
+      icon: 'success',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#F44336',
+      confirmButtonText: 'Add Review',
+      cancelButtonText: 'Maybe Later',
+      showLoaderOnConfirm: true,
+      allowOutsideClick: () => !Swal.isLoading(),
+      backdrop: true,
+      preConfirm: () => {
+        setReviewModalOpen(true);
+      },
+    });
+  };
+
   const fetchDataRef = useRef(false);
   useEffect(() => {
+    if (user.username != null) {
+      const myReview = job.reviews?.reduce<Review | undefined>(
+        (acc, review) => {
+          if (review.sender.username === user.username) {
+            return review;
+          }
+          return acc;
+        },
+        undefined,
+      );
+
+      if (job.status === 'completed' && !myReview) {
+        handleReviewJob();
+      }
+    }
+
     const fetchMessages = async () => {
       if (fetchDataRef.current) return;
 
@@ -85,7 +156,14 @@ function ManageJob() {
     const intervalId = setInterval(fetchMessages, 5000);
 
     return () => clearInterval(intervalId);
-  }, [job?.id, proposal, messages.length]);
+  }, [
+    job?.id,
+    proposal,
+    messages.length,
+    user.username,
+    job.reviews,
+    job.status,
+  ]);
 
   const [message, setMessage] = useState('');
   const [attachment, setAttachment] = useState<File | null>(null);
@@ -207,64 +285,6 @@ function ManageJob() {
     });
   };
 
-  const handleCompleteMilestone = async (order: number) => {
-    Swal.fire({
-      title: 'Are you sure?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#F44336',
-      cancelButtonColor: '#3085d6',
-      cancelButtonText: 'Cancel',
-      confirmButtonText: 'Yes, complete milestone',
-      showLoaderOnConfirm: true,
-      allowOutsideClick: () => !Swal.isLoading(),
-      backdrop: true,
-      preConfirm: () => {
-        fetch(
-          `${import.meta.env.VITE_API_URL}/milestones/${job.id}/${proposal!.freelancer!.id}/${order}`,
-          {
-            method: 'PUT',
-            headers: {
-              Authorization: `Bearer ${getAuthJwtToken()}`,
-            },
-          },
-        )
-          .then((response) => {
-            if (!response.ok) throw new Error('Failed to complete milestone');
-
-            return response.json();
-          })
-          .then((data) => {
-            toast(data.message, { type: 'success' });
-
-            if (
-              proposal?.milestones?.filter(
-                (milestone) => milestone.order === order,
-              ).length === 1
-            )
-              setJobStatus('completed');
-
-            setProposal((prevProposal) => {
-              if (!prevProposal) return null;
-
-              return {
-                ...prevProposal,
-                milestones: prevProposal.milestones!.map((milestone) => {
-                  if (milestone.order === order)
-                    return { ...milestone, status: 'completed' };
-
-                  return milestone;
-                }),
-              };
-            });
-          })
-          .catch(() => {
-            toast('Failed to complete milestone', { type: 'error' });
-          });
-      },
-    });
-  };
-
   if (!jobFetchStatus) {
     return (
       <ErrorModule errorMessage={jobFetchError} onClose={() => navigate('/')} />
@@ -273,6 +293,24 @@ function ManageJob() {
 
   return (
     <div className="py-10">
+      {isReviewModalOpen && (
+        <ReviewModal job={job} onClose={() => setReviewModalOpen(false)} />
+      )}
+
+      {isCompleteMilestoneModalOpen && (
+        <CompleteMilestoneModal
+          jobId={job.id}
+          freelancerId={parseInt(proposal!.freelancer!.id!.toString())}
+          milestoneOrder={
+            currentMilestone ? parseInt(currentMilestone.order.toString()) : 0
+          }
+          onClose={handleCompleteMilestoneModalClose}
+        />
+      )}
+
+      {isReviewModalOpen && (
+        <ReviewModal job={job} onClose={() => setReviewModalOpen(false)} />
+      )}
       <h1 className="text-center w-full max-w-screen-xl mx-auto px-5 text-3xl font-bold lg:text-4xl">
         Manage Job
       </h1>
@@ -298,7 +336,7 @@ function ManageJob() {
                       Job Category
                     </h4>
                     <p className="block text-lg font-semibold text-gray-800 dark:text-gray-200">
-                      {job.category.name}
+                      {job.category.name ?? 'Uncategorized'}
                     </p>
                   </div>
                 </div>
@@ -439,9 +477,10 @@ function ManageJob() {
                           }`}
                         >
                           <div className="flex items-center gap-2 w-full">
-                            {message.sender.username == user.username && (
+                            {(message.sender.username == user.username ||
+                              user.role === 'admin') && (
                               <button
-                                className="text-red-500 dark:text-red-400 focus:outline-none w-0 opacity-0 group-hover:w-auto group-hover:opacity-100 transition-opacity duration-100 ease-in-out"
+                                className={`text-red-500 dark:text-red-400 focus:outline-none w-0 opacity-0 group-hover:w-auto group-hover:opacity-100 transition-opacity duration-100 ease-in-out ${message.sender.username === user.username ? 'order-1' : 'order-2'}`}
                                 onClick={() => handleDeleteMessage(message.id)}
                               >
                                 <FontAwesomeIcon icon={faTrash} />
@@ -453,9 +492,29 @@ function ManageJob() {
                                 message.sender.username === user.username
                                   ? 'bg-blue-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl text-white'
                                   : 'bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl text-white'
-                              }`}
+                              } ${message.sender.username === user.username ? 'order-2' : 'order-1'}`}
                               style={{ wordBreak: 'break-word' }}
                             >
+                              {message.sender.isAdmin && (
+                                <span className="text-xs font-bold -ml-2 mr-2 bg-red-500 text-white px-1 rounded-full">
+                                  Admin
+                                </span>
+                              )}
+                              {user.role == 'admin' &&
+                                message.sender.username ===
+                                  job.client.username && (
+                                  <span className="text-xs font-bold -ml-2 mr-2 bg-blue-500 text-white px-1 rounded-full">
+                                    Client
+                                  </span>
+                                )}
+                              {user.role == 'admin' &&
+                                message.sender.username ===
+                                  proposal?.freelancer?.username && (
+                                  <span className="text-xs font-bold -ml-2 mr-2 bg-green-500 text-white px-1 rounded-full">
+                                    Freelancer
+                                  </span>
+                                )}
+
                               {message.message}
                             </div>
                           </div>
@@ -596,7 +655,10 @@ function ManageJob() {
                     job.client.username === user.username && (
                       <button
                         className="block text-sm mt-3 bg-emerald-500 text-white rounded-lg px-2 py-1.5 transition-colors duration-300 ease-in-out hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-opacity-75"
-                        onClick={() => handleCompleteMilestone(milestone.order)}
+                        onClick={() => {
+                          setCurrentMilestone(milestone);
+                          setIsCompleteMilestoneModalOpen(true);
+                        }}
                       >
                         Complete Milestone
                       </button>

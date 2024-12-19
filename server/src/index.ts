@@ -13,6 +13,7 @@ import { MulterError } from 'multer';
 import notificationRoutes from './routes/notificationRoutes.js';
 import messageRoutes from './routes/messageRoutes.js';
 import milestoneRoutes from './routes/milestoneRoutes.js';
+import reviewRoutes from './routes/reviewRoutes.js';
 
 // Load environment variables from the .env file
 configDotenv();
@@ -52,6 +53,7 @@ app.use('/milestones', milestoneRoutes);
 app.use('/notifications', notificationRoutes);
 app.use('/proposals', proposalRoutes);
 app.get('/categories', getCategories);
+app.use('/reviews', reviewRoutes);
 
 // Default Route: Sends a welcome message to the user (for health-checks)
 app.get('/', (req: Request, res: Response) => {

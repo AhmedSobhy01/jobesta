@@ -9,7 +9,12 @@ export const loginValidationRules = [
     .isEmail()
     .withMessage('Invalid email address'),
 
-  body('password').trim().notEmpty().withMessage('Password is required'),
+  body('password')
+    .trim()
+    .isLength({ min: 8 })
+    .withMessage('Password must be at least 8 characters long')
+    .notEmpty()
+    .withMessage('Password is required'),
 ];
 
 export const registerValidationRules = [
@@ -89,9 +94,10 @@ export const registerValidationRules = [
     ),
 
   body('confirmPassword')
-    .optional()
     .trim()
     .custom((value, { req }) => {
+      if (!req.body?.password) return true;
+
       if (value !== req.body.password) {
         throw new Error('Passwords do not match');
       }

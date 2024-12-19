@@ -2,19 +2,14 @@ import { getAuthJwtToken } from '@/utils/auth';
 import { faTrash, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState } from 'react';
-import { createPortal } from 'react-dom';
-import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 
 const ProposalModal: React.FC<{
-  job: Job;
+  jobId: number;
+  proposal: Proposal;
+  onUpdate: () => void;
   onClose: () => void;
-  proposal?: Proposal;
-}> = ({ job, onClose, proposal }) => {
-  const isUpdate = !!proposal;
-
-  const navigate = useNavigate();
-
+}> = ({ jobId, proposal, onUpdate, onClose }) => {
   const [coverLetter, setCoverLetter] = useState(proposal?.coverLetter || '');
   const [milestones, setMilestones] = useState<Milestone[]>(
     proposal?.milestones || [{ name: '', amount: '', duration: '', order: 1 }],
@@ -63,17 +58,20 @@ const ProposalModal: React.FC<{
     setErrors(null);
     setIsSubmitting(true);
 
-    fetch(`${import.meta.env.VITE_API_URL}/proposals/${job.id}`, {
-      method: isUpdate ? 'PUT' : 'POST',
-      headers: {
-        Authorization: `Bearer ${getAuthJwtToken()}`,
-        'Content-Type': 'application/json',
+    fetch(
+      `${import.meta.env.VITE_API_URL}/admin/proposals/${jobId}/${proposal.freelancer?.id}`,
+      {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${getAuthJwtToken()}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(proposalData),
       },
-      body: JSON.stringify(proposalData),
-    })
+    )
       .then((res) => {
         if (!res.ok && res.status !== 422)
-          throw new Error('Failed to submit proposal');
+          throw new Error('Failed to update proposal');
 
         return res.json();
       })
@@ -90,7 +88,7 @@ const ProposalModal: React.FC<{
       })
       .then((data) => {
         toast(data.message, { type: 'success' });
-        navigate(`/jobs/${job.id}`);
+        onUpdate();
         onClose();
       })
       .catch((error) => {
@@ -101,9 +99,9 @@ const ProposalModal: React.FC<{
       });
   };
 
-  return createPortal(
+  return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+      className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[100]"
       onMouseDown={handleModalClick}
     >
       <div className="bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative max-h-[90vh] overflow-y-auto">
@@ -115,7 +113,7 @@ const ProposalModal: React.FC<{
         </button>
 
         <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
-          {isUpdate ? 'Update Proposal' : 'Submit Proposal'}
+          Update Proposal
         </h2>
 
         <div className="mb-4">
@@ -244,16 +242,11 @@ const ProposalModal: React.FC<{
             ${isSubmitting ? 'bg-opacity-50 cursor-not-allowed' : 'text-white hover:bg-emerald-600'}`}
             disabled={isSubmitting}
           >
-            {isSubmitting
-              ? 'Loading...'
-              : isUpdate
-                ? 'Update Proposal'
-                : 'Submit Proposal'}
+            {isSubmitting ? 'Loading...' : 'Update Proposal'}
           </button>
         </div>
       </div>
-    </div>,
-    document.body as HTMLElement,
+    </div>
   );
 };
 

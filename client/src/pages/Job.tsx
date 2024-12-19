@@ -22,6 +22,7 @@ import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 import EditJobModal from '@/components/Jobs/EditJobModal';
 import { getAuthJwtToken } from '@/utils/auth';
+import Review from '@/components/Jobs/Review';
 
 function Job() {
   const navigate = useNavigate();
@@ -264,8 +265,10 @@ function Job() {
                   {(user.username === job.client.username ||
                     (job.myProposal &&
                       job.myProposal.freelancer &&
-                      user.username === job.myProposal.freelancer.username)) &&
-                    job.status === 'in_progress' && (
+                      user.username == job.myProposal.freelancer.username) ||
+                    user.role === 'admin') &&
+                    (job.status === 'in_progress' ||
+                      job.status === 'completed') && (
                       <Link
                         to={`/jobs/${job.id}/manage`}
                         className="text-black bg-emerald-200 border border-emerald-200 rounded-full hover:border-black justify-center px-8 py-1.5 flex items-center gap-2 mt-5"
@@ -359,6 +362,8 @@ function Job() {
           {((job.proposals && job.proposals.length > 0) ||
             job?.myProposal ||
             job.client.username === user.username) && <Proposals job={job} />}
+
+          {job.reviews && job.reviews.length > 0 && <Review job={job} />}
         </div>
       </div>
     </div>
@@ -386,6 +391,7 @@ Job.loader = async ({ params }: LoaderFunctionArgs) => {
     }
 
     const jobData = await response.json();
+
     return {
       status: true,
       job: jobData.data.job,

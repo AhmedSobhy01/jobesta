@@ -1,20 +1,31 @@
-import { param } from 'express-validator';
+import { param, body } from 'express-validator';
 import db from '../../db/db.js';
+import { upload } from '../../middlewares/imageUploadMiddleware.js';
 
-export const deleteBadgeValidationRules = [
+export const updateBadgeValidationRules = [
+  upload.single('file'),
   param('id')
-    .trim()
-    .notEmpty()
-    .withMessage('Badge ID is required')
     .isNumeric()
-    .withMessage('Badge ID must be a number')
-    .custom(async (value) => {
-      const badge = await db.query('SELECT * FROM badges WHERE id = $1', [
-        value,
-      ]);
+    .withMessage('Badge id must be a number')
+    .custom(async (id) => {
+      const badge = await db.query('SELECT * FROM badges WHERE id = $1', [id]);
       if (badge.rows.length === 0) {
-        throw new Error('No badge found with this id');
+        throw new Error('Badge not found');
       }
       return true;
     }),
+  body('name')
+    .notEmpty()
+    .withMessage('Name is required')
+    .isString()
+    .withMessage('Name must be a string')
+    .isLength({ max: 255 })
+    .withMessage('Name must be between 1 and 50 characters'),
+  body('description')
+    .notEmpty()
+    .withMessage('Description is required')
+    .isString()
+    .withMessage('Description must be a string')
+    .isLength({ max: 255 })
+    .withMessage('Description must be between 1 and 255 characters'),
 ];

@@ -50,7 +50,9 @@ interface Job {
   duration: number;
   title: string;
   description: string;
+  myJob: boolean;
   category: JobCategory;
+  proposalsCount?: number;
   createdAt: string;
   client: {
     firstName: string;
@@ -58,8 +60,10 @@ interface Job {
     username: string;
     profilePicture: string;
   };
+  freelancer?: Freelancer;
   myProposal?: Proposal;
   proposals?: Proposal[];
+  reviews?: Review[];
 }
 
 interface Milestone {
@@ -68,6 +72,19 @@ interface Milestone {
   amount: string;
   duration: string;
   order: number;
+}
+
+interface Review {
+  rating: string;
+  comment: string;
+  createdAt: string;
+  sender: {
+    firstName: string;
+    lastName: string;
+    username: string;
+    role: string;
+    profilePicture: string;
+  };
 }
 
 interface Proposal {
@@ -88,6 +105,7 @@ interface Message {
     lastName: string;
     profilePicture: string;
     username: string;
+    isAdmin: boolean;
   };
 }
 
