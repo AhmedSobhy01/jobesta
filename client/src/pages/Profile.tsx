@@ -447,7 +447,7 @@ const ProfilePage: React.FC & {
           </div>
         )}
         {activeComp.reviewsActive && anyUserData.user?.reviews.length > 0 && (
-          <div className="mt-6 gap-6 bg-white hover:text-green-700 dark:text-gray-200 dark:bg-gray-900 h-min p-5 rounded-xl shadow-md">
+          <div className="mt-6 gap-6 bg-white  dark:text-gray-200 dark:bg-gray-900 h-min p-5 rounded-xl shadow-md">
             {anyUserData.user?.reviews.map((review: Review) => (
               <Review key={review.sender?.username} review={review} />
             ))}

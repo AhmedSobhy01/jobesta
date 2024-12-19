@@ -1,11 +1,12 @@
 import { useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRectangleList, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faComments, faTrash } from '@fortawesome/free-solid-svg-icons';
 import UserContext from '@/store/userContext';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
 import { getAuthJwtToken } from '@/utils/auth';
+import { humanReadable } from '@/utils/time';
 
 const Reviews: React.FC<{ job: Job }> = ({ job }) => {
   const user = useContext(UserContext);
@@ -88,7 +89,7 @@ const Reviews: React.FC<{ job: Job }> = ({ job }) => {
   return (
     <div className="border-t py-8">
       <h3 className="text-2xl font-bold flex items-center gap-2">
-        <FontAwesomeIcon icon={faRectangleList} />
+        <FontAwesomeIcon icon={faComments} />
         <span>Reviews</span>
       </h3>
 
@@ -103,7 +104,7 @@ const Reviews: React.FC<{ job: Job }> = ({ job }) => {
           <div key={index} className="border-2 rounded-lg overflow-hidden mb-4">
             <div className="p-6 bg-gray-100">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4 w-1/3">
+                <div className="flex items-center gap-4 w-1/5">
                   <img
                     alt="Freelancer profile picture"
                     src={review.sender!.profilePicture}
@@ -121,7 +122,7 @@ const Reviews: React.FC<{ job: Job }> = ({ job }) => {
                   </div>
                 </div>
 
-                <div className="w-1/3 text-center">
+                <div className="w-1/4 text-center">
                   <p className="text-sm font-semibold truncate">
                     {review.comment}
                   </p>
@@ -134,6 +135,12 @@ const Reviews: React.FC<{ job: Job }> = ({ job }) => {
                 </div>
 
                 <div className="w-1/6 text-center">
+                  <time dateTime="2022-12-26T05:54:30.717Z" className="">
+                    Posted {humanReadable(review.createdAt)}
+                  </time>
+                </div>
+
+                <div className="w-1/6 text-center justify-items-center">
                   {review.sender!.username === user.username ? (
                     <button
                       type="button"

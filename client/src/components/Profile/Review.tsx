@@ -1,3 +1,5 @@
+import { humanReadable } from '@/utils/time';
+
 const Review: React.FC<{ review: Review }> = ({ review }) => {
   return (
     <div
@@ -15,7 +17,7 @@ const Review: React.FC<{ review: Review }> = ({ review }) => {
               className="rounded-full w-16 h-16"
             />
             <div>
-              <h4 className="text-lg font-semibold">
+              <h4 className="text-lg hover:text-green-700 font-semibold">
                 {review.sender!.firstName} {review.sender!.lastName}
               </h4>
               <p className="text-sm text-gray-400">{review.sender!.username}</p>
@@ -28,6 +30,12 @@ const Review: React.FC<{ review: Review }> = ({ review }) => {
 
           <div className="w-1/6 text-center">
             <p className="text-sm text-gray-400">Rating: {review.rating}</p>
+          </div>
+
+          <div className="w-1/6 text-center">
+            <time dateTime="2022-12-26T05:54:30.717Z" className="">
+              Posted {humanReadable(review.createdAt)}
+            </time>
           </div>
         </div>
       </div>

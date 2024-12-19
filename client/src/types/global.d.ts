@@ -75,7 +75,7 @@ interface Milestone {
 interface Review {
   rating: string;
   comment: string;
-  createdAt: Date;
+  createdAt: string;
   sender: {
     firstName: string;
     lastName: string;
