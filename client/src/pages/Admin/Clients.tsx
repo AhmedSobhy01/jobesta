@@ -7,12 +7,14 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import ErrorModule from '@/components/ErrorModule';
 import { useNavigate, useSearchParams } from 'react-router';
 import { getAuthJwtToken } from '@/utils/auth';
+import { useDebounce } from '@/utils/hooks/useDebounce';
 
 const Clients = () => {
   const navigate = useNavigate();
 
   const [globalError, setGlobalError] = useState<string | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
+  const tableElement = useRef<HTMLDivElement | null>(null);
 
   const [clients, setClients] = useState<Account[]>([]);
   const [loading, setLoading] = useState(true);
@@ -24,13 +26,22 @@ const Clients = () => {
     perPage: 0,
   });
 
+  const [searchQuery, setSearchQuery] = useState('');
+  const handleSearchInputChange = useDebounce(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchQuery(e.target.value);
+      setCurrentPage(1);
+    },
+    300,
+  );
+
   const [isCreateAdminModalOpen, setIsCreateClientModalOpen] = useState(false);
 
   const fetchDataRef = useRef(false);
   useEffect(() => {
     const fetchData = async () => {
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/admin/accounts?page=${currentPage}&role=client`,
+        `${import.meta.env.VITE_API_URL}/admin/accounts?page=${currentPage}&role=client${searchQuery ? `&search=${searchQuery}` : ''}`,
         {
           headers: {
             Authorization: `Bearer ${getAuthJwtToken()}`,
@@ -44,7 +55,14 @@ const Clients = () => {
       }
 
       const data = await res.json();
-      setClients((prevClients) => [...prevClients, ...data.data.accounts]);
+
+      if (currentPage === 1) {
+        if (tableElement.current) tableElement.current.scrollTo({ top: 0 });
+
+        setClients(data.data.accounts);
+      } else
+        setClients((prevClients) => [...prevClients, ...data.data.accounts]);
+
       setPagination(data.data.pagination);
 
       setLoading(false);
@@ -70,7 +88,7 @@ const Clients = () => {
       fetchDataRef.current = true;
       fetchData();
     }
-  }, [currentPage, searchParams, navigate, setSearchParams]);
+  }, [currentPage, searchParams, navigate, setSearchParams, searchQuery]);
 
   if (globalError)
     return (
@@ -101,9 +119,19 @@ const Clients = () => {
           </button>
         </div>
 
+        <div className="mb-6">
+          <input
+            type="text"
+            placeholder="Search clients..."
+            className="w-full lg:w-1/3 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+            onChange={handleSearchInputChange}
+          />
+        </div>
+
         <div
           className="relative overflow-x-auto shadow-md sm:rounded-lg max-h-[70vh]"
           id="table"
+          ref={tableElement}
         >
           <InfiniteScroll
             dataLength={clients.length}

@@ -13,6 +13,16 @@ export async function getAccounts(req: Request, res: Response) {
       countQuery += ` WHERE role = '${req.query.role}'`;
     }
 
+    if (req.query.search) {
+      const searchCondition = `first_name ILIKE '%${req.query.search}%' OR last_name ILIKE '%${req.query.search}%' OR username ILIKE '%${req.query.search}%' OR email ILIKE '%${req.query.search}%'`;
+      accountsQuery += req.query.role
+        ? ` AND (${searchCondition})`
+        : ` WHERE (${searchCondition})`;
+      countQuery += req.query.role
+        ? ` AND (${searchCondition})`
+        : ` WHERE (${searchCondition})`;
+    }
+
     accountsQuery += ' ORDER BY created_at DESC';
 
     const limit = parseInt(process.env.ADMIN_PAGINATION_LIMIT || '10');
