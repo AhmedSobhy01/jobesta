@@ -298,8 +298,7 @@ export async function getUserByUsername(
         avgReviewRating: avgReviewRating?.rows[0].averagerating,
       },
     });
-  } catch (error) {
-    console.log(error);
+  } catch {
     res.status(500).json({ status: false, message: 'Error fetching user' });
   }
 }

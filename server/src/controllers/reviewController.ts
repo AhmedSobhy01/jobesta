@@ -18,7 +18,7 @@ export async function createReview(req: Request, res: Response): Promise<void> {
       );
     } else {
       await db.query(
-        'INSERT INTO reviews (rating, job_id, freelancer_id, account_id) VALUES ($1, $2, $3, $4, $5)',
+        'INSERT INTO reviews (rating, job_id, freelancer_id, account_id) VALUES ($1, $2, $3, $4)',
         [rating, req.params.jobId, req.params.freelancerId, req.user!.id],
       );
     }
