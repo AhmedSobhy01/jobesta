@@ -1,8 +1,9 @@
-import { Form, useLoaderData, useNavigate } from 'react-router-dom';
+import { Form, Navigate, useLoaderData, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import ErrorModule from '@/components/ErrorModule';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { getAuthJwtToken } from '@/utils/auth';
+import UserContext from '@/store/userContext';
 
 const CreateJobForm = () => {
   const {
@@ -15,6 +16,7 @@ const CreateJobForm = () => {
     categories: JobCategory[];
   }>();
 
+  const user = useContext(UserContext);
   const navigate = useNavigate();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -69,6 +71,8 @@ const CreateJobForm = () => {
 
     setIsSubmitting(false);
   };
+
+  if (user.role !== 'client') return <Navigate to="/" replace />;
 
   if (!categoriesStatus) {
     return (

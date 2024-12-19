@@ -2,7 +2,7 @@ import Sidebar from '@/components/Admin/Layout/Sidebar.tsx';
 import UserContext from '@/store/userContext';
 import { clearTokens, getCurrentUser } from '@/utils/auth';
 import { useContext, useEffect, useRef, useState } from 'react';
-import { Outlet, useNavigation } from 'react-router';
+import { Navigate, Outlet, useNavigation } from 'react-router';
 import NavBar from '@/components/Admin/Layout/NavBar';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -11,7 +11,8 @@ import FullPageLoader from '@/components/FullPageLoader';
 const AdminLayout = () => {
   const { state } = useNavigation();
 
-  const { setUser } = useContext(UserContext);
+  const { setUser, role, isUserLoading } = useContext(UserContext);
+
   const [dropdownOpen, setDropdownOpenMenu] = useState({
     isDropdownProfileOpen: false,
   });
@@ -46,6 +47,7 @@ const AdminLayout = () => {
       }
 
       setUser({
+        isUserLoading: false,
         accountId: userData?.accountId || null,
         firstName: userData?.firstName || null,
         lastName: userData?.lastName || null,
@@ -66,11 +68,14 @@ const AdminLayout = () => {
     }
   }, [setUser]);
 
+  if (!isUserLoading && (!role || role !== 'admin'))
+    return <Navigate to="/login" replace />;
+
   return (
     <div className="flex h-screen bg-gray-100" onClick={handleClick}>
       <ToastContainer />
 
-      {state === 'loading' && <FullPageLoader />}
+      {(state === 'loading' || isUserLoading) && <FullPageLoader />}
 
       <Sidebar />
 
@@ -82,7 +87,7 @@ const AdminLayout = () => {
         />
 
         <main className="p-4 overflow-auto">
-          <Outlet />
+          {!isUserLoading && <Outlet />}
         </main>
       </div>
     </div>

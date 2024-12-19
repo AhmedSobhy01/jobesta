@@ -17,6 +17,7 @@ export function SetUserPage() {
     const profilePicture = null;
 
     setUser({
+      isUserLoading: false,
       accountId,
       firstName,
       lastName,

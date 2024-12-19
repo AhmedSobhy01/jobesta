@@ -28,6 +28,7 @@ export function Logout() {
     });
 
     setUser({
+      isUserLoading: false,
       accountId,
       firstName,
       lastName,
