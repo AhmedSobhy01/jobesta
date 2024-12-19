@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { getAuthJwtToken } from '@/utils/auth';
+import CompleteMilestoneModal from '@/components/Milestones/CompleteMilestoneModal';
 
 function ManageJob() {
   const navigate = useNavigate();
@@ -31,6 +32,39 @@ function ManageJob() {
       job.myProposal ??
       null,
   );
+
+  const [currentMilestone, setCurrentMilestone] = useState<Milestone | null>(
+    proposal?.milestones[0] ?? null,
+  );
+  const [isCompleteMilestoneModalOpen, setIsCompleteMilestoneModalOpen] =
+    useState(false);
+
+  const handleCompleteMilestoneModalClose = (success = false) => {
+    if (success) {
+      if (
+        proposal?.milestones?.filter(
+          (milestone) => milestone.status !== 'completed',
+        ).length === 1
+      )
+        setJobStatus('completed');
+
+      setProposal((prevProposal) => {
+        if (!prevProposal) return null;
+
+        return {
+          ...prevProposal,
+          milestones: prevProposal.milestones!.map((milestone) => {
+            if (milestone.order === currentMilestone?.order)
+              return { ...milestone, status: 'completed' };
+
+            return milestone;
+          }),
+        };
+      });
+    }
+
+    setIsCompleteMilestoneModalOpen(false);
+  };
 
   const [loadingMessages, setLoadingMessages] = useState(true);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -207,64 +241,6 @@ function ManageJob() {
     });
   };
 
-  const handleCompleteMilestone = async (order: number) => {
-    Swal.fire({
-      title: 'Are you sure?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#F44336',
-      cancelButtonColor: '#3085d6',
-      cancelButtonText: 'Cancel',
-      confirmButtonText: 'Yes, complete milestone',
-      showLoaderOnConfirm: true,
-      allowOutsideClick: () => !Swal.isLoading(),
-      backdrop: true,
-      preConfirm: () => {
-        fetch(
-          `${import.meta.env.VITE_API_URL}/milestones/${job.id}/${proposal!.freelancer!.id}/${order}`,
-          {
-            method: 'PUT',
-            headers: {
-              Authorization: `Bearer ${getAuthJwtToken()}`,
-            },
-          },
-        )
-          .then((response) => {
-            if (!response.ok) throw new Error('Failed to complete milestone');
-
-            return response.json();
-          })
-          .then((data) => {
-            toast(data.message, { type: 'success' });
-
-            if (
-              proposal?.milestones?.filter(
-                (milestone) => milestone.order === order,
-              ).length === 1
-            )
-              setJobStatus('completed');
-
-            setProposal((prevProposal) => {
-              if (!prevProposal) return null;
-
-              return {
-                ...prevProposal,
-                milestones: prevProposal.milestones!.map((milestone) => {
-                  if (milestone.order === order)
-                    return { ...milestone, status: 'completed' };
-
-                  return milestone;
-                }),
-              };
-            });
-          })
-          .catch(() => {
-            toast('Failed to complete milestone', { type: 'error' });
-          });
-      },
-    });
-  };
-
   if (!jobFetchStatus) {
     return (
       <ErrorModule errorMessage={jobFetchError} onClose={() => navigate('/')} />
@@ -273,6 +249,17 @@ function ManageJob() {
 
   return (
     <div className="py-10">
+      {isCompleteMilestoneModalOpen && (
+        <CompleteMilestoneModal
+          jobId={job.id}
+          freelancerId={parseInt(proposal!.freelancer!.id!.toString())}
+          milestoneOrder={
+            currentMilestone ? parseInt(currentMilestone.order.toString()) : 0
+          }
+          onClose={handleCompleteMilestoneModalClose}
+        />
+      )}
+
       <h1 className="text-center w-full max-w-screen-xl mx-auto px-5 text-3xl font-bold lg:text-4xl">
         Manage Job
       </h1>
@@ -617,7 +604,10 @@ function ManageJob() {
                     job.client.username === user.username && (
                       <button
                         className="block text-sm mt-3 bg-emerald-500 text-white rounded-lg px-2 py-1.5 transition-colors duration-300 ease-in-out hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-opacity-75"
-                        onClick={() => handleCompleteMilestone(milestone.order)}
+                        onClick={() => {
+                          setCurrentMilestone(milestone);
+                          setIsCompleteMilestoneModalOpen(true);
+                        }}
                       >
                         Complete Milestone
                       </button>

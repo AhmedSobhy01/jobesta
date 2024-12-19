@@ -1,6 +1,7 @@
 import UserContext from '@/store/userContext';
 import { getAuthJwtToken } from '@/utils/auth';
 import React, { useContext, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { ActionFunctionArgs, useNavigate } from 'react-router-dom';
 
 interface EditProfileModalProps {
@@ -95,7 +96,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> & {
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-lg w-full p-6">
         <h2 className="text-xl font-semibold dark:text-white text-gray-800 mb-4">
@@ -227,7 +228,8 @@ const EditProfileModal: React.FC<EditProfileModalProps> & {
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body as HTMLElement,
   );
 };
 
