@@ -2,7 +2,7 @@ import AdminModal from '@/components/Admin/Admins/AdminModal';
 import AdminRowItem from '@/components/Admin/Admins/AdminRowItem.tsx';
 import TableLoader from '@/components/Common/TableLoader';
 import TableSkeleton from '@/components/Skeletons/TableSkeleton';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import ErrorModule from '@/components/ErrorModule';
 import { useNavigate, useSearchParams } from 'react-router';
@@ -26,20 +26,21 @@ const Admins = () => {
     perPage: 0,
   });
 
-  const [searchQuery, setSearchQuery] = useState('');
-  const handleSearchInputChange = useDebounce(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchQuery(e.target.value);
-      setCurrentPage(1);
-    },
-    300,
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get('search') || '',
   );
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLoading(true);
+    setAdmins([]);
+    setSearchParams((prev) => ({ ...prev, search: e.target.value.trim() }));
+    setSearchQuery(e.target.value);
+    setCurrentPage(1);
+  };
 
   const [isCreateAdminModalOpen, setIsCreateAdminModalOpen] = useState(false);
 
-  const fetchDataRef = useRef(false);
-  useEffect(() => {
-    const fetchData = async () => {
+  const fetchData = useDebounce(
+    useCallback(async () => {
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/admin/accounts?page=${currentPage}&role=admin${searchQuery ? `&search=${searchQuery}` : ''}`,
         {
@@ -66,8 +67,12 @@ const Admins = () => {
       setLoading(false);
 
       fetchDataRef.current = false;
-    };
+    }, [currentPage, searchQuery]),
+    300,
+  );
 
+  const fetchDataRef = useRef(false);
+  useEffect(() => {
     if (!fetchDataRef.current) {
       if (searchParams.get('reload')) {
         setAdmins([]);
@@ -86,7 +91,7 @@ const Admins = () => {
       fetchDataRef.current = true;
       fetchData();
     }
-  }, [currentPage, searchParams, navigate, setSearchParams, searchQuery]);
+  }, [searchParams, currentPage, fetchData, navigate, setSearchParams]);
 
   if (globalError)
     return (
@@ -121,8 +126,9 @@ const Admins = () => {
           <input
             type="text"
             placeholder="Search admins..."
-            className="w-full lg:w-1/3 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+            className="w-full lg:w-1/3 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-600"
             onChange={handleSearchInputChange}
+            value={searchQuery}
           />
         </div>
 
