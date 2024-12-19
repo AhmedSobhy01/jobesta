@@ -1,6 +1,7 @@
 import { getAuthJwtToken } from '@/utils/auth';
 import { FormEventHandler, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ErrorModule from '@/components/ErrorModule';
 
 interface IPreviousWork {
   order: number;
@@ -28,18 +29,19 @@ interface ProfilePictureData {
       skills?: string[];
     };
   };
-  setError: React.Dispatch<React.SetStateAction<boolean>>;
-  setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
+  isMe: boolean;
 }
 
 const ProfilePicture: React.FC<ProfilePictureData> = ({
   anyUserData,
-  setError,
-  setErrorMessage,
+  isMe,
 }) => {
   const navigate = useNavigate();
   const [isEditingPic, setIsEditingPic] = useState(false);
   const [pic, setPic] = useState<File | null>(null);
+
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   let profilePic = anyUserData.user?.profilePicture;
 
@@ -100,6 +102,12 @@ const ProfilePicture: React.FC<ProfilePictureData> = ({
 
   return (
     <>
+      {error && (
+        <ErrorModule
+          errorMessage={errorMessage}
+          onClose={() => setError(false)}
+        />
+      )}
       <div className="absolute top-20 left-10 w-40 h-40 rounded-full overflow-hidden border-4 border-white dark:border-gray-900 group">
         <img
           src={profilePic}
@@ -107,12 +115,14 @@ const ProfilePicture: React.FC<ProfilePictureData> = ({
           className="w-full h-full object-cover cursor-pointer"
         />
 
-        <div
-          onClick={() => setIsEditingPic(true)}
-          className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300 cursor-pointer"
-        >
-          <p className="text-white font-semibold">Edit Picture</p>
-        </div>
+        {isMe && (
+          <div
+            onClick={() => setIsEditingPic(true)}
+            className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300 cursor-pointer"
+          >
+            <p className="text-white font-semibold">Edit Picture</p>
+          </div>
+        )}
       </div>
 
       {isEditingPic && (
