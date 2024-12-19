@@ -293,6 +293,10 @@ function ManageJob() {
 
   return (
     <div className="py-10">
+      {isReviewModalOpen && (
+        <ReviewModal job={job} onClose={() => setReviewModalOpen(false)} />
+      )}
+
       {isCompleteMilestoneModalOpen && (
         <CompleteMilestoneModal
           jobId={job.id}
