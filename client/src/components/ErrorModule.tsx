@@ -1,6 +1,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { createPortal } from 'react-dom';
 
 interface GlobalErrorPopupProps {
   errorMessage?: string;
@@ -13,7 +14,7 @@ const GlobalErrorPopup: React.FC<GlobalErrorPopupProps> = ({
 }) => {
   if (!errorMessage) return null;
 
-  return (
+  return createPortal (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="relative w-11/12 max-w-md rounded-lg bg-white p-6 shadow-lg">
         <div className="flex items-start justify-between">
@@ -40,7 +41,7 @@ const GlobalErrorPopup: React.FC<GlobalErrorPopupProps> = ({
         </div>
       </div>
     </div>
-  );
+  ,document.body as HTMLElement);
 };
 
 export default GlobalErrorPopup;
