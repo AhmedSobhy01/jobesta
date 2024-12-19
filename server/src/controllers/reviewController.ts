@@ -59,8 +59,7 @@ export async function getRecentReviews(
         reviews,
       },
     });
-  } catch (error) {
-    console.log(error);
+  } catch {
     res.status(500).json({
       status: false,
       message: 'Error retrieving reviews',
