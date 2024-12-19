@@ -19,9 +19,11 @@ import Clients from '@/pages/Admin/Clients';
 import Admins from '@/pages/Admin/Admins';
 import Freelancers from '@/pages/Admin/Freelancers';
 import Categories from '@/pages/Admin/Categories';
+import Badges from '@/pages/Admin/Badges';
 import CreateJobForm from '@/pages/CreateJobForm';
 import Notifications from '@/pages/Notifications';
 import ManageJob from '@/pages/ManageJob';
+import NotFound from '@/pages/NotFound';
 
 const router = createBrowserRouter([
   {
@@ -76,7 +78,6 @@ const router = createBrowserRouter([
     path: '/logout',
     element: <Logout />,
   },
-
   {
     path: 'admin',
     element: <AdminLayout />,
@@ -84,6 +85,7 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Dashboard />,
+        loader: Dashboard.loader,
       },
       {
         path: 'clients',
@@ -101,8 +103,13 @@ const router = createBrowserRouter([
         path: 'categories',
         element: <Categories />,
       },
+      {
+        path: 'badges',
+        element: <Badges />,
+      },
     ],
   },
+  { path: '*', element: <NotFound /> },
 ]);
 
 function App() {

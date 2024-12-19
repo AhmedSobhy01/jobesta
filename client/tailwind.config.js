@@ -9,5 +9,9 @@ export default {
       },
     },
   },
+  safelist: [
+    { pattern: /text-(orange|purple|cyan)-600/ },
+    { pattern: /bg-(orange|purple|cyan)-100/ },
+  ],
   plugins: [],
 };

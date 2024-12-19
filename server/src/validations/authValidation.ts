@@ -89,9 +89,10 @@ export const registerValidationRules = [
     ),
 
   body('confirmPassword')
-    .optional()
     .trim()
     .custom((value, { req }) => {
+      if (!req.body?.password) return true;
+
       if (value !== req.body.password) {
         throw new Error('Passwords do not match');
       }
