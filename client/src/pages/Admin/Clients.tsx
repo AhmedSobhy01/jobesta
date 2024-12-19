@@ -2,7 +2,7 @@ import ClientModal from '@/components/Admin/Clients/ClientModal';
 import ClientRowItem from '@/components/Admin/Clients/ClientRowItem';
 import TableLoader from '@/components/Common/TableLoader';
 import TableSkeleton from '@/components/Skeletons/TableSkeleton';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import ErrorModule from '@/components/ErrorModule';
 import { useNavigate, useSearchParams } from 'react-router';
@@ -26,20 +26,21 @@ const Clients = () => {
     perPage: 0,
   });
 
-  const [searchQuery, setSearchQuery] = useState('');
-  const handleSearchInputChange = useDebounce(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchQuery(e.target.value);
-      setCurrentPage(1);
-    },
-    300,
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get('search') || '',
   );
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLoading(true);
+    setClients([]);
+    setSearchParams((prev) => ({ ...prev, search: e.target.value.trim() }));
+    setSearchQuery(e.target.value);
+    setCurrentPage(1);
+  };
 
   const [isCreateAdminModalOpen, setIsCreateClientModalOpen] = useState(false);
 
-  const fetchDataRef = useRef(false);
-  useEffect(() => {
-    const fetchData = async () => {
+  const fetchData = useDebounce(
+    useCallback(async () => {
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/admin/accounts?page=${currentPage}&role=client${searchQuery ? `&search=${searchQuery}` : ''}`,
         {
@@ -68,8 +69,12 @@ const Clients = () => {
       setLoading(false);
 
       fetchDataRef.current = false;
-    };
+    }, [currentPage, searchQuery]),
+    300,
+  );
 
+  const fetchDataRef = useRef(false);
+  useEffect(() => {
     if (!fetchDataRef.current) {
       if (searchParams.get('reload')) {
         setClients([]);
@@ -88,7 +93,7 @@ const Clients = () => {
       fetchDataRef.current = true;
       fetchData();
     }
-  }, [currentPage, searchParams, navigate, setSearchParams, searchQuery]);
+  }, [currentPage, searchParams, fetchData, navigate, setSearchParams]);
 
   if (globalError)
     return (
@@ -123,8 +128,9 @@ const Clients = () => {
           <input
             type="text"
             placeholder="Search clients..."
-            className="w-full lg:w-1/3 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+            className="w-full lg:w-1/3 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-600"
             onChange={handleSearchInputChange}
+            value={searchQuery}
           />
         </div>
 
