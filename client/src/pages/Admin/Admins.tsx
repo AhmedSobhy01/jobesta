@@ -32,6 +32,12 @@ const Admins = () => {
   const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoading(true);
     setAdmins([]);
+    setPagination({
+      currentPage: 0,
+      totalItems: 0,
+      totalPages: 0,
+      perPage: 0,
+    });
     setSearchParams((prev) => ({ ...prev, search: e.target.value.trim() }));
     setSearchQuery(e.target.value);
     setCurrentPage(1);

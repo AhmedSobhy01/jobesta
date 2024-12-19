@@ -31,6 +31,12 @@ const Jobs = () => {
   const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoading(true);
     setJobs([]);
+    setPagination({
+      currentPage: 0,
+      totalItems: 0,
+      totalPages: 0,
+      perPage: 0,
+    });
     setSearchParams((prev) => ({
       ...prev,
       search: e.target.value.trim(),
@@ -44,6 +50,12 @@ const Jobs = () => {
   const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setLoading(true);
     setJobs([]);
+    setPagination({
+      currentPage: 0,
+      totalItems: 0,
+      totalPages: 0,
+      perPage: 0,
+    });
     setSearchParams((prev) => ({
       ...prev,
       status: e.target.value,
