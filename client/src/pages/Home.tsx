@@ -11,11 +11,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router';
 import heroImage from '@/assets/hero.png';
 import { toast } from 'react-toastify';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import LabelSkeleton from '@/components/Skeletons/LabelSkeleton';
 import CardSkeleton from '@/components/Skeletons/CardSkeleton';
+import UserContext from '@/store/userContext';
 
 function Home() {
+  const user = useContext(UserContext);
+
   const [statistics, setStatistics] = useState({
     freelancersCount: 0,
     clientsCount: 0,
@@ -126,7 +129,11 @@ function Home() {
                 Find Jobs
               </Link>
               <Link
-                to="/jobs/create"
+                to={
+                  user.username
+                    ? '/jobs/create'
+                    : '/login?redirect=/jobs/create'
+                }
                 className="py-3 px-16 text-lg font-bold bg-yellow-200 rounded-full text-center"
               >
                 Create Your Job
