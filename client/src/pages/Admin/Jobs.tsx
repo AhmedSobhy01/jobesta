@@ -31,7 +31,11 @@ const Jobs = () => {
   const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoading(true);
     setJobs([]);
-    setSearchParams((prev) => ({ ...prev, search: e.target.value.trim() }));
+    setSearchParams((prev) => ({
+      ...prev,
+      search: e.target.value.trim(),
+      status,
+    }));
     setSearchQuery(e.target.value);
     setCurrentPage(1);
   };
@@ -40,7 +44,11 @@ const Jobs = () => {
   const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setLoading(true);
     setJobs([]);
-    setSearchParams((prev) => ({ ...prev, status: e.target.value }));
+    setSearchParams((prev) => ({
+      ...prev,
+      status: e.target.value,
+      search: searchQuery,
+    }));
     setStatus(e.target.value);
     setCurrentPage(1);
   };
