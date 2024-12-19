@@ -202,7 +202,7 @@ const ProfilePage: React.FC & {
               Jobs
             </button>
             <button
-              onClick={() => handleTabClick('review')}
+              onClick={() => handleTabClick('reviews')}
               className={activeTab.reviewsActive ? activeCss : notActiveCss}
             >
               Reviews
