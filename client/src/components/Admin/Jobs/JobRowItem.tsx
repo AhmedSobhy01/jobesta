@@ -8,6 +8,7 @@ import {
   faFolderOpen,
   faFolderClosed,
   faFileContract,
+  faComments,
 } from '@fortawesome/free-solid-svg-icons';
 import JobModal from '@/components/Admin/Jobs/JobModal.tsx';
 import { toast } from 'react-toastify';
@@ -15,6 +16,7 @@ import { useNavigate } from 'react-router';
 import { Link } from 'react-router';
 import { getAuthJwtToken } from '@/utils/auth';
 import JobProposalsModal from './JobProposalsModal';
+import JobReviewsModal from './JobReviewsModal';
 
 const JobRowItem: React.FC<{
   job: Job;
@@ -24,6 +26,7 @@ const JobRowItem: React.FC<{
   const [isEditJobModalOpen, setIsEditJobModalOpen] = useState(false);
   const [isShowProposalsModalOpen, setIsShowProposalsModalOpen] =
     useState(false);
+  const [isShowReviewssModalOpen, setIsShowReviewsModalOpen] = useState(false);
 
   const handleCloseJob = () => {
     Swal.fire({
@@ -179,6 +182,13 @@ const JobRowItem: React.FC<{
         />
       )}
 
+      {isShowReviewssModalOpen && (
+        <JobReviewsModal
+          jobId={job.id}
+          onClose={() => setIsShowReviewsModalOpen(false)}
+        />
+      )}
+
       <tr className="bg-white border-b">
         <th
           scope="row"
@@ -247,6 +257,14 @@ const JobRowItem: React.FC<{
             onClick={() => setIsShowProposalsModalOpen(true)}
           >
             <FontAwesomeIcon icon={faFileContract} />
+          </button>
+
+          <button
+            type="button"
+            title="Show all reviews"
+            onClick={() => setIsShowReviewsModalOpen(true)}
+          >
+            <FontAwesomeIcon icon={faComments} />
           </button>
 
           <button

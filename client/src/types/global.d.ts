@@ -75,6 +75,7 @@ interface Milestone {
 }
 
 interface Review {
+  id?: string;
   rating: string;
   comment: string;
   createdAt: string;
