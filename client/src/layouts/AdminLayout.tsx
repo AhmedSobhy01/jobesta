@@ -52,7 +52,7 @@ const AdminLayout = () => {
         username: userData?.username || null,
         email: userData?.email || null,
         role: userData?.role || null,
-        isBanned: userData?.isBanned || null,
+        isBanned: (userData?.isBanned as unknown as boolean) || null,
         profilePicture: userData?.profilePicture || null,
       });
 

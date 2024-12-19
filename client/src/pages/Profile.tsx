@@ -110,9 +110,7 @@ const ProfilePage: React.FC & {
   return (
     <>
       {isEditModalOpen && isMe && (
-        <EditProfileModal
-          onClose={handleModalClose}
-        />
+        <EditProfileModal onClose={handleModalClose} />
       )}
       {isEditFreelancerModalOpen && isMe && freelancerData && (
         <EditFreelancerModal
