@@ -1,17 +1,19 @@
 import JobRowItem from '@/components/Admin/Jobs/JobRowItem.tsx';
 import TableLoader from '@/components/Common/TableLoader.tsx';
 import TableSkeleton from '@/components/Skeletons/TableSkeleton.tsx';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import ErrorModule from '@/components/ErrorModule.tsx';
 import { useNavigate, useSearchParams } from 'react-router';
 import { getAuthJwtToken } from '@/utils/auth';
+import { useDebounce } from '@/utils/hooks/useDebounce';
 
 const Jobs = () => {
   const navigate = useNavigate();
 
   const [globalError, setGlobalError] = useState<string | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
+  const tableElement = useRef<HTMLDivElement>(null);
 
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
@@ -23,11 +25,30 @@ const Jobs = () => {
     perPage: 0,
   });
 
-  const fetchDataRef = useRef(false);
-  useEffect(() => {
-    const fetchData = async () => {
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get('search') || '',
+  );
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLoading(true);
+    setJobs([]);
+    setSearchParams((prev) => ({ ...prev, search: e.target.value.trim() }));
+    setSearchQuery(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const [status, setStatus] = useState(searchParams.get('status') || '');
+  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setLoading(true);
+    setJobs([]);
+    setSearchParams((prev) => ({ ...prev, status: e.target.value }));
+    setStatus(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const fetchData = useDebounce(
+    useCallback(async () => {
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/admin/jobs?page=${currentPage}`,
+        `${import.meta.env.VITE_API_URL}/admin/jobs?page=${currentPage}${searchQuery ? `&search=${searchQuery}` : ''}${status ? `&status=${status}` : ''}`,
         {
           headers: {
             Authorization: `Bearer ${getAuthJwtToken()}`,
@@ -41,14 +62,23 @@ const Jobs = () => {
       }
 
       const data = await res.json();
-      setJobs((prevJobs) => [...prevJobs, ...data.data.jobs]);
+      if (currentPage === 1) {
+        if (tableElement.current) tableElement.current.scrollTo({ top: 0 });
+
+        setJobs(data.data.jobs);
+      } else setJobs((prevJobs) => [...prevJobs, ...data.data.jobs]);
+
       setPagination(data.data.pagination);
 
       setLoading(false);
 
       fetchDataRef.current = false;
-    };
+    }, [currentPage, searchQuery, status]),
+    300,
+  );
 
+  const fetchDataRef = useRef(false);
+  useEffect(() => {
     if (!fetchDataRef.current) {
       if (searchParams.get('reload')) {
         setJobs([]);
@@ -66,7 +96,7 @@ const Jobs = () => {
       fetchDataRef.current = true;
       fetchData();
     }
-  }, [currentPage, searchParams, navigate, setSearchParams]);
+  }, [currentPage, searchParams, fetchData, navigate, setSearchParams]);
 
   if (globalError)
     return (
@@ -83,6 +113,28 @@ const Jobs = () => {
           <h1 className="font-bold text-3xl lg:text-5xl font-heading text-gray-900">
             Jobs
           </h1>
+        </div>
+
+        <div className="mb-6 flex justify-between items-center gap-4">
+          <input
+            type="text"
+            placeholder="Search jobs..."
+            className="w-full lg:w-1/3 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-600"
+            onChange={handleSearchInputChange}
+            value={searchQuery}
+          />
+          <select
+            className="w-full lg:w-64 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-600"
+            onChange={handleStatusChange}
+            value={status}
+          >
+            <option value="">All Statuses</option>
+            <option value="open">Open</option>
+            <option value="in_progress">In Progress</option>
+            <option value="completed">Completed</option>
+            <option value="closed">Closed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
         </div>
 
         <div
