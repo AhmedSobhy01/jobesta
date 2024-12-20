@@ -1,5 +1,23 @@
-import { body, param } from 'express-validator';
+import { body, param, query } from 'express-validator';
 import db from '../../db/db.js';
+
+export const getJobsValidationRules = [
+  query('page').optional().isNumeric().withMessage('Page must be a number'),
+
+  query('search')
+    .optional()
+    .isString()
+    .withMessage('Search query must be a string'),
+
+  query('status')
+    .optional()
+    .isString()
+    .withMessage('Status must be a string')
+    .isIn(['open', 'in_progress', 'completed', 'closed', 'cancelled'])
+    .withMessage(
+      'Status must be one of the following: open, in_progress, completed, closed, cancelled',
+    ),
+];
 
 export const updateJobValidationRules = [
   param('jobId')
