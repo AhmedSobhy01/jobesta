@@ -13,6 +13,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import Pagination from '@/components/Common/Pagination';
 import ErrorModule from '@/components/ErrorModule';
+import { humanReadable } from '@/utils/time';
 
 const NotificationsPage = () => {
   const navigate = useNavigate();
@@ -87,7 +88,7 @@ const NotificationsPage = () => {
                             {notification.message}
                           </p>
                           <span className="text-sm text-gray-500 dark:text-gray-400 block">
-                            {notification.createdAt}
+                            {humanReadable(notification.createdAt)}
                           </span>
                         </div>
                       </Link>

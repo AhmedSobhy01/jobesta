@@ -30,6 +30,7 @@ export async function getNotifications(
 
     const notifications = notificationsQuery.rows.map((notification) => {
       return {
+        id: notification.id,
         type: notification.type,
         message: notification.message,
         isRead: notification.is_read,
@@ -60,5 +61,23 @@ export async function getNotifications(
     res
       .status(500)
       .json({ status: false, message: 'Error retrieving notifications' });
+  }
+}
+
+export async function markNotificationsAsRead(
+  req: Request,
+  res: Response,
+): Promise<void> {
+  try {
+    await db.query(
+      `UPDATE notifications SET is_read = true WHERE account_id = $1`,
+      [req.user!.id],
+    );
+
+    res.json({ status: true, message: 'Notification marked as read' });
+  } catch {
+    res
+      .status(500)
+      .json({ status: false, message: 'Error marking notification as read' });
   }
 }
