@@ -16,6 +16,7 @@ import messageRoutes from './routes/messageRoutes.js';
 import milestoneRoutes from './routes/milestoneRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
 import paymentRoutes from './routes/paymentsRoutes.js';
+import withdrawalRoutes from './routes/withdrawalRoutes.js';
 
 // Load environment variables from the .env file
 configDotenv();
@@ -54,6 +55,7 @@ app.use('/messages', messageRoutes);
 app.use('/milestones', milestoneRoutes);
 app.use('/notifications', notificationRoutes);
 app.use('/proposals', proposalRoutes);
+app.use('/withdrawals', withdrawalRoutes);
 app.get('/categories', getCategories);
 app.get('/statistics', getStatistics);
 app.use('/reviews', reviewRoutes);

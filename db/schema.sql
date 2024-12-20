@@ -40,7 +40,10 @@ CREATE TYPE "notification_type" AS ENUM(
     'withdrawal_processed'
 );
 
-CREATE TYPE "withdrawal_status" AS ENUM('pending', 'processed');
+CREATE TYPE "withdrawal_status" AS ENUM (
+  'pending',
+  'completed'
+);
 
 CREATE TYPE "withdrawal_payment_method" AS ENUM(
     'bank_transfer',

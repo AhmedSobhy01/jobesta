@@ -68,8 +68,6 @@ const Dashboard: React.FC & {
     );
   }
 
-  console.log(statistics.paymentsPerMonth);
-
   const formattedPaymentsPerMonth = statistics.paymentsPerMonth.map(
     (payment) => ({
       month: new Date(payment.month).toLocaleString('default', {

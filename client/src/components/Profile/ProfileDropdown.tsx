@@ -44,6 +44,13 @@ const ProfileDropdown: React.FC = () => {
                 <NavBarItem page={'/payments'}>My Payments</NavBarItem>
               </li>
             )}
+            {userData.role === 'freelancer' && (
+              <li>
+                <NavBarItem className="" page="/withdrawals">
+                  Withdrawals
+                </NavBarItem>
+              </li>
+            )}
             <li>
               <NavBarItem className="" page="/logout">
                 Logout
