@@ -1,7 +1,6 @@
 import { getAuthJwtToken } from '@/utils/auth';
 import { FormEventHandler, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ErrorModule from '@/components/ErrorModule';
 import { toast } from 'react-toastify';
 
 interface IPreviousWork {
@@ -40,8 +39,6 @@ const ProfilePicture: React.FC<ProfilePictureData> = ({
   const navigate = useNavigate();
   const [pic, setPic] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | undefined>(undefined);
-
-  const [error, setError] = useState(false);
 
   let profilePic = anyUserData.user?.profilePicture;
 
