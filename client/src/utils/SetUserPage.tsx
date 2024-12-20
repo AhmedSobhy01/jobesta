@@ -37,7 +37,7 @@ export function SetUserPage() {
         username: userData?.username || null,
         email: userData?.email || null,
         role: userData?.role || null,
-        isBanned: userData?.isBanned || null,
+        isBanned: userData?.isBanned === 'true' || null,
         profilePicture: userData?.profilePicture || null,
       });
 
