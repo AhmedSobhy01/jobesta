@@ -62,7 +62,7 @@ export async function authenticate(
   next: NextFunction,
 ) {
   prepareUser(req, res, () => {
-    if (!req.user) {
+    if (!req.user || req.user.is_banned) {
       res.status(401).json({ message: 'Unauthorized', status: false });
       return;
     }
