@@ -88,7 +88,7 @@ const AdminLayout = () => {
       ></div>
 
       <Sidebar
-        className={`fixed z-50 inset-y-0 left-0 bg-white shadow-md border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700 transform transition-transform duration-300 ${
+        className={`fixed z-50 inset-y-0 left-0 bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700 transform transition-transform duration-300 ${
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
         } md:translate-x-0 md:relative md:block`}
       />
