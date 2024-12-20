@@ -1,4 +1,4 @@
-const humanReadable = (dateString: string): string => {
+export const humanReadable = (dateString: string): string => {
   const now = new Date();
   const date = new Date(dateString);
   const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
@@ -23,4 +23,15 @@ const humanReadable = (dateString: string): string => {
   }
 };
 
-export { humanReadable };
+export const humanReadableDate = (dateString: string): string => {
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  });
+  const date = new Date(dateString);
+  return formatter.format(date);
+};
