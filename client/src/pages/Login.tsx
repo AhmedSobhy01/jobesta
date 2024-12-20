@@ -55,7 +55,7 @@ function Login() {
           </h2>
           <div className="flex flex-col max-w-md w-full px-8">
             <Form method="post" noValidate>
-              <div className="space-y-2.5">
+              <div className="space-y-2.5 my-4">
                 <Input label="email" type="email" errorMessage={errors?.email}>
                   Email
                 </Input>
