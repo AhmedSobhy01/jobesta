@@ -15,6 +15,7 @@ import notificationRoutes from './routes/notificationRoutes.js';
 import messageRoutes from './routes/messageRoutes.js';
 import milestoneRoutes from './routes/milestoneRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
+import paymentRoutes from './routes/paymentsRoutes.js';
 
 // Load environment variables from the .env file
 configDotenv();
@@ -56,7 +57,7 @@ app.use('/proposals', proposalRoutes);
 app.get('/categories', getCategories);
 app.get('/statistics', getStatistics);
 app.use('/reviews', reviewRoutes);
-
+app.use('/payments', paymentRoutes);
 // Default Route: Sends a welcome message to the user (for health-checks)
 app.get('/', (req: Request, res: Response) => {
   res.json({
