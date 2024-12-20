@@ -19,7 +19,7 @@ export const createWithdrawalValidationRules = [
         throw new Error('Freelancer does not exist');
       }
 
-      if (freelancerQuery.rows[0].balance < amount) {
+      if (parseFloat(freelancerQuery.rows[0].balance) < parseFloat(amount)) {
         throw new Error('Insufficient balance');
       }
 
