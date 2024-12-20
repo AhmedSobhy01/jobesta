@@ -243,7 +243,109 @@ VALUES ('Web Development','Web Development'),
        ('DevOps','DevOps'),
        ('Cloud Computing','Cloud Computing');
 
-INSERT INTO "badges" ("name", "description", "icon")
-VALUES ('Getting Started','Completed your first job','uploads/getting-started.png'),
-       ('On Time','Completed a job on time','uploads/on-time.png'),
-       ('Top Rated','Received a 5-star rating on 5 jobs','uploads/top-rated.png')
+INSERT INTO "badges" ("id", "name", "description", "icon")
+VALUES (1, 'Getting Started','Completed your first job','uploads/getting-started.png'),
+       (2, 'Top Rated','Received a 5-star rating on 5 jobs','uploads/top-rated.png'),
+        (3, 'Pro','Completed 10 jobs','uploads/pro.png');
+
+-- Add a trigger to award the Getting Started badge to a freelancer when they complete their first job
+CREATE OR REPLACE FUNCTION award_getting_started_badge()
+RETURNS TRIGGER AS $$
+DECLARE
+    completed_jobs_count INTEGER;
+BEGIN
+    SELECT COUNT(*) INTO completed_jobs_count
+    FROM proposals 
+    JOIN jobs ON proposals.job_id = jobs.id AND jobs.status = 'completed'
+    WHERE freelancer_id = (SELECT freelancer_id FROM proposals WHERE job_id = NEW.id AND status = 'accepted') AND proposals.status = 'accepted';
+
+    IF completed_jobs_count = 1 THEN
+        INSERT INTO badge_freelancer (badge_id, freelancer_id)
+        SELECT id, (SELECT freelancer_id FROM proposals WHERE job_id = NEW.id AND status = 'accepted')
+        FROM badges
+        WHERE id = 1
+        ON CONFLICT DO NOTHING;
+
+        INSERT INTO notifications (type, message, account_id, url)
+        SELECT 'badge_earned',
+        'You have earned the Getting Started badge!',
+        (SELECT account_id FROM freelancers WHERE id = (SELECT freelancer_id FROM proposals WHERE job_id = NEW.id AND status = 'accepted')),
+        (SELECT CONCAT('/users/', username) FROM accounts WHERE id = (SELECT account_id FROM freelancers WHERE id = (SELECT freelancer_id FROM proposals WHERE job_id = NEW.id AND status = 'accepted')));
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_getting_started_badge
+AFTER UPDATE ON jobs
+FOR EACH ROW
+WHEN (OLD.status IS DISTINCT FROM NEW.status AND NEW.status = 'completed')
+EXECUTE FUNCTION award_getting_started_badge();
+
+-- Add a trigger to award the Top Rated badge to a freelancer when they receive a 5-star rating on 5 jobs
+CREATE OR REPLACE FUNCTION award_top_rated_badge()
+RETURNS TRIGGER AS $$
+DECLARE
+    five_star_jobs INTEGER;
+BEGIN
+    SELECT COUNT(*) INTO five_star_jobs
+    FROM reviews
+    WHERE freelancer_id = NEW.freelancer_id AND rating = 5.0 AND account_id != (SELECT account_id FROM freelancers WHERE id = NEW.freelancer_id);
+
+    IF five_star_jobs = 5 THEN
+        INSERT INTO badge_freelancer (badge_id, freelancer_id)
+        SELECT id, NEW.freelancer_id
+        FROM badges
+        WHERE id = 2
+        ON CONFLICT DO NOTHING;
+
+        INSERT INTO notifications (type, message, account_id, url)
+        SELECT 'badge_earned',
+        'You have earned the Top Rated badge!',
+        (SELECT account_id FROM freelancers WHERE id = NEW.freelancer_id),
+        (SELECT CONCAT('/users/', username) FROM accounts WHERE id = (SELECT account_id FROM freelancers WHERE id = NEW.freelancer_id));
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_top_rated_badge
+AFTER INSERT ON reviews
+FOR EACH ROW
+EXECUTE FUNCTION award_top_rated_badge();
+
+-- Add a trigger to award the Pro badge to a freelancer when they complete 10 jobs
+CREATE OR REPLACE FUNCTION award_pro_badge()
+RETURNS TRIGGER AS $$
+DECLARE
+    completed_jobs_count INTEGER;
+BEGIN
+    SELECT COUNT(*) INTO completed_jobs_count
+    FROM proposals 
+    JOIN jobs ON proposals.job_id = jobs.id AND jobs.status = 'completed'
+    WHERE freelancer_id = (SELECT freelancer_id FROM proposals WHERE job_id = NEW.id AND status = 'accepted') AND proposals.status = 'accepted';
+
+    IF completed_jobs_count = 10 THEN
+        INSERT INTO badge_freelancer (badge_id, freelancer_id)
+        SELECT id, (SELECT freelancer_id FROM proposals WHERE job_id = NEW.id AND status = 'accepted')
+        FROM badges
+        WHERE id = 3
+        ON CONFLICT DO NOTHING;
+
+        INSERT INTO notifications (type, message, account_id, url)
+        SELECT 'badge_earned',
+        'You have earned the Pro badge!',
+        (SELECT account_id FROM freelancers WHERE id = (SELECT freelancer_id FROM proposals WHERE job_id = NEW.id AND status = 'accepted')),
+        (SELECT CONCAT('/users/', username) FROM accounts WHERE id = (SELECT account_id FROM freelancers WHERE id = (SELECT freelancer_id FROM proposals WHERE job_id = NEW.id AND status = 'accepted')));
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_pro_badge
+AFTER UPDATE ON jobs
+FOR EACH ROW
+WHEN (OLD.status IS DISTINCT FROM NEW.status AND NEW.status = 'completed')
+EXECUTE FUNCTION award_pro_badge();
+
