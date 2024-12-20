@@ -170,7 +170,7 @@ const Withdrawals = () => {
                 </tr>
               </thead>
               <tbody>
-                {loading && <TableSkeleton columns={5} />}
+                {loading && <TableSkeleton columns={9} />}
 
                 {withdrawals.map((withdrawal: Withdrawal) => (
                   <WithdrawalRowItem
