@@ -69,12 +69,6 @@ function Login() {
                 </Input>
               </div>
 
-              <div className="my-3 flex items-center justify-between">
-                <a href="#" className="text-green-600 hover:underline">
-                  Forgot Password?
-                </a>
-              </div>
-
               {errors?.message == 'Invalid credentials' && (
                 <p className="mb-2 text-md text-red-500">
                   Invalid email or password
