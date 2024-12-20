@@ -82,20 +82,20 @@ const Categories = () => {
     );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 2xl:px-8">
       {isCreateCategoryModalOpen && (
         <CategoryModal onClose={() => setIsCreateCategoryModalOpen(false)} />
       )}
 
-      <div className="py-9 lg:py-12">
-        <div className="text-center pb-6 flex items-center justify-between flex-col lg:flex-row gap-10">
-          <h1 className="font-bold text-3xl lg:text-5xl font-heading text-gray-900">
+      <div className="py-9 2xl:py-12">
+        <div className="text-center pb-6 flex items-center justify-between flex-col 2xl:flex-row gap-10">
+          <h1 className="font-bold text-3xl 2xl:text-5xl font-heading text-gray-900">
             Categories
           </h1>
 
           <button
             type="button"
-            className="px-5 py-2 bg-blue-600 text-white rounded-lg font-medium focus:outline-none hover:bg-blue-700 transition-colors duration-300 ease-in-out w-full lg:w-auto"
+            className="px-5 py-2 bg-blue-600 text-white rounded-lg font-medium focus:outline-none hover:bg-blue-700 transition-colors duration-300 ease-in-out w-full 2xl:w-auto"
             onClick={() => setIsCreateCategoryModalOpen(true)}
           >
             Add Category

@@ -81,14 +81,14 @@ const Badges = () => {
     );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 2xl:px-8">
       {isUpdateBadgeModalOpen && (
         <CategoryModal onClose={() => setIsUpdateBadgeModalOpen(false)} />
       )}
 
-      <div className="py-9 lg:py-12">
-        <div className="text-center pb-6 flex items-center justify-between flex-col lg:flex-row gap-10">
-          <h1 className="font-bold text-3xl lg:text-5xl font-heading text-gray-900">
+      <div className="py-9 2xl:py-12">
+        <div className="text-center pb-6 flex items-center justify-between flex-col 2xl:flex-row gap-10">
+          <h1 className="font-bold text-3xl 2xl:text-5xl font-heading text-gray-900">
             Badges
           </h1>
         </div>

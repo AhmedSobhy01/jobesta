@@ -181,11 +181,11 @@ const JobRowItem: React.FC<{
       )}
 
       <tr className="bg-white border-b hover:bg-gray-50">
-        <td className="px-3 py-2 lg:px-6 lg:py-4 text-sm text-gray-900">
+        <td className="px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
           <div className="flex items-center gap-2">
             {job.id}
             <button
-              className="lg:hidden text-gray-500"
+              className="2xl:hidden text-gray-500"
               onClick={() => setIsExpanded(!isExpanded)}
             >
               <FontAwesomeIcon icon={faInfoCircle} />
@@ -193,15 +193,15 @@ const JobRowItem: React.FC<{
           </div>
         </td>
 
-        <td className="hidden lg:table-cell px-3 py-2 lg:px-6 lg:py-4 text-sm text-gray-900">
+        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
           {job.title}
         </td>
 
-        <td className="hidden lg:table-cell px-3 py-2 lg:px-6 lg:py-4 text-sm text-gray-900">
+        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
           {job.category.name || 'Uncategorized'}
         </td>
 
-        <td className="px-3 py-2 lg:px-6 lg:py-4 text-sm">
+        <td className="px-3 py-2 2xl:px-6 2xl:py-4 text-sm">
           <span
             className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full text-white ${
               job.status === 'completed'
@@ -220,29 +220,29 @@ const JobRowItem: React.FC<{
           </span>
         </td>
 
-        <td className="hidden lg:table-cell px-3 py-2 lg:px-6 lg:py-4 text-sm text-gray-900">
+        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
           {job.client.firstName} {job.client.lastName}
         </td>
 
-        <td className="hidden lg:table-cell px-3 py-2 lg:px-6 lg:py-4 text-sm text-gray-900">
+        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
           {job.freelancer
             ? `${job.freelancer.firstName} ${job.freelancer.lastName}`
             : '-'}
         </td>
 
-        <td className="hidden lg:table-cell px-3 py-2 lg:px-6 lg:py-4 text-sm text-gray-900">
+        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
           {job.budget}
         </td>
 
-        <td className="hidden lg:table-cell px-3 py-2 lg:px-6 lg:py-4 text-sm text-gray-900">
+        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
           {job.duration}
         </td>
 
-        <td className="hidden lg:table-cell px-3 py-2 lg:px-6 lg:py-4 text-sm text-gray-900">
+        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
           {job.proposalsCount}
         </td>
 
-        <td className="px-3 py-2 lg:px-6 lg:py-4 text-sm text-gray-900">
+        <td className="px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
           <div className="flex gap-4">
             <Link
               to={`/jobs/${job.id}/${job.status === 'in_progress' || job.status === 'completed' ? 'manage' : ''}`}
@@ -303,9 +303,8 @@ const JobRowItem: React.FC<{
         </td>
       </tr>
 
-      {/* Mobile expanded view */}
       {isExpanded && (
-        <tr className="lg:hidden bg-gray-50">
+        <tr className="2xl:hidden bg-gray-50">
           <td colSpan={10} className="px-3 py-2">
             <div className="space-y-2">
               <p>

@@ -7,6 +7,7 @@ import {
   faPenToSquare,
   faTimes,
   faTrash,
+  faInfoCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import AdminModal from '@/components/Admin/Admins/AdminModal';
 import UserContext from '@/store/userContext';
@@ -20,6 +21,7 @@ const AdminRowItem: React.FC<{
   const navigate = useNavigate();
   const user = useContext(UserContext);
 
+  const [isExpanded, setIsExpanded] = useState(false);
   const [isEditAccountModalOpen, setIsEditAccountModalOpen] = useState(false);
 
   const deleteAdmin = () => {
@@ -66,40 +68,99 @@ const AdminRowItem: React.FC<{
         />
       )}
 
-      <tr className="bg-white border-b">
-        <th
-          scope="row"
-          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-        >
-          {admin.id}
-        </th>
-        <td className="px-6 py-4 whitespace-nowrap">{admin.firstName}</td>
-        <td className="px-6 py-4 whitespace-nowrap">{admin.lastName}</td>
-        <td className="px-6 py-4 whitespace-nowrap">{admin.username}</td>
-        <td className="px-6 py-4 whitespace-nowrap">{admin.email}</td>
-        <td className="px-6 py-4 whitespace-nowrap">
+      <tr className="bg-white border-b hover:bg-gray-50">
+        <td className="px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+          <div className="flex items-center gap-2">
+            {admin.id}
+            <button
+              className="2xl:hidden text-gray-500"
+              onClick={() => setIsExpanded(!isExpanded)}
+            >
+              <FontAwesomeIcon icon={faInfoCircle} />
+            </button>
+          </div>
+        </td>
+        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+          {admin.firstName}
+        </td>
+        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+          {admin.lastName}
+        </td>
+        <td className="2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+          {admin.username}
+        </td>
+        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+          {admin.email}
+        </td>
+        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
           {admin.isBanned ? (
-            <FontAwesomeIcon icon={faCheck} />
+            <FontAwesomeIcon icon={faCheck} className="text-red-500" />
           ) : (
-            <FontAwesomeIcon icon={faTimes} />
+            <FontAwesomeIcon icon={faTimes} className="text-green-500" />
           )}
         </td>
-        <td className="px-6 py-4 whitespace-nowrap">{admin.createdAt}</td>
-        <td className="px-6 py-4 space-x-5 rtl:space-x-reverse whitespace-nowrap">
-          <Link to={`/users/${admin.username}`}>
-            <FontAwesomeIcon icon={faEye} />
-          </Link>
-          <button type="button" onClick={() => setIsEditAccountModalOpen(true)}>
-            <FontAwesomeIcon icon={faPenToSquare} />
-          </button>
+        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+          {admin.createdAt}
+        </td>
+        <td className="px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+          <div className="flex gap-4">
+            <Link
+              to={`/users/${admin.username}`}
+              className="text-blue-600 hover:text-blue-900"
+            >
+              <FontAwesomeIcon icon={faEye} />
+            </Link>
 
-          {admin.username !== user.username && (
-            <button type="button" onClick={deleteAdmin}>
-              <FontAwesomeIcon icon={faTrash} />
+            <button
+              type="button"
+              onClick={() => setIsEditAccountModalOpen(true)}
+              className="text-gray-600 hover:text-gray-900"
+            >
+              <FontAwesomeIcon icon={faPenToSquare} />
             </button>
-          )}
+
+            {admin.username !== user.username && (
+              <button
+                type="button"
+                onClick={deleteAdmin}
+                className="text-red-600 hover:text-red-900"
+              >
+                <FontAwesomeIcon icon={faTrash} />
+              </button>
+            )}
+          </div>
         </td>
       </tr>
+
+      {isExpanded && (
+        <tr className="2xl:hidden bg-gray-50">
+          <td colSpan={8} className="px-3 py-2">
+            <div className="space-y-2">
+              <p>
+                <span className="font-medium">First Name:</span>{' '}
+                {admin.firstName}
+              </p>
+              <p>
+                <span className="font-medium">Last Name:</span> {admin.lastName}
+              </p>
+              <p>
+                <span className="font-medium">Username:</span> {admin.username}
+              </p>
+              <p>
+                <span className="font-medium">Email:</span> {admin.email}
+              </p>
+              <p>
+                <span className="font-medium">Banned:</span>{' '}
+                {admin.isBanned ? 'Yes' : 'No'}
+              </p>
+              <p>
+                <span className="font-medium">Created At:</span>{' '}
+                {admin.createdAt}
+              </p>
+            </div>
+          </td>
+        </tr>
+      )}
     </>
   );
 };
