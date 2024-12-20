@@ -14,12 +14,12 @@ import {
 
 const withdrawalRoutes = Router();
 
-withdrawalRoutes.get('/', authenticate, checkIfFreelancer, getWithdrawals);
+withdrawalRoutes.use(authenticate, checkIfFreelancer);
+
+withdrawalRoutes.get('/', getWithdrawals);
 
 withdrawalRoutes.post(
   '/',
-  authenticate,
-  checkIfFreelancer,
   createWithdrawalValidationRules,
   validateRequest,
   createWithdrawal,
@@ -27,8 +27,6 @@ withdrawalRoutes.post(
 
 withdrawalRoutes.delete(
   '/:id',
-  authenticate,
-  checkIfFreelancer,
   deleteWithdrawalValidationRules,
   validateRequest,
   deleteWithdrawal,
