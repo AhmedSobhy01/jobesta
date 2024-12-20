@@ -27,17 +27,16 @@ CREATE TYPE "payment_status" AS ENUM(
     'failed'
 );
 
-CREATE TYPE "notification_type" AS ENUM(
-    'proposal_submitted',
-    'proposal_accepted',
-    'proposal_rejected',
-    'milestone_completed',
-    'payment_received',
-    'message_received',
-    'review_received',
-    'badge_earned',
-    'withdrawal_requested',
-    'withdrawal_processed'
+CREATE TYPE "notification_type" AS ENUM (
+  'proposal_submitted',
+  'proposal_accepted',
+  'proposal_rejected',
+  'milestone_completed',
+  'payment_received',
+  'message_received',
+  'review_received',
+  'badge_earned',
+  'withdrawal_processed'
 );
 
 CREATE TYPE "withdrawal_status" AS ENUM (

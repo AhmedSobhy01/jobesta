@@ -43,6 +43,7 @@ interface INewData {
 }
 
 interface INotifications {
+  id: string;
   type: string;
   message: string;
   isRead: boolean;
