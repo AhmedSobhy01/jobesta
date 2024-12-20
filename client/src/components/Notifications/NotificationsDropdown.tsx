@@ -42,13 +42,6 @@ const NotificationsDropdown = () => {
         return <FontAwesomeIcon icon={faTrophy} className="text-purple-500" />;
       case 'badge_earned':
         return <FontAwesomeIcon icon={faTrophy} className="text-purple-500" />;
-      case 'withdrawal_requested':
-        return (
-          <FontAwesomeIcon
-            icon={faCircleExclamation}
-            className="text-orange-500"
-          />
-        );
       case 'withdrawal_processed':
         return <FontAwesomeIcon icon={faSpinner} className="text-gray-500" />;
       default:
