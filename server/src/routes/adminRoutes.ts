@@ -8,6 +8,7 @@ import { getStatistics } from '../controllers/adminControllers/statisticsControl
 import jobsRouter from './adminRoutes/jobRoutes.js';
 import proposalRouter from './adminRoutes/proposalRoutes.js';
 import reviewRouter from './adminRoutes/reviewRoutes.js';
+import withdrawalRoutes from './adminRoutes/withdrawalsRoutes.js';
 
 const adminRoutes = router();
 
@@ -20,5 +21,6 @@ adminRoutes.get('/statistics', getStatistics);
 adminRoutes.use('/jobs', jobsRouter);
 adminRoutes.use('/proposals', proposalRouter);
 adminRoutes.use('/reviews', reviewRouter);
+adminRoutes.use('/withdrawals', withdrawalRoutes);
 
 export default adminRoutes;

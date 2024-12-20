@@ -8,7 +8,7 @@ interface UserContextType {
   username: string | null;
   email: string | null;
   role: string | null;
-  isBanned: string | null;
+  isBanned: boolean | null;
   profilePicture: string | null;
   setUsername: (username: string | null) => void;
   setUser: (newUser: {
@@ -19,7 +19,7 @@ interface UserContextType {
     username: string | null;
     email: string | null;
     role: string | null;
-    isBanned: string | null;
+    isBanned: boolean | null;
     profilePicture: string | null;
   }) => void;
 }
@@ -50,7 +50,7 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
     username: string | null;
     email: string | null;
     role: string | null;
-    isBanned: string | null;
+    isBanned: boolean | null;
     profilePicture: string | null;
   }>({
     isUserLoading: true,
@@ -80,7 +80,7 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
       username: string | null;
       email: string | null;
       role: string | null;
-      isBanned: string | null;
+      isBanned: boolean | null;
       profilePicture: string | null;
     }) => {
       setUserState(newUser);

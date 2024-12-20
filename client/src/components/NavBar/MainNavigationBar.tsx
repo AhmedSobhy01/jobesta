@@ -144,19 +144,15 @@ const MainNavigationBar: React.FC<{
                     className="py-2 border-b hover:bg-gray-100 dark:hover:bg-gray-700"
                     onClick={handleBarClick}
                   >
-                    <NavBarItem page="/about">About</NavBarItem>
-                  </li>
-                  <li
-                    className="py-2 border-b hover:bg-gray-100 dark:hover:bg-gray-700"
-                    onClick={handleBarClick}
-                  >
                     <NavBarItem page="/jobs">Jobs</NavBarItem>
                   </li>
                   <li
                     className="py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
                     onClick={handleBarClick}
                   >
-                    <NavBarItem page="/contacts">Contacts</NavBarItem>
+                    <NavBarItem page="/#contact-us" hashLink>
+                      Contact Us
+                    </NavBarItem>
                   </li>
                 </ul>
               )}
@@ -169,9 +165,10 @@ const MainNavigationBar: React.FC<{
           >
             <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
               <NavBarItem page="/">Home</NavBarItem>
-              <NavBarItem page="/about">About</NavBarItem>
               <NavBarItem page="/jobs">Jobs</NavBarItem>
-              <NavBarItem page="/contacts">Contacts</NavBarItem>
+              <NavBarItem page="/#contact-us" hashLink>
+                Contact Us
+              </NavBarItem>
             </ul>
           </div>
         </div>
