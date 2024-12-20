@@ -4,6 +4,7 @@ import {
   updateJob,
   deleteJob,
   reopenJob,
+  approveJob,
 } from '../../controllers/adminControllers/jobController.js';
 import { validateRequest } from '../../middlewares/validationMiddleware.js';
 import {
@@ -12,6 +13,7 @@ import {
   reopenJobValidationRules,
   closeJobValidationRules,
   getJobsValidationRules,
+  approveJobValidationRules,
 } from '../../validations/adminValidations/jobValidations.js';
 import { closeJob } from '../../controllers/jobController.js';
 
@@ -31,6 +33,13 @@ jobRouter.put(
   closeJobValidationRules,
   validateRequest,
   closeJob,
+);
+
+jobRouter.put(
+  '/:jobId/approve',
+  approveJobValidationRules,
+  validateRequest,
+  approveJob,
 );
 
 jobRouter.put('/:jobId', updateJobValidationRules, validateRequest, updateJob);

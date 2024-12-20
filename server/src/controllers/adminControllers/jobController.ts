@@ -195,7 +195,7 @@ export async function closeJob(req: Request, res: Response) {
 export async function reopenJob(req: Request, res: Response) {
   try {
     await db.query('UPDATE jobs SET status = $1 WHERE id = $2', [
-      'open',
+      'pending',
       req.params.jobId,
     ]);
 
@@ -210,5 +210,22 @@ export async function reopenJob(req: Request, res: Response) {
     });
   } catch {
     res.status(500).json({ status: false, message: 'Error reopening job' });
+  }
+}
+
+export async function approveJob(req: Request, res: Response) {
+  try {
+    await db.query('UPDATE jobs SET status = $1 WHERE id = $2', [
+      'open',
+      req.params.jobId,
+    ]);
+
+    res.status(200).json({
+      status: true,
+      message: 'Job approved',
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ status: false, message: 'Error approving job' });
   }
 }
