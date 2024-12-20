@@ -368,7 +368,7 @@ export async function closeJob(req: Request, res: Response) {
 export async function reopenJob(req: Request, res: Response) {
   try {
     await db.query('UPDATE jobs SET status = $1 WHERE id = $2', [
-      'open',
+      'pending',
       req.params.jobId,
     ]);
 
