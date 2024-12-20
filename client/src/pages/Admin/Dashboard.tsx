@@ -156,7 +156,7 @@ const Dashboard: React.FC & {
         <div className="w-full flex flex-wrap gap-4">
           <div className="flex-grow flex flex-col items-center shadow-sm p-4 bg-white rounded-lg border border-gray-200">
             <h2 className="font-semibold text-xl lg:text-2xl font-heading text-gray-900">
-              Jobs Count per query
+              Jobs Count per Category
             </h2>
             <PieChart
               series={[
@@ -208,7 +208,7 @@ const Dashboard: React.FC & {
 
           <div className="flex-grow flex flex-col items-center shadow-sm p-4 bg-white rounded-lg border border-gray-200">
             <h2 className="font-semibold text-xl lg:text-2xl font-heading text-gray-900">
-              Payments per Month
+              Payments in the last 6 months
             </h2>
             <BarChart
               dataset={formattedPaymentsPerMonth}
@@ -216,7 +216,7 @@ const Dashboard: React.FC & {
               series={[
                 {
                   dataKey: 'totalPrice',
-                  label: 'Payments the last 6 months',
+                  label: 'Payments per Month',
                   valueFormatter,
                 },
               ]}
