@@ -26,7 +26,8 @@ import ManageJob from '@/pages/ManageJob';
 import AdminJobs from '@/pages/Admin/Jobs';
 import NotFound from '@/pages/NotFound';
 import AuthMiddleware from '@/components/AuthMiddleware';
-import Withdrawals from './pages/Withdrawals';
+import Withdrawals from '@/pages/Withdrawals';
+import AdminWithdrawals from '@/pages/Admin/Withdrawals';
 
 const router = createBrowserRouter([
   {
@@ -130,6 +131,10 @@ const router = createBrowserRouter([
       {
         path: 'badges',
         element: <Badges />,
+      },
+      {
+        path: 'withdrawals',
+        element: <AdminWithdrawals />,
       },
       {
         path: 'jobs',
