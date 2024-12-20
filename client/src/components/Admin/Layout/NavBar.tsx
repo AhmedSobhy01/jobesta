@@ -3,6 +3,7 @@ import { faBell, faCircleUser } from '@fortawesome/free-regular-svg-icons';
 import NavButton from '@/components/NavBar/NavButton';
 import ProfileDropdown from '@/components/Profile/ProfileDropdown';
 import NavBarProfileSkeleton from '@/components/Skeletons/NavBarProfileSkeleton';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
 
 const NavBar: React.FC<{
   loadingProfile: boolean;
@@ -12,7 +13,8 @@ const NavBar: React.FC<{
   setDropdownOpenMenu: (newFreelancer: {
     isDropdownProfileOpen: boolean;
   }) => void;
-}> = ({ loadingProfile, dropdownOpen, setDropdownOpenMenu }) => {
+  toggleSidebar: () => void;
+}> = ({ toggleSidebar, loadingProfile, dropdownOpen, setDropdownOpenMenu }) => {
   const { isDropdownProfileOpen } = dropdownOpen;
 
   function handleProfileClick() {
@@ -36,6 +38,12 @@ const NavBar: React.FC<{
               <NavBarProfileSkeleton />
             ) : (
               <>
+                <button
+                  className="text-gray-500 hover:text-gray-700 md:hidden"
+                  onClick={toggleSidebar}
+                >
+                  <FontAwesomeIcon icon={faBars} size="lg" />{' '}
+                </button>
                 <NavButton
                   focus={false}
                   handleClick={handleBellClick}
