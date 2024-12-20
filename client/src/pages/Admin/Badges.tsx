@@ -1,4 +1,3 @@
-import CategoryModal from '@/components/Admin/Categories/CategoryModal';
 import BadgeRowItem from '@/components/Admin/Badges/BadgeRowItem';
 import TableLoader from '@/components/Common/TableLoader';
 import TableSkeleton from '@/components/Skeletons/TableSkeleton';
@@ -23,8 +22,6 @@ const Badges = () => {
     totalPages: 0,
     perPage: 0,
   });
-
-  const [isUpdateBadgeModalOpen, setIsUpdateBadgeModalOpen] = useState(false);
 
   const fetchDataRef = useRef(false);
   useEffect(() => {
@@ -81,58 +78,64 @@ const Badges = () => {
     );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 2xl:px-8">
-      {isUpdateBadgeModalOpen && (
-        <CategoryModal onClose={() => setIsUpdateBadgeModalOpen(false)} />
-      )}
-
-      <div className="py-9 2xl:py-12">
-        <div className="text-center pb-6 flex items-center justify-between flex-col 2xl:flex-row gap-10">
-          <h1 className="font-bold text-3xl 2xl:text-5xl font-heading text-gray-900">
+    <div className="w-full max-w-[95%] sm:max-w-[90%] lg:max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 xl:px-8">
+      <div className="py-4 sm:py-6 lg:py-8 xl:py-12">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-900">
             Badges
           </h1>
         </div>
 
-        <div
-          className="relative overflow-x-auto shadow-md sm:rounded-lg max-h-[70vh]"
-          id="table"
-        >
-          <InfiniteScroll
-            dataLength={badges.length}
-            next={() => setCurrentPage((prev) => prev + 1)}
-            hasMore={pagination.currentPage < pagination.totalPages}
-            loader={<TableLoader />}
-            scrollableTarget="table"
+        <div className="bg-white rounded-lg shadow-md">
+          <div
+            className="relative overflow-x-auto max-h-[70vh]"
+            id="badges-table"
           >
-            <table className="w-full text-sm text-left text-gray-500">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-50">
-                <tr>
-                  <th scope="col" className="px-6 py-3">
-                    ID
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Name
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Description
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Icon
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading && <TableSkeleton columns={5} />}
+            <InfiniteScroll
+              dataLength={badges.length}
+              next={() => setCurrentPage((prev) => prev + 1)}
+              hasMore={pagination.currentPage < pagination.totalPages}
+              loader={<TableLoader />}
+              scrollableTarget="badges-table"
+            >
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50 hidden sm:table-header-group">
+                  <tr>
+                    <th className="px-3 py-2 lg:px-4 xl:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      ID
+                    </th>
+                    <th className="px-3 py-2 lg:px-4 xl:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Name
+                    </th>
+                    <th className="hidden lg:table-cell px-3 py-2 lg:px-4 xl:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Description
+                    </th>
+                    <th className="hidden lg:table-cell px-3 py-2 lg:px-4 xl:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Icon
+                    </th>
+                    <th className="px-3 py-2 lg:px-4 xl:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
 
-                {badges.map((badge: Badge) => (
-                  <BadgeRowItem key={badge.id} badge={badge} />
-                ))}
-              </tbody>
-            </table>
-          </InfiniteScroll>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {loading && <TableSkeleton columns={5} />}
+                  {badges.map((badge) => (
+                    <BadgeRowItem key={badge.id} badge={badge} />
+                  ))}
+                </tbody>
+              </table>
+
+              {!loading && badges.length === 0 && (
+                <div className="text-center py-12">
+                  <p className="text-gray-500 text-sm sm:text-base">
+                    No badges found. Create your first badge to get started.
+                  </p>
+                </div>
+              )}
+            </InfiniteScroll>
+          </div>
         </div>
       </div>
     </div>
