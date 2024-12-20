@@ -23,6 +23,29 @@ export async function createReview(req: Request, res: Response): Promise<void> {
       );
     }
 
+    // Send notification to reviewed account
+    if (req.user!.role === 'client') {
+      const accountResult = await db.query(
+        'SELECT account_id FROM freelancers WHERE id = $1',
+        [req.params.freelancerId],
+      );
+      await db.query(
+        `INSERT INTO notifications (type, message, account_id, url)
+        VALUES ('review_received', 'You have received a review', $1, $2)`,
+        [accountResult.rows[0].account_id, `/jobs/${req.params.jobId}`],
+      );
+    } else {
+      const accountResult = await db.query(
+        'SELECT client_id FROM jobs WHERE id = $1',
+        [req.params.jobId],
+      );
+      await db.query(
+        `INSERT INTO notifications (type, message, account_id, url)
+        VALUES ('review_received', 'You have received a review', $1, $2)`,
+        [accountResult.rows[0].client_id, `/jobs/${req.params.jobId}`],
+      );
+    }
+
     res.status(201).json({
       status: true,
       message: 'Review created',
