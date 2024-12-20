@@ -9,7 +9,7 @@ import {
   faFolderClosed,
   faFileContract,
   faComments,
-  faCheck
+  faCheck,
 } from '@fortawesome/free-solid-svg-icons';
 import JobModal from '@/components/Admin/Jobs/JobModal.tsx';
 import { toast } from 'react-toastify';
