@@ -20,7 +20,7 @@ export async function getPayments(req: Request, res: Response): Promise<void> {
     let result = null;
 
     if (user.rows[0].role === 'client') {
-      queryString = `SELECT a.username, j.title, p.job_id, p.created_at, p.status, m.name, m.amount FROM payments p JOIN milestones m ON p.job_id = m.job_id AND p.freelancer_id = m.freelancer_id AND p.milestone_order = m.order JOIN jobs j ON p.job_id = j.id JOIN freelancers f ON f.id = p.freelancer_id JOIN accounts a ON f.account_id = a.id WHERE p.client_id = $1`;
+      queryString = `SELECT a.username, j.title, p.job_id, p.created_at, p.status, m.name, m.amount FROM payments p JOIN milestones m ON p.job_id = m.job_id AND p.freelancer_id = m.freelancer_id AND p.milestone_order = m.order JOIN jobs j ON p.job_id = j.id JOIN freelancers f ON f.id = p.freelancer_id JOIN accounts a ON f.account_id = a.id WHERE p.client_id = $1 ORDER BY p.created_at DESC`;
 
       const countQuery = `SELECT COUNT(*) FROM payments p WHERE p.client_id = $1`;
 
@@ -43,7 +43,7 @@ export async function getPayments(req: Request, res: Response): Promise<void> {
         'SELECT * FROM freelancers WHERE account_id = $1',
         [req.user!.id],
       );
-      queryString = `SELECT a.username,j.title, p.job_id, p.created_at, p.status, m.name, m.amount FROM payments p JOIN milestones m ON p.job_id = m.job_id AND p.freelancer_id = m.freelancer_id AND p.milestone_order = m.order JOIN jobs j ON p.job_id = j.id JOIN accounts a ON a.id = p.client_id WHERE p.freelancer_id = $1`;
+      queryString = `SELECT a.username,j.title, p.job_id, p.created_at, p.status, m.name, m.amount FROM payments p JOIN milestones m ON p.job_id = m.job_id AND p.freelancer_id = m.freelancer_id AND p.milestone_order = m.order JOIN jobs j ON p.job_id = j.id JOIN accounts a ON a.id = p.client_id WHERE p.freelancer_id = $1 ORDER BY p.created_at DESC`;
 
       const countQuery = `SELECT COUNT(*) FROM payments p WHERE p.freelancer_id = $1`;
 

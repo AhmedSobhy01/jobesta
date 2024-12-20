@@ -26,7 +26,7 @@ import ManageJob from '@/pages/ManageJob';
 import AdminJobs from '@/pages/Admin/Jobs';
 import NotFound from '@/pages/NotFound';
 import AuthMiddleware from '@/components/AuthMiddleware';
-import Payments from './pages/Payments';
+import Payments from '@/pages/Payments';
 
 const router = createBrowserRouter([
   {
@@ -75,7 +75,11 @@ const router = createBrowserRouter([
       },
       {
         path: '/payments',
-        element: <Payments />,
+        element: (
+          <AuthMiddleware>
+            <Payments />
+          </AuthMiddleware>
+        ),
         loader: Payments.loader,
       },
       { path: 'contacts', element: <Contacts /> },

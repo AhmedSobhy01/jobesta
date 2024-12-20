@@ -31,7 +31,7 @@ const PaymentsPage = () => {
             {loaderData.payments.map((payment: Payment, index: number) => (
               <Link
                 key={index}
-                to={`/jobs/${payment.jobId}`}
+                to={`/jobs/${payment.jobId}/manage`}
                 className="flex flex-col p-4 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md hover:bg-gray-200 dark:hover:bg-gray-700"
               >
                 <div className="mb-2">
@@ -61,9 +61,9 @@ const PaymentsPage = () => {
                   </div>
                   <p
                     className={`font-semibold ${
-                      payment.status === 'Completed'
+                      payment.status === 'completed'
                         ? 'text-green-500'
-                        : payment.status === 'Pending'
+                        : payment.status === 'pending'
                           ? 'text-yellow-500'
                           : 'text-red-500'
                     }`}
