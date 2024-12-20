@@ -8,6 +8,7 @@ import {
   faTimes,
   faTrash,
   faEye,
+  faInfoCircle,
 } from '@fortawesome/free-solid-svg-icons';
 
 import ClientModal from '@/components/Admin/Clients/ClientModal';
@@ -21,6 +22,7 @@ const ClientRowItem: React.FC<{
 }> = ({ client }) => {
   const navigate = useNavigate();
 
+  const [isExpanded, setIsExpanded] = useState(false);
   const [isEditAccountModalOpen, setIsEditAccountModalOpen] = useState(false);
 
   const banClient = () => {
@@ -143,49 +145,118 @@ const ClientRowItem: React.FC<{
         />
       )}
 
-      <tr className="bg-white border-b">
-        <th
-          scope="row"
-          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-        >
-          {client.id}
-        </th>
-        <td className="px-6 py-4 whitespace-nowrap">{client.firstName}</td>
-        <td className="px-6 py-4 whitespace-nowrap">{client.lastName}</td>
-        <td className="px-6 py-4 whitespace-nowrap">{client.username}</td>
-        <td className="px-6 py-4 whitespace-nowrap">{client.email}</td>
-        <td className="px-6 py-4 whitespace-nowrap">
+      <tr className="bg-white border-b hover:bg-gray-50">
+        <td className="px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+          <div className="flex items-center gap-2">
+            {client.id}
+            <button
+              className="2xl:hidden text-gray-500"
+              onClick={() => setIsExpanded(!isExpanded)}
+            >
+              <FontAwesomeIcon icon={faInfoCircle} />
+            </button>
+          </div>
+        </td>
+        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+          {client.firstName}
+        </td>
+        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+          {client.lastName}
+        </td>
+        <td className=" 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+          {client.username}
+        </td>
+        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+          {client.email}
+        </td>
+        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
           {client.isBanned ? (
-            <FontAwesomeIcon icon={faCheck} />
+            <FontAwesomeIcon icon={faCheck} className="text-red-500" />
           ) : (
-            <FontAwesomeIcon icon={faTimes} />
+            <FontAwesomeIcon icon={faTimes} className="text-green-500" />
           )}
         </td>
-        <td className="px-6 py-4 whitespace-nowrap">{client.createdAt}</td>
-        <td className="px-6 py-4 space-x-5 rtl:space-x-reverse whitespace-nowrap">
-          <Link to={`/users/${client.username}`}>
-            <FontAwesomeIcon icon={faEye} />
-          </Link>
+        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+          {client.createdAt}
+        </td>
+        <td className="px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+          <div className="flex gap-4">
+            <Link
+              to={`/users/${client.username}`}
+              className="text-blue-600 hover:text-blue-900"
+            >
+              <FontAwesomeIcon icon={faEye} />
+            </Link>
 
-          <button type="button" onClick={() => setIsEditAccountModalOpen(true)}>
-            <FontAwesomeIcon icon={faPenToSquare} />
-          </button>
-
-          {client.isBanned ? (
-            <button type="button" onClick={unbanClient} title="Unban client">
-              <FontAwesomeIcon icon={faCheck} />
+            <button
+              type="button"
+              onClick={() => setIsEditAccountModalOpen(true)}
+              className="text-gray-600 hover:text-gray-900"
+            >
+              <FontAwesomeIcon icon={faPenToSquare} />
             </button>
-          ) : (
-            <button type="button" onClick={banClient} title="Ban client">
-              <FontAwesomeIcon icon={faBan} />
-            </button>
-          )}
 
-          <button type="button" onClick={deleteClient}>
-            <FontAwesomeIcon icon={faTrash} />
-          </button>
+            {client.isBanned ? (
+              <button
+                type="button"
+                onClick={unbanClient}
+                className="text-green-600 hover:text-green-900"
+                title="Unban client"
+              >
+                <FontAwesomeIcon icon={faCheck} />
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={banClient}
+                className="text-red-600 hover:text-red-900"
+                title="Ban client"
+              >
+                <FontAwesomeIcon icon={faBan} />
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={deleteClient}
+              className="text-red-600 hover:text-red-900"
+            >
+              <FontAwesomeIcon icon={faTrash} />
+            </button>
+          </div>
         </td>
       </tr>
+
+      {isExpanded && (
+        <tr className="2xl:hidden bg-gray-50">
+          <td colSpan={8} className="px-3 py-2">
+            <div className="space-y-2">
+              <p>
+                <span className="font-medium">First Name:</span>{' '}
+                {client.firstName}
+              </p>
+              <p>
+                <span className="font-medium">Last Name:</span>{' '}
+                {client.lastName}
+              </p>
+              <p>
+                <span className="font-medium">Username:</span> {client.username}
+              </p>
+              <p>
+                <span className="font-medium">Email:</span> {client.email}
+              </p>
+              <p>
+                <span className="font-medium">Banned:</span>{' '}
+                {client.isBanned ? 'Yes' : 'No'}
+              </p>
+              <p>
+                <span className="font-medium">Created At:</span>{' '}
+                {client.createdAt}
+              </p>
+            </div>
+          </td>
+        </tr>
+      )}
     </>
   );
 };

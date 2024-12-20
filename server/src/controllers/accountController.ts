@@ -263,7 +263,7 @@ export async function getUserByUsername(
       description: job.description,
       category: {
         id: job.category_id,
-        name: job.name,
+        name: job.category_name,
         description: job.category_description,
       },
       createdAt: job.created_at,

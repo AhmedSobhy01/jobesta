@@ -61,6 +61,33 @@ export async function sendMessage(req: Request, res: Response) {
       ],
     );
 
+    // Send notification to recipient
+    if (req.user!.role === 'client' || req.user!.role === 'admin') {
+      const accountResult = await db.query(
+        'SELECT account_id FROM freelancers WHERE id = $1',
+        [req.params.freelancerId],
+      );
+
+      await db.query(
+        `INSERT INTO notifications (type, message, account_id, url)
+        VALUES ('message_received', 'You have a new message', $1, $2)`,
+        [accountResult.rows[0].account_id, `/jobs/${req.params.jobId}/manage`],
+      );
+    }
+
+    if (req.user!.role === 'freelancer' || req.user!.role === 'admin') {
+      const accountResult = await db.query(
+        'SELECT client_id FROM jobs WHERE id = $1',
+        [req.params.jobId],
+      );
+
+      await db.query(
+        `INSERT INTO notifications (type, message, account_id, url)
+        VALUES ('message_received', 'You have a new message', $1, $2)`,
+        [accountResult.rows[0].client_id, `/jobs/${req.params.jobId}/manage`],
+      );
+    }
+
     res.json({
       status: true,
       message: 'Message sent',

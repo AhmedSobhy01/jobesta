@@ -11,6 +11,7 @@ export async function getCategories(
       FROM categories c
       LEFT JOIN jobs j ON c.id = j.category_id AND j.status = 'open'
       GROUP BY c.id, c.name, c.description
+      ORDER BY COUNT(j.id) DESC
     `);
 
     const categories = categoriesQuery.rows.map((category) => {

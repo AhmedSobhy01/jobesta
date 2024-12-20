@@ -17,6 +17,7 @@ const AdminLayout = () => {
     isDropdownProfileOpen: false,
   });
 
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
   // Reset dropdowns only when clicking outside of navigation
@@ -33,6 +34,8 @@ const AdminLayout = () => {
       });
     }
   };
+
+  const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
 
   const fetchDataRef = useRef(false);
   useEffect(() => {
@@ -54,7 +57,7 @@ const AdminLayout = () => {
         username: userData?.username || null,
         email: userData?.email || null,
         role: userData?.role || null,
-        isBanned: userData?.isBanned || null,
+        isBanned: (userData?.isBanned as unknown as boolean) || null,
         profilePicture: userData?.profilePicture || null,
       });
 
@@ -77,13 +80,25 @@ const AdminLayout = () => {
 
       {(state === 'loading' || isUserLoading) && <FullPageLoader />}
 
-      <Sidebar />
+      <div
+        className={`fixed z-40 inset-0 bg-black bg-opacity-50 md:hidden transition-opacity ${
+          isSidebarOpen ? 'block' : 'hidden'
+        }`}
+        onClick={toggleSidebar}
+      ></div>
+
+      <Sidebar
+        className={`fixed z-50 inset-y-0 left-0 bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700 transform transition-transform duration-300 ${
+          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        } md:translate-x-0 md:relative md:block`}
+      />
 
       <div className="flex flex-col flex-1">
         <NavBar
           loadingProfile={loading}
           dropdownOpen={dropdownOpen}
           setDropdownOpenMenu={setDropdownOpenMenu}
+          toggleSidebar={toggleSidebar}
         />
 
         <main className="p-4 overflow-auto">

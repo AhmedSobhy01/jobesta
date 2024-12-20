@@ -17,7 +17,6 @@ function MainLayout() {
   const [dropdownOpen, setDropdownOpenMenu] = useState({
     isDropdownBarOpen: false,
     isDropdownProfileOpen: false,
-    isDropdownBellOpen: false,
   });
 
   const [loading, setLoading] = useState(false);
@@ -32,7 +31,6 @@ function MainLayout() {
 
     if (!isNavClick || (isNavClick && !isButtonClick)) {
       setDropdownOpenMenu({
-        isDropdownBellOpen: false,
         isDropdownBarOpen: false,
         isDropdownProfileOpen: false,
       });
@@ -50,7 +48,6 @@ function MainLayout() {
       } catch {
         clearTokens();
       }
-
       setUser({
         isUserLoading: false,
         accountId: userData?.accountId || null,
@@ -59,7 +56,7 @@ function MainLayout() {
         username: userData?.username || null,
         email: userData?.email || null,
         role: userData?.role || null,
-        isBanned: userData?.isBanned || null,
+        isBanned: (userData?.isBanned as unknown as boolean) || null,
         profilePicture: userData?.profilePicture || null,
       });
 

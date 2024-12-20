@@ -26,6 +26,9 @@ import ManageJob from '@/pages/ManageJob';
 import AdminJobs from '@/pages/Admin/Jobs';
 import NotFound from '@/pages/NotFound';
 import AuthMiddleware from '@/components/AuthMiddleware';
+import Withdrawals from '@/pages/Withdrawals';
+import AdminWithdrawals from '@/pages/Admin/Withdrawals';
+import Payments from '@/pages/Payments';
 
 const router = createBrowserRouter([
   {
@@ -72,10 +75,32 @@ const router = createBrowserRouter([
         ),
         loader: Notifications.loader,
       },
+      {
+        path: '/withdrawals',
+        element: (
+          <AuthMiddleware>
+            <Withdrawals />
+          </AuthMiddleware>
+        ),
+        loader: Withdrawals.loader,
+      },
+      {
+        path: '/payments',
+        element: (
+          <AuthMiddleware>
+            <Payments />
+          </AuthMiddleware>
+        ),
+        loader: Payments.loader,
+      },
       { path: 'contacts', element: <Contacts /> },
       {
         path: 'users/:username',
-        element: <ProfilePage />,
+        element: (
+          <AuthMiddleware>
+            <ProfilePage />
+          </AuthMiddleware>
+        ),
         loader: ProfilePage.loader,
       },
     ],
@@ -120,6 +145,10 @@ const router = createBrowserRouter([
       {
         path: 'badges',
         element: <Badges />,
+      },
+      {
+        path: 'withdrawals',
+        element: <AdminWithdrawals />,
       },
       {
         path: 'jobs',

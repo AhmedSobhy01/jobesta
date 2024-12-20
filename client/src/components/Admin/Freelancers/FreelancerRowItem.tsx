@@ -8,6 +8,7 @@ import {
   faTimes,
   faTrash,
   faEye,
+  faInfoCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import FreelancerModal from '@/components/Admin/Freelancers/FreelancerModal';
 import { toast } from 'react-toastify';
@@ -20,6 +21,7 @@ const FreelancerRowItem: React.FC<{
 }> = ({ freelancer }) => {
   const navigate = useNavigate();
 
+  const [isExpanded, setIsExpanded] = useState(false);
   const [isEditAccountModalOpen, setIsEditAccountModalOpen] = useState(false);
 
   const banFreelancer = () => {
@@ -145,57 +147,119 @@ const FreelancerRowItem: React.FC<{
         />
       )}
 
-      <tr className="bg-white border-b">
-        <th
-          scope="row"
-          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-        >
-          {freelancer.id}
-        </th>
-        <td className="px-6 py-4 whitespace-nowrap">{freelancer.firstName}</td>
-        <td className="px-6 py-4 whitespace-nowrap">{freelancer.lastName}</td>
-        <td className="px-6 py-4 whitespace-nowrap">{freelancer.username}</td>
-        <td className="px-6 py-4 whitespace-nowrap">{freelancer.email}</td>
-        <td className="px-6 py-4 whitespace-nowrap">
+      <tr className="bg-white border-b hover:bg-gray-50">
+        <td className="px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+          <div className="flex items-center gap-2">
+            {freelancer.id}
+            <button
+              className="2xl:hidden text-gray-500"
+              onClick={() => setIsExpanded(!isExpanded)}
+            >
+              <FontAwesomeIcon icon={faInfoCircle} />
+            </button>
+          </div>
+        </td>
+        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+          {freelancer.firstName}
+        </td>
+        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+          {freelancer.lastName}
+        </td>
+        <td className=" 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+          {freelancer.username}
+        </td>
+        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+          {freelancer.email}
+        </td>
+        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
           {freelancer.isBanned ? (
-            <FontAwesomeIcon icon={faCheck} />
+            <FontAwesomeIcon icon={faCheck} className="text-red-500" />
           ) : (
-            <FontAwesomeIcon icon={faTimes} />
+            <FontAwesomeIcon icon={faTimes} className="text-green-500" />
           )}
         </td>
-        <td className="px-6 py-4 whitespace-nowrap">{freelancer.createdAt}</td>
-        <td className="px-6 py-4 space-x-5 rtl:space-x-reverse whitespace-nowrap">
-          <Link to={`/users/${freelancer.username}`}>
-            <FontAwesomeIcon icon={faEye} />
-          </Link>
+        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+          {freelancer.createdAt}
+        </td>
+        <td className="px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+          <div className="flex gap-4">
+            <Link
+              to={`/users/${freelancer.username}`}
+              className="text-blue-600 hover:text-blue-900"
+            >
+              <FontAwesomeIcon icon={faEye} />
+            </Link>
 
-          <button type="button" onClick={() => setIsEditAccountModalOpen(true)}>
-            <FontAwesomeIcon icon={faPenToSquare} />
-          </button>
-
-          {freelancer.isBanned ? (
             <button
               type="button"
-              onClick={unbanFreelancer}
-              title="Unban freelancer"
+              onClick={() => setIsEditAccountModalOpen(true)}
+              className="text-gray-600 hover:text-gray-900"
             >
-              <FontAwesomeIcon icon={faCheck} />
+              <FontAwesomeIcon icon={faPenToSquare} />
             </button>
-          ) : (
+
+            {freelancer.isBanned ? (
+              <button
+                type="button"
+                onClick={unbanFreelancer}
+                className="text-green-600 hover:text-green-900"
+                title="Unban freelancer"
+              >
+                <FontAwesomeIcon icon={faCheck} />
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={banFreelancer}
+                className="text-red-600 hover:text-red-900"
+                title="Ban freelancer"
+              >
+                <FontAwesomeIcon icon={faBan} />
+              </button>
+            )}
+
             <button
               type="button"
-              onClick={banFreelancer}
-              title="Ban freelancer"
+              onClick={deleteFreelancer}
+              className="text-red-600 hover:text-red-900"
             >
-              <FontAwesomeIcon icon={faBan} />
+              <FontAwesomeIcon icon={faTrash} />
             </button>
-          )}
-
-          <button type="button" onClick={deleteFreelancer}>
-            <FontAwesomeIcon icon={faTrash} />
-          </button>
+          </div>
         </td>
       </tr>
+
+      {isExpanded && (
+        <tr className="2xl:hidden bg-gray-50">
+          <td colSpan={8} className="px-3 py-2">
+            <div className="space-y-2">
+              <p>
+                <span className="font-medium">First Name:</span>{' '}
+                {freelancer.firstName}
+              </p>
+              <p>
+                <span className="font-medium">Last Name:</span>{' '}
+                {freelancer.lastName}
+              </p>
+              <p>
+                <span className="font-medium">Username:</span>{' '}
+                {freelancer.username}
+              </p>
+              <p>
+                <span className="font-medium">Email:</span> {freelancer.email}
+              </p>
+              <p>
+                <span className="font-medium">Banned:</span>{' '}
+                {freelancer.isBanned ? 'Yes' : 'No'}
+              </p>
+              <p>
+                <span className="font-medium">Created At:</span>{' '}
+                {freelancer.createdAt}
+              </p>
+            </div>
+          </td>
+        </tr>
+      )}
     </>
   );
 };

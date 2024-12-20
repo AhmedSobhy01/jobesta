@@ -333,6 +333,34 @@ export async function acceptProposal(req: Request, res: Response) {
       jobId,
     ]);
 
+    // Send notification to accepted freelancer
+    const accountResult = await db.query(
+      'SELECT account_id FROM freelancers WHERE id = $1',
+      [freelancerId],
+    );
+
+    await db.query(
+      `INSERT INTO notifications (type, message, account_id, url)
+      VALUES ('proposal_accepted', 'Your proposal has been accepted', $1, $2)`,
+      [accountResult.rows[0].account_id, `/jobs/${jobId}/manage`],
+    );
+
+    // Send notification to rejected freelancers
+    const result = await db.query(
+      'SELECT freelancers.account_id FROM proposals JOIN freelancers ON proposals.freelancer_id = freelancers.id WHERE job_id = $1 AND status = $2',
+      [jobId, 'rejected'],
+    );
+
+    const rejectedFreelancers = result.rows.map((row) => row.account_id);
+
+    for (const id of rejectedFreelancers) {
+      await db.query(
+        `INSERT INTO notifications (type, message, account_id, url)
+        VALUES ('proposal_rejected', 'Your proposal has been rejected', $1, $2)`,
+        [id, `/jobs/${jobId}`],
+      );
+    }
+
     res.status(200).json({
       status: true,
       message: 'Proposal accepted',
@@ -368,7 +396,7 @@ export async function closeJob(req: Request, res: Response) {
 export async function reopenJob(req: Request, res: Response) {
   try {
     await db.query('UPDATE jobs SET status = $1 WHERE id = $2', [
-      'open',
+      'pending',
       req.params.jobId,
     ]);
 

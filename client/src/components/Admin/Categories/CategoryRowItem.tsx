@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
+import {
+  faInfoCircle,
+  faPenToSquare,
+  faTrash,
+} from '@fortawesome/free-solid-svg-icons';
 import CategoryModal from '@/components/Admin/Categories/CategoryModal';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
@@ -12,6 +16,7 @@ const CategoryRowItem: React.FC<{
 }> = ({ category }) => {
   const navigate = useNavigate();
 
+  const [isExpanded, setIsExpanded] = useState(false);
   const [isEditAccountModalOpen, setIsEditAccountModalOpen] = useState(false);
 
   const deleteCategory = () => {
@@ -61,26 +66,59 @@ const CategoryRowItem: React.FC<{
         />
       )}
 
-      <tr className="bg-white border-b">
-        <th
-          scope="row"
-          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-        >
-          {category.id}
-        </th>
-        <td className="px-6 py-4 whitespace-nowrap">{category.name}</td>
-        <td className="px-6 py-4 whitespace-nowrap">{category.description}</td>
-
-        <td className="px-6 py-4 space-x-5 rtl:space-x-reverse whitespace-nowrap">
-          <button type="button" onClick={() => setIsEditAccountModalOpen(true)}>
-            <FontAwesomeIcon icon={faPenToSquare} />
-          </button>
-
-          <button type="button" onClick={deleteCategory}>
-            <FontAwesomeIcon icon={faTrash} />
-          </button>
+      <tr className="bg-white border-b hover:bg-gray-50">
+        <td className="px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+          <div className="flex items-center gap-2">
+            {category.id}
+            <button
+              className="2xl:hidden text-gray-500"
+              onClick={() => setIsExpanded(!isExpanded)}
+            >
+              <FontAwesomeIcon icon={faInfoCircle} />
+            </button>
+          </div>
+        </td>
+        <td className=" 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+          {category.name}
+        </td>
+        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+          {category.description}
+        </td>
+        <td className="px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+          <div className="flex gap-4">
+            <button
+              type="button"
+              onClick={() => setIsEditAccountModalOpen(true)}
+              className="text-gray-600 hover:text-gray-900"
+            >
+              <FontAwesomeIcon icon={faPenToSquare} />
+            </button>
+            <button
+              type="button"
+              onClick={deleteCategory}
+              className="text-red-600 hover:text-red-900"
+            >
+              <FontAwesomeIcon icon={faTrash} />
+            </button>
+          </div>
         </td>
       </tr>
+
+      {isExpanded && (
+        <tr className="2xl:hidden bg-gray-50">
+          <td colSpan={4} className="px-3 py-2">
+            <div className="space-y-2">
+              <p>
+                <span className="font-medium">Name:</span> {category.name}
+              </p>
+              <p>
+                <span className="font-medium">Description:</span>{' '}
+                {category.description}
+              </p>
+            </div>
+          </td>
+        </tr>
+      )}
     </>
   );
 };
