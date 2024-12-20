@@ -12,13 +12,14 @@ import {
   deleteJobValidationRules,
   reopenJobValidationRules,
   closeJobValidationRules,
+  getJobsValidationRules,
   approveJobValidationRules,
 } from '../../validations/adminValidations/jobValidations.js';
 import { closeJob } from '../../controllers/jobController.js';
 
 const jobRouter = Router();
 
-jobRouter.get('/', getJobs);
+jobRouter.get('/', getJobsValidationRules, validateRequest, getJobs);
 
 jobRouter.put(
   '/:jobId/reopen',

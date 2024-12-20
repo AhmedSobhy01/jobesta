@@ -7,6 +7,11 @@ export const getAccountsValidationRules = [
     .optional()
     .isIn(['admin', 'freelancer', 'client'])
     .withMessage('Role must be either admin or freelancer or client'),
+
+  query('search')
+    .optional()
+    .isString()
+    .withMessage('Search query must be a string'),
 ];
 
 export const freelancerDataValidationRules = [

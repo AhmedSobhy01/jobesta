@@ -74,6 +74,16 @@ interface Milestone {
   order: number;
 }
 
+interface Payment {
+  jobTitle: string;
+  jobId: string;
+  createdAt: string;
+  username: string;
+  status: string;
+  milestoneName: string;
+  amount: string;
+}
+
 interface Review {
   rating: string;
   comment: string;
@@ -85,6 +95,7 @@ interface Review {
     role: string;
     profilePicture: string;
   };
+  job?: Job;
 }
 
 interface Proposal {
