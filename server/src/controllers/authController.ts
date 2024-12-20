@@ -58,6 +58,14 @@ export async function loginAccount(req: Request, res: Response): Promise<void> {
 
   const user = query.rows[0];
 
+  if (user.is_banned) {
+    res.status(403).json({
+      status: false,
+      message: 'This user has been banned. Please contact support.',
+    });
+    return;
+  }
+
   const validPassword = await bcrypt.compare(password, user.password);
   if (!validPassword) {
     res.status(401).json({ status: false, message: 'Invalid credentials' });

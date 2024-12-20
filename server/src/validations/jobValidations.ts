@@ -72,7 +72,10 @@ export const updateJobValidationRules = [
         throw new Error('Job does not exist');
       }
 
-      if (jobQuery.rows[0].status !== 'open') {
+      if (
+        jobQuery.rows[0].status !== 'open' &&
+        jobQuery.rows[0].status !== 'pending'
+      ) {
         throw new Error('Job is not open');
       }
 
@@ -247,8 +250,11 @@ export const closeJobValidationRules = [
         throw new Error('Job does not exist');
       }
 
-      if (jobQuery.rows[0].status !== 'open') {
-        throw new Error('Job is not open');
+      if (
+        jobQuery.rows[0].status !== 'open' &&
+        jobQuery.rows[0].status !== 'pending'
+      ) {
+        throw new Error('Job is not open or pending');
       }
 
       return true;

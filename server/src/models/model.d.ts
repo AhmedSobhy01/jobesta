@@ -88,3 +88,13 @@ export interface IAccountDisplay {
   username: string;
   profilePicture?: string;
 }
+
+interface IWithdrawal {
+  id: number;
+  status: string;
+  amount: string;
+  paymentMethod: string;
+  paymentUsername: string;
+  freelancer: Freelancer;
+  requestedAt: string;
+}

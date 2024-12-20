@@ -23,8 +23,8 @@ export async function completeMilestone(req: Request, res: Response) {
     }
 
     await db.query(
-      'INSERT INTO payments (job_id, freelancer_id, milestone_order, client_id) VALUES ($1, $2, $3, $4)',
-      [jobId, freelancerId, milestoneOrder, req.user!.id],
+      'INSERT INTO payments (job_id, freelancer_id, milestone_order, client_id, status) VALUES ($1, $2, $3, $4, $5)',
+      [jobId, freelancerId, milestoneOrder, req.user!.id, 'completed'],
     );
 
     await db.query(

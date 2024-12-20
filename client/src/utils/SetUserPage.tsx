@@ -1,37 +1,58 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import UserContext from '@/store/userContext';
+import { clearTokens, getCurrentUser } from './auth';
 
 export function SetUserPage() {
   const { setUser } = useContext(UserContext);
   const navigate = useNavigate();
 
+  const fetchDataRef = useRef(false);
   useEffect(() => {
-    const accountId = null;
-    const firstName = null;
-    const lastName = null;
-    const username = null;
-    const email = null;
-    const role = null;
-    const isBanned = null;
-    const profilePicture = null;
+    const fetchUserData = async () => {
+      let userData: User | null = null;
+      setUser({
+        isUserLoading: true,
+        accountId: null,
+        firstName: null,
+        lastName: null,
+        username: null,
+        email: null,
+        role: null,
+        isBanned: null,
+        profilePicture: null,
+      });
 
-    setUser({
-      isUserLoading: false,
-      accountId,
-      firstName,
-      lastName,
-      username,
-      email,
-      role,
-      isBanned,
-      profilePicture,
-    });
+      try {
+        userData = await getCurrentUser();
+      } catch {
+        clearTokens();
+      }
 
-    const redirectTo =
-      new URLSearchParams(window.location.search).get('redirect') || '/';
+      setUser({
+        isUserLoading: false,
+        accountId: userData?.accountId || null,
+        firstName: userData?.firstName || null,
+        lastName: userData?.lastName || null,
+        username: userData?.username || null,
+        email: userData?.email || null,
+        role: userData?.role || null,
+        isBanned: userData?.isBanned === 'true' || null,
+        profilePicture: userData?.profilePicture || null,
+      });
 
-    navigate(redirectTo);
+      const redirectTo =
+        new URLSearchParams(window.location.search).get('redirect') || '/';
+
+      fetchDataRef.current = false;
+
+      navigate(redirectTo);
+    };
+
+    if (!fetchDataRef.current) {
+      fetchDataRef.current = true;
+      fetchUserData();
+    }
   }, [setUser, navigate]);
 
   return null;

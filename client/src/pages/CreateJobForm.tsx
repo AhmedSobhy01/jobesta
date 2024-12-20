@@ -1,7 +1,7 @@
-import { Form, Navigate, useLoaderData, useNavigate } from 'react-router-dom';
+import { Form, useLoaderData, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import ErrorModule from '@/components/ErrorModule';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { getAuthJwtToken } from '@/utils/auth';
 import UserContext from '@/store/userContext';
 
@@ -72,7 +72,20 @@ const CreateJobForm = () => {
     setIsSubmitting(false);
   };
 
-  if (user.role !== 'client') return <Navigate to="/" replace />;
+  const shownErrorRef = useRef(false);
+  useEffect(() => {
+    if (user.role !== 'client') {
+      if (shownErrorRef.current) return;
+
+      toast(`As a ${user.role}, you are not allowed to create a job.`, {
+        type: 'error',
+      });
+
+      shownErrorRef.current = true;
+
+      navigate('/', { replace: true });
+    }
+  }, [user, navigate]);
 
   if (!categoriesStatus) {
     return (
