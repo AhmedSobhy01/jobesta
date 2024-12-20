@@ -18,7 +18,7 @@ const Badge: React.FC<{ badge: IBadge }> = ({ badge }) => {
       </div>
 
       {badge.description && (
-        <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-sm p-1 rounded transition-opacity duration-300 opacity-0 shadow-lg group-hover:opacity-100 z-10 whitespace-nowrap">
+        <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-sm p-1 transition-opacity duration-300 opacity-0 shadow-lg group-hover:opacity-100 z-10 whitespace-nowrap px-4 py-1 rounded-xl">
           {badge.description}
         </div>
       )}
