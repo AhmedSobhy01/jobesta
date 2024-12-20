@@ -370,7 +370,7 @@ const ProfilePage: React.FC & {
 
           {/* Stats Section */}
           {accountData.role === 'freelancer' && (
-            <div className="flex gap-4">
+            <div className="flex gap-8">
               {freelancerAccountData.badges.map(
                 (badge: IBadge, index: number) => {
                   return <Badge key={index} badge={badge} />;
