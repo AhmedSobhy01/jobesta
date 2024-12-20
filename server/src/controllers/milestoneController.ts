@@ -32,6 +32,25 @@ export async function completeMilestone(req: Request, res: Response) {
       [jobId, freelancerId, milestoneOrder],
     );
 
+    // Send notification to freelancer about milestone completion
+    const accountResult = await db.query(
+      'SELECT account_id FROM freelancers WHERE id = $1',
+      [freelancerId],
+    );
+
+    await db.query(
+      `INSERT INTO notifications (type, message, account_id, url)
+      VALUES ('milestone_completed', 'You have completed a milestone', $1, $2)`,
+      [accountResult.rows[0].account_id, `/jobs/${jobId}/manage`],
+    );
+
+    // Send notification to freelancer about payment
+    await db.query(
+      `INSERT INTO notifications (type, message, account_id, url)
+      VALUES ('payment_received', 'You have received payment for a milestone', $1, '/payments')`,
+      [accountResult.rows[0].account_id],
+    );
+
     res.json({ status: true, message: 'Milestone completed' });
   } catch {
     res
