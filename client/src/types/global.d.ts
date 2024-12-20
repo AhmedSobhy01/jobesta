@@ -128,3 +128,13 @@ interface Badge {
   description: string;
   icon: string;
 }
+
+interface Withdrawal {
+  id: number;
+  status: string;
+  amount: string;
+  paymentMethod: string;
+  paymentUsername: string;
+  freelancer?: Freelancer;
+  requestedAt: string;
+}

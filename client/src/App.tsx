@@ -26,6 +26,7 @@ import ManageJob from '@/pages/ManageJob';
 import AdminJobs from '@/pages/Admin/Jobs';
 import NotFound from '@/pages/NotFound';
 import AuthMiddleware from '@/components/AuthMiddleware';
+import Withdrawals from './pages/Withdrawals';
 
 const router = createBrowserRouter([
   {
@@ -71,6 +72,15 @@ const router = createBrowserRouter([
           </AuthMiddleware>
         ),
         loader: Notifications.loader,
+      },
+      {
+        path: '/withdrawals',
+        element: (
+          <AuthMiddleware>
+            <Withdrawals />
+          </AuthMiddleware>
+        ),
+        loader: Withdrawals.loader,
       },
       { path: 'contacts', element: <Contacts /> },
       {
