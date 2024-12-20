@@ -70,7 +70,7 @@ export async function sendMessage(req: Request, res: Response) {
 
       await db.query(
         `INSERT INTO notifications (type, message, account_id, url)
-        VALUES ('message_received', 'You have a new message', $1, )`,
+        VALUES ('message_received', 'You have a new message', $1, $2)`,
         [accountResult.rows[0].account_id, `/jobs/${req.params.jobId}/manage`],
       );
     }
