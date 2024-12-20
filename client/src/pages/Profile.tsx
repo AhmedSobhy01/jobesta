@@ -253,7 +253,7 @@ const ProfilePage: React.FC & {
         ) : null}
         {/* Active Section */}
         {activeTab.jobsActive && accountData.jobs?.length > 0 && (
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6 bg-white hover:text-emerald-700 dark:text-gray-200 dark:bg-gray-900 h-min p-5 rounded-xl shadow-md">
+          <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 gap-6 bg-white hover:text-emerald-700 dark:text-gray-200 dark:bg-gray-900 h-min p-5">
             {accountData.jobs?.map((job: IJob) => (
               <Jobs key={job.id} job={job} />
             ))}
@@ -279,13 +279,13 @@ const ProfilePage: React.FC & {
         {activeTab.previousWorkActive && accountData.role === 'freelancer' && (
           <div className="mt-6 flex flex-row gap-4">
             {freelancerData &&
-              freelancerData.previousWork &&
+              freelancerData.previousWork.length > 0 &&
               freelancerData.previousWork.map(
                 (work: IPreviousWork, index: number) => (
                   <a
                     href={work.url}
                     key={index}
-                    className="min-w-72 bg-white hover:text-emerald-700 hover:bg-gray-100 dark:bg-gray-900 dark:hover:bg-gray-700 h-min p-5 rounded-xl shadow-md"
+                    className="min-w-72 border border-gray-200 bg-white hover:text-emerald-700 hover:bg-gray-100 dark:bg-gray-900 dark:hover:bg-gray-700 h-min p-5 rounded-xl shadow-md"
                   >
                     <div className="mt-4">
                       <h3 className="text-xl text-inherit overflow-hidden text-gray-900 dark:text-gray-100 font-semibold">
@@ -307,20 +307,26 @@ const ProfilePage: React.FC & {
                   </a>
                 ),
               )}
+            {freelancerData && freelancerData.previousWork.length === 0 && (
+              <p>No Previous work found</p>
+            )}
           </div>
         )}
         {activeTab.skillsActive && accountData.role === 'freelancer' && (
           <div className="mt-6">
-            <div className="flex flex-row flex-wrap gap-2">
+            <div className="flex flex-row flex-wrap gap-3">
               {freelancerData &&
                 freelancerData.skills.map((skill: string, index: number) => (
                   <div
                     key={index}
-                    className="flex items-center justify-center py-1 px-2 border rounded-full text-center bg-white dark:bg-gray-900 dark:text-gray-200 overflow-hidden cursor-pointer hover:text-emerald-700"
+                    className="flex items-center justify-center py-1 px-3 border rounded-full text-center bg-white dark:bg-gray-900 dark:text-gray-200 overflow-hidden cursor-pointer hover:text-emerald-700"
                   >
                     {skill}
                   </div>
                 ))}
+              {freelancerData && freelancerData.skills.length === 0 && (
+                <p>No Skills found</p>
+              )}
             </div>
           </div>
         )}
