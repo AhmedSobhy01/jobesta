@@ -208,9 +208,11 @@ const NotificationsDropdown = ({ onOpen }: { onOpen: () => void }) => {
           wideHidden={false}
         >
           <FontAwesomeIcon icon={faBell} />
-          <span className="bg-red-500 text-white text-xs rounded-full w-4 h-4 absolute top-0 right-1 flex justify-center items-center">
-            {totalUnread}
-          </span>
+          {totalUnread > 0 && (
+            <span className="bg-red-500 text-white text-xs rounded-full w-4 h-4 absolute top-0 right-1 flex justify-center items-center">
+              {totalUnread}
+            </span>
+          )}
         </NavButton>
       </div>
 
