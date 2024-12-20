@@ -28,6 +28,7 @@ import NotFound from '@/pages/NotFound';
 import AuthMiddleware from '@/components/AuthMiddleware';
 import Withdrawals from '@/pages/Withdrawals';
 import AdminWithdrawals from '@/pages/Admin/Withdrawals';
+import Payments from '@/pages/Payments';
 
 const router = createBrowserRouter([
   {
@@ -83,10 +84,23 @@ const router = createBrowserRouter([
         ),
         loader: Withdrawals.loader,
       },
+      {
+        path: '/payments',
+        element: (
+          <AuthMiddleware>
+            <Payments />
+          </AuthMiddleware>
+        ),
+        loader: Payments.loader,
+      },
       { path: 'contacts', element: <Contacts /> },
       {
         path: 'users/:username',
-        element: <ProfilePage />,
+        element: (
+          <AuthMiddleware>
+            <ProfilePage />
+          </AuthMiddleware>
+        ),
         loader: ProfilePage.loader,
       },
     ],

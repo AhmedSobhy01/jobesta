@@ -2,7 +2,8 @@ import { Request, Response } from 'express';
 import db from '../../db/db.js';
 
 export async function getJobs(req: Request, res: Response): Promise<void> {
-  let queryString = `
+  try {
+    let queryString = `
       SELECT
         j.id,
         j.status,
@@ -29,34 +30,61 @@ export async function getJobs(req: Request, res: Response): Promise<void> {
       LEFT JOIN proposals p ON p.job_id = j.id
       LEFT JOIN freelancers f ON f.id = p.freelancer_id AND p.status = 'accepted'
       LEFT JOIN accounts freelancer ON freelancer.id = f.account_id
-      GROUP BY
-        j.id, 
-        client.id, 
-        c.id, 
-        f.id, 
-        freelancer.id
+    `;
+    let countQuery = `
+      SELECT COUNT(*)
+      FROM jobs j
+      LEFT JOIN categories c ON c.id = j.category_id
+      INNER JOIN accounts client ON client.id = j.client_id
+      LEFT JOIN proposals p ON p.job_id = j.id
+      LEFT JOIN freelancers f ON f.id = p.freelancer_id AND p.status = 'accepted'
+      LEFT JOIN accounts freelancer ON freelancer.id = f.account_id
+    `;
+    const queryParams: string[] = [];
+
+    if (req.query.search) {
+      const searchCondition = `j.title ILIKE $1 OR j.description ILIKE $1 OR client.first_name ILIKE $1 OR client.last_name ILIKE $1 OR client.username ILIKE $1 OR freelancer.username ILIKE $1 OR CONCAT(client.first_name, ' ', client.last_name) ILIKE $1 OR CONCAT(freelancer.first_name, ' ', freelancer.last_name) ILIKE $1`;
+      queryParams.push(`%${req.query.search.toString()}%`);
+
+      queryString += ` WHERE (${searchCondition})`;
+      countQuery += ` WHERE (${searchCondition})`;
+    }
+
+    if (req.query.status) {
+      const statusCondition = `j.status = $${queryParams.length + 1}`;
+      queryParams.push(req.query.status.toString());
+
+      queryString +=
+        queryParams.length === 1
+          ? ` WHERE ${statusCondition}`
+          : ` AND ${statusCondition}`;
+      countQuery +=
+        queryParams.length === 1
+          ? ` WHERE ${statusCondition}`
+          : ` AND ${statusCondition}`;
+    }
+
+    queryString += `
+      GROUP BY j.id, client.id, c.id, f.id, freelancer.id
       ORDER BY j.created_at DESC
     `;
 
-  const countQuery = 'SELECT COUNT(*) FROM jobs j';
+    const limit = parseInt(process.env.ADMIN_PAGINATION_LIMIT || '10');
 
-  const limit = parseInt(process.env.ADMIN_PAGINATION_LIMIT || '10');
+    const totalItemsQuery = await db.query(countQuery, queryParams);
+    const totalItems = parseInt(totalItemsQuery.rows[0].count);
+    const totalPages = Math.ceil(totalItems / limit);
 
-  const totalItemsQuery = await db.query(countQuery);
-  const totalItems = parseInt(totalItemsQuery.rows[0].count);
-  const totalPages = Math.ceil(totalItems / limit);
+    const page =
+      parseInt(req.query.page as string) > 0 &&
+      parseInt(req.query.page as string) <= totalPages
+        ? parseInt(req.query.page as string)
+        : 1;
+    const offset = (page - 1) * limit;
 
-  const page =
-    parseInt(req.query.page as string) > 0 &&
-    parseInt(req.query.page as string) <= totalPages
-      ? parseInt(req.query.page as string)
-      : 1;
-  const offset = (page - 1) * limit;
+    queryString += ` LIMIT ${limit} OFFSET ${offset}`;
 
-  queryString += ` LIMIT ${limit} OFFSET ${offset}`;
-
-  try {
-    const jobsQuery = await db.query(queryString);
+    const jobsQuery = await db.query(queryString, queryParams);
 
     const jobs = jobsQuery.rows.map((job) => {
       return {
@@ -167,7 +195,7 @@ export async function closeJob(req: Request, res: Response) {
 export async function reopenJob(req: Request, res: Response) {
   try {
     await db.query('UPDATE jobs SET status = $1 WHERE id = $2', [
-      'open',
+      'pending',
       req.params.jobId,
     ]);
 
@@ -182,5 +210,22 @@ export async function reopenJob(req: Request, res: Response) {
     });
   } catch {
     res.status(500).json({ status: false, message: 'Error reopening job' });
+  }
+}
+
+export async function approveJob(req: Request, res: Response) {
+  try {
+    await db.query('UPDATE jobs SET status = $1 WHERE id = $2', [
+      'open',
+      req.params.jobId,
+    ]);
+
+    res.status(200).json({
+      status: true,
+      message: 'Job approved',
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ status: false, message: 'Error approving job' });
   }
 }
