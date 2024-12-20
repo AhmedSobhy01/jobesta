@@ -38,7 +38,6 @@ CREATE TYPE "notification_type" AS ENUM (
   'message_received',
   'review_received',
   'badge_earned',
-  'withdrawal_requested',
   'withdrawal_processed'
 );
 
