@@ -29,7 +29,10 @@ const Freelancers = () => {
   const [searchQuery, setSearchQuery] = useState(
     searchParams.get('search') || '',
   );
-  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const searchQueryRef = useRef(searchQuery);
+  useEffect(() => {
+    if (searchQuery.trim() === searchQueryRef.current.trim()) return;
+
     setLoading(true);
     setFreelancers([]);
     setPagination({
@@ -38,10 +41,10 @@ const Freelancers = () => {
       totalPages: 0,
       perPage: 0,
     });
-    setSearchParams((prev) => ({ ...prev, search: e.target.value.trim() }));
-    setSearchQuery(e.target.value);
     setCurrentPage(1);
-  };
+    setSearchParams((prev) => ({ ...prev, search: searchQuery.trim() }));
+    searchQueryRef.current = searchQuery.trim();
+  }, [searchQuery, setSearchParams]);
 
   const [isCreateFreelancerModalOpen, setIsCreateFreelancerModalOpen] =
     useState(false);
@@ -49,7 +52,7 @@ const Freelancers = () => {
   const fetchData = useDebounce(
     useCallback(async () => {
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/admin/accounts?page=${currentPage}&role=freelancer${searchQuery ? `&search=${searchQuery}` : ''}`,
+        `${import.meta.env.VITE_API_URL}/admin/accounts?page=${currentPage}&role=freelancer${searchQueryRef.current ? `&search=${searchQueryRef.current}` : ''}`,
         {
           headers: {
             Authorization: `Bearer ${getAuthJwtToken()}`,
@@ -79,7 +82,7 @@ const Freelancers = () => {
       setLoading(false);
 
       fetchDataRef.current = false;
-    }, [currentPage, searchQuery]),
+    }, [currentPage, searchQueryRef]),
     300,
   );
 
@@ -140,7 +143,7 @@ const Freelancers = () => {
             type="text"
             placeholder="Search freelancers..."
             className="w-full lg:w-1/3 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-600"
-            onChange={handleSearchInputChange}
+            onChange={(e) => setSearchQuery(e.target.value)}
             value={searchQuery}
           />
         </div>

@@ -28,7 +28,10 @@ const Jobs = () => {
   const [searchQuery, setSearchQuery] = useState(
     searchParams.get('search') || '',
   );
-  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const searchQueryRef = useRef(searchQuery);
+  useEffect(() => {
+    if (searchQuery.trim() === searchQueryRef.current.trim()) return;
+
     setLoading(true);
     setJobs([]);
     setPagination({
@@ -37,14 +40,10 @@ const Jobs = () => {
       totalPages: 0,
       perPage: 0,
     });
-    setSearchParams((prev) => ({
-      ...prev,
-      search: e.target.value.trim(),
-      status,
-    }));
-    setSearchQuery(e.target.value);
     setCurrentPage(1);
-  };
+    setSearchParams((prev) => ({ ...prev, search: searchQuery.trim() }));
+    searchQueryRef.current = searchQuery.trim();
+  }, [searchQuery, setSearchParams]);
 
   const [status, setStatus] = useState(searchParams.get('status') || '');
   const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -68,7 +67,7 @@ const Jobs = () => {
   const fetchData = useDebounce(
     useCallback(async () => {
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/admin/jobs?page=${currentPage}${searchQuery ? `&search=${searchQuery}` : ''}${status ? `&status=${status}` : ''}`,
+        `${import.meta.env.VITE_API_URL}/admin/jobs?page=${currentPage}${searchQueryRef.current ? `&search=${searchQueryRef.current}` : ''}${status ? `&status=${status}` : ''}`,
         {
           headers: {
             Authorization: `Bearer ${getAuthJwtToken()}`,
@@ -93,7 +92,7 @@ const Jobs = () => {
       setLoading(false);
 
       fetchDataRef.current = false;
-    }, [currentPage, searchQuery, status]),
+    }, [currentPage, searchQueryRef, status]),
     300,
   );
 
@@ -140,7 +139,7 @@ const Jobs = () => {
             type="text"
             placeholder="Search jobs..."
             className="w-full lg:w-1/3 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-600"
-            onChange={handleSearchInputChange}
+            onChange={(e) => setSearchQuery(e.target.value)}
             value={searchQuery}
           />
           <select
