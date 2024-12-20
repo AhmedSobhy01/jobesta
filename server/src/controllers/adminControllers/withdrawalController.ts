@@ -14,7 +14,7 @@ export async function getWithdrawals(
         a.last_name AS freelancer_last_name
       FROM withdrawals w 
       JOIN freelancers f ON w.freelancer_id = f.id 
-      JOIN accounts a ON f.id = a.id
+      JOIN accounts a ON f.account_id = a.id
     `;
     let countString = 'SELECT COUNT(*) FROM withdrawals';
     const queryParams = [];
