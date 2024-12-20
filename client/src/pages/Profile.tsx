@@ -372,9 +372,9 @@ const ProfilePage: React.FC & {
           {accountData.role === 'freelancer' && (
             <div className="flex gap-8">
               {freelancerAccountData.badges.map(
-                (badge: IBadge, index: number) => {
-                  return <Badge key={index} badge={badge} />;
-                },
+                (badge: IBadge, index: number) => (
+                  <Badge key={index} badge={badge} />
+                ),
               )}
             </div>
           )}
