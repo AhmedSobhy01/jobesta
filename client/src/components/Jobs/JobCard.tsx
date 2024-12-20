@@ -2,6 +2,7 @@ import { limitText } from '@/utils/string';
 import { humanReadable } from '@/utils/time';
 import CategoryBadge from '@/components/Jobs/CategoryBadge';
 import { Link } from 'react-router';
+import getProfilePicture from '@/utils/profilePicture';
 
 const JobCard: React.FC<{
   job: Job;
@@ -13,7 +14,7 @@ const JobCard: React.FC<{
           <div className="flex items-center gap-6">
             <img
               alt="Client profile picture"
-              src={job.client.profilePicture}
+              src={getProfilePicture(job.client.profilePicture)}
               decoding="async"
               loading="lazy"
               className="rounded-full w-16 h-16"

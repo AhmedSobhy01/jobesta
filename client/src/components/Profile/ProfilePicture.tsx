@@ -1,4 +1,5 @@
 import { getAuthJwtToken } from '@/utils/auth';
+import getProfilePicture from '@/utils/profilePicture';
 import { FormEventHandler, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -41,12 +42,7 @@ const ProfilePicture: React.FC<ProfilePictureData> = ({
   const [isEditingPic, setIsEditingPic] = useState(false);
   const [pic, setPic] = useState<File | null>(null);
 
-  let profilePic = anyUserData.user?.profilePicture;
-
-  if (!profilePic?.startsWith('http')) {
-    profilePic =
-      import.meta.env.VITE_API_URL + '/' + anyUserData.user?.profilePicture;
-  }
+  const profilePic = getProfilePicture(anyUserData.user?.profilePicture ?? '');
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (
     e: React.FormEvent<HTMLFormElement>,

@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { Link, useNavigate } from 'react-router';
 import { getAuthJwtToken } from '@/utils/auth';
 import { humanReadable } from '@/utils/time';
+import getProfilePicture from '@/utils/profilePicture';
 
 const Reviews: React.FC<{ job: Job }> = ({ job }) => {
   const user = useContext(UserContext);
@@ -107,7 +108,7 @@ const Reviews: React.FC<{ job: Job }> = ({ job }) => {
                 <div className="flex items-center gap-4 w-1/5">
                   <img
                     alt="Freelancer profile picture"
-                    src={review.sender!.profilePicture}
+                    src={getProfilePicture(review.sender!.profilePicture)}
                     decoding="async"
                     loading="lazy"
                     className="rounded-full w-16 h-16"

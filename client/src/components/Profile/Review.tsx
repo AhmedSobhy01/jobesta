@@ -1,3 +1,4 @@
+import getProfilePicture from '@/utils/profilePicture';
 import { humanReadable } from '@/utils/time';
 import { Link } from 'react-router-dom';
 
@@ -12,7 +13,7 @@ const Review: React.FC<{ review: Review }> = ({ review }) => {
           <div className="flex items-center gap-4 w-1/4">
             <img
               alt="Freelancer profile picture"
-              src={review.sender!.profilePicture}
+              src={getProfilePicture(review.sender!.profilePicture)}
               decoding="async"
               loading="lazy"
               className="rounded-full w-16 h-16"

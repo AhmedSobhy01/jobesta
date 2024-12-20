@@ -16,6 +16,7 @@ import Badge from '@/components/Profile/Badge';
 import Jobs from '@/components/Profile/Jobs';
 import { getAuthJwtToken } from '@/utils/auth';
 import Review from '@/components/Profile/Review';
+import getProfilePicture from '@/utils/profilePicture';
 
 const activeCss =
   'text-green-700   font-semibold pb-2 border-b-2 border-gray-800 dark:text-green-700';
@@ -81,9 +82,11 @@ const ProfilePage: React.FC & {
     username: anyUserData.user ? anyUserData.user.username : userData.username,
     role: anyUserData.user ? anyUserData.user.role : userData.role,
     isBanned: anyUserData.user ? anyUserData.user.isBanned : userData.isBanned,
-    profilePicture: anyUserData.user
-      ? anyUserData.user.profilePicture
-      : userData.profilePicture,
+    profilePicture: getProfilePicture(
+      anyUserData.user
+        ? anyUserData.user.profilePicture
+        : userData.profilePicture,
+    ),
     jobs: anyUserData.user?.jobs,
   };
 
