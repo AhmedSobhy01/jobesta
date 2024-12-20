@@ -4,6 +4,7 @@ import {
   faUser,
   faCertificate,
   faSuitcase,
+  faWallet,
 } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import jobestaLogo from '@/assets/jobesta-logo.png';
@@ -44,6 +45,11 @@ const Sidebar: React.FC<{ className?: string }> = ({ className }) => {
           icon={faCertificate}
           text="Badges"
           route="/admin/badges"
+        />
+        <SidebarButton
+          icon={faWallet}
+          text="Withdrawals"
+          route="/admin/withdrawals"
         />
         <SidebarButton icon={faSuitcase} text="Jobs" route="/admin/jobs" />
       </nav>

@@ -4,6 +4,7 @@ import {
   Link,
   redirect,
   useActionData,
+  useNavigate,
   useNavigation,
 } from 'react-router';
 import signinpic from '@/assets/signinpic.png';
@@ -12,6 +13,7 @@ import { useEffect, useState } from 'react';
 import ErrorModule from '@/components/ErrorModule';
 
 function Login() {
+  const navigator = useNavigate();
   const navigate = useNavigation();
   const errors = useActionData();
 
@@ -19,7 +21,12 @@ function Login() {
     !errors?.status && !!errors?.global,
   );
 
+  const [isErrorMessage, setIsErrorMessage] = useState(
+    !errors?.status && !!errors?.message,
+  );
+
   useEffect(() => {
+    setIsErrorMessage(!!errors?.message);
     setIsGlobalError(!!errors?.global);
   }, [errors]);
 
@@ -29,7 +36,11 @@ function Login() {
   const isSubmitting = navigate.state === 'submitting';
 
   const handleCloseError = () => {
+    setIsErrorMessage(false);
     setIsGlobalError(false);
+    const redirectTo =
+      new URLSearchParams(window.location.search).get('redirect') || '/';
+    navigator(redirectTo);
   };
   return (
     <div className="justify-items-center">
@@ -37,6 +48,12 @@ function Login() {
         {isGlobalError && (
           <ErrorModule
             errorMessage={errors?.global}
+            onClose={handleCloseError}
+          />
+        )}
+        {isErrorMessage && (
+          <ErrorModule
+            errorMessage={errors?.message}
             onClose={handleCloseError}
           />
         )}
@@ -55,7 +72,7 @@ function Login() {
           </h2>
           <div className="flex flex-col max-w-md w-full px-8">
             <Form method="post" noValidate>
-              <div className="space-y-2.5">
+              <div className="space-y-2.5 my-4">
                 <Input label="email" type="email" errorMessage={errors?.email}>
                   Email
                 </Input>
@@ -67,12 +84,6 @@ function Login() {
                 >
                   Password
                 </Input>
-              </div>
-
-              <div className="my-3 flex items-center justify-between">
-                <a href="#" className="text-green-600 hover:underline">
-                  Forgot Password?
-                </a>
               </div>
 
               {errors?.message == 'Invalid credentials' && (
@@ -132,7 +143,7 @@ Login.action = async function action({ request }: ActionFunctionArgs) {
       };
       return authErrors;
     }
-
+    console.log('gerg');
     const jwtToken = resData.data.jwtToken;
     const refreshToken = resData.data.refreshToken;
 

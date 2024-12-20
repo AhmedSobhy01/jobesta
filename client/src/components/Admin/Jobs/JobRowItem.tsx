@@ -9,6 +9,8 @@ import {
   faFolderClosed,
   faFileContract,
   faInfoCircle,
+  faComments,
+  faCheck,
 } from '@fortawesome/free-solid-svg-icons';
 import JobModal from '@/components/Admin/Jobs/JobModal.tsx';
 import { toast } from 'react-toastify';
@@ -16,6 +18,7 @@ import { useNavigate } from 'react-router';
 import { Link } from 'react-router';
 import { getAuthJwtToken } from '@/utils/auth';
 import JobProposalsModal from './JobProposalsModal';
+import JobReviewsModal from './JobReviewsModal';
 
 const JobRowItem: React.FC<{
   job: Job;
@@ -25,6 +28,7 @@ const JobRowItem: React.FC<{
   const [isEditJobModalOpen, setIsEditJobModalOpen] = useState(false);
   const [isShowProposalsModalOpen, setIsShowProposalsModalOpen] =
     useState(false);
+  const [isShowReviewssModalOpen, setIsShowReviewsModalOpen] = useState(false);
 
   const handleCloseJob = () => {
     Swal.fire({
@@ -167,6 +171,59 @@ const JobRowItem: React.FC<{
     });
   };
 
+  const handleAcceptJob = () => {
+    Swal.fire({
+      title: 'Are you sure?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#F44336',
+      cancelButtonColor: '#3085d6',
+      cancelButtonText: 'Cancel',
+      confirmButtonText: 'Yes, Approve it!',
+      showLoaderOnConfirm: true,
+      allowOutsideClick: () => !Swal.isLoading(),
+      backdrop: true,
+      preConfirm: () =>
+        new Promise<void>((resolve) => {
+          fetch(
+            import.meta.env.VITE_API_URL + '/admin/jobs/' + job.id + '/approve',
+            {
+              method: 'PUT',
+              headers: {
+                Authorization: `Bearer ${getAuthJwtToken()}`,
+                'Content-Type': 'application/json',
+              },
+            },
+          )
+            .then((res) => {
+              if (!res.ok && res.status !== 422)
+                throw new Error('Failed to Approve job');
+
+              return res.json();
+            })
+            .then((data) => {
+              if (Object.values(data?.errors || {}).length) {
+                if (data.errors.jobId) throw new Error(data.errors.jobId);
+
+                throw new Error('Validation failed');
+              }
+
+              return data;
+            })
+            .then((data) => {
+              toast(data.message, { type: 'success' });
+              navigate('/admin/jobs?reload=true');
+            })
+            .catch((error) => {
+              toast(error.message, { type: 'error' });
+            })
+            .finally(() => {
+              resolve();
+            });
+        }),
+    });
+  };
+
   return (
     <>
       {isEditJobModalOpen && (
@@ -177,6 +234,13 @@ const JobRowItem: React.FC<{
         <JobProposalsModal
           jobId={job.id}
           onClose={() => setIsShowProposalsModalOpen(false)}
+        />
+      )}
+
+      {isShowReviewssModalOpen && (
+        <JobReviewsModal
+          jobId={job.id}
+          onClose={() => setIsShowReviewsModalOpen(false)}
         />
       )}
 
@@ -210,7 +274,9 @@ const JobRowItem: React.FC<{
                   ? 'bg-yellow-500'
                   : job.status === 'closed'
                     ? 'bg-red-500'
-                    : 'bg-blue-500'
+                    : job.status == 'pending'
+                      ? 'bg-gray-500'
+                      : 'bg-blue-500'
             }`}
           >
             {job.status
@@ -280,6 +346,18 @@ const JobRowItem: React.FC<{
               title="Show all proposals"
             >
               <FontAwesomeIcon icon={faFileContract} />
+            </button>
+
+            <button type="button" title="Accept job" onClick={handleAcceptJob}>
+              <FontAwesomeIcon icon={faCheck} />
+            </button>
+
+            <button
+              type="button"
+              title="Show all reviews"
+              onClick={() => setIsShowReviewsModalOpen(true)}
+            >
+              <FontAwesomeIcon icon={faComments} />
             </button>
 
             <button
