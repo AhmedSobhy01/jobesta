@@ -116,22 +116,22 @@ const Freelancers = () => {
     );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 2xl:px-8">
       {isCreateFreelancerModalOpen && (
         <FreelancerModal
           onClose={() => setIsCreateFreelancerModalOpen(false)}
         />
       )}
 
-      <div className="py-9 lg:py-12">
-        <div className="text-center pb-6 flex items-center justify-between flex-col lg:flex-row gap-10">
-          <h1 className="font-bold text-3xl lg:text-5xl font-heading text-gray-900">
+      <div className="py-6 2xl:py-12">
+        <div className="text-center pb-6 flex items-center justify-between flex-col 2xl:flex-row gap-4">
+          <h1 className="font-bold text-2xl 2xl:text-5xl font-heading text-gray-900">
             Freelancers
           </h1>
 
           <button
             type="button"
-            className="px-5 py-2 bg-blue-600 text-white rounded-lg font-medium focus:outline-none hover:bg-blue-700 transition-colors duration-300 ease-in-out w-full lg:w-auto"
+            className="px-5 py-2 bg-blue-600 text-white rounded-lg font-medium focus:outline-none hover:bg-blue-700 transition-colors duration-300 ease-in-out w-full 2xl:w-auto"
             onClick={() => setIsCreateFreelancerModalOpen(true)}
           >
             Add Freelancer
@@ -149,7 +149,7 @@ const Freelancers = () => {
         </div>
 
         <div
-          className="relative overflow-x-auto shadow-md sm:rounded-lg max-h-[70vh]"
+          className="relative overflow-x-auto shadow-md rounded-lg max-h-[70vh]"
           id="table"
           ref={tableElement}
         >
@@ -160,46 +160,71 @@ const Freelancers = () => {
             loader={<TableLoader />}
             scrollableTarget="table"
           >
-            <table className="w-full text-sm text-left text-gray-500">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-50">
-                <tr>
-                  <th scope="col" className="px-6 py-3">
-                    ID
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    First Name
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Last Name
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Username
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Email
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Banned
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Created At
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading && <TableSkeleton columns={8} />}
-
-                {freelancers.map((freelancer: Account) => (
-                  <FreelancerRowItem
-                    key={freelancer.id}
-                    freelancer={freelancer}
-                  />
-                ))}
-              </tbody>
-            </table>
+            <div className="block w-full overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th
+                      scope="col"
+                      className="px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-left"
+                    >
+                      ID
+                    </th>
+                    <th
+                      scope="col"
+                      className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-left"
+                    >
+                      First Name
+                    </th>
+                    <th
+                      scope="col"
+                      className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-left"
+                    >
+                      Last Name
+                    </th>
+                    <th
+                      scope="col"
+                      className="2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-left"
+                    >
+                      Username
+                    </th>
+                    <th
+                      scope="col"
+                      className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-left"
+                    >
+                      Email
+                    </th>
+                    <th
+                      scope="col"
+                      className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-left"
+                    >
+                      Banned
+                    </th>
+                    <th
+                      scope="col"
+                      className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-left"
+                    >
+                      Created At
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-left"
+                    >
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {loading && <TableSkeleton columns={8} />}
+                  {freelancers.map((freelancer: Account) => (
+                    <FreelancerRowItem
+                      key={freelancer.id}
+                      freelancer={freelancer}
+                    />
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </InfiniteScroll>
         </div>
       </div>
