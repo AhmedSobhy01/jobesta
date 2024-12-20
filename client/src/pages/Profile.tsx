@@ -180,10 +180,10 @@ const ProfilePage: React.FC & {
 
           {/* Stats Section */}
           {accountData.role === 'freelancer' && freelancerData && (
-            <div className="flex gap-4">
-              {freelancerData.badges.map((badge: IBadge, index: number) => {
-                return <Badge key={index} badge={badge} />;
-              })}
+            <div className="flex gap-8">
+              {freelancerData.badges.map((badge: IBadge, index: number) => (
+                <Badge key={index} badge={badge} />
+              ))}
             </div>
           )}
           {accountData.role === 'freelancer' ||

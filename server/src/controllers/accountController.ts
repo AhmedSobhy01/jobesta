@@ -250,6 +250,8 @@ export async function getUserByUsername(
       jobsQueryString += ' WHERE 1 != 1';
     }
 
+    jobsQueryString += ' ORDER BY j.created_at DESC';
+
     const jobsQuery = await db.query(jobsQueryString, jobsQueryParams);
 
     const jobs = jobsQuery.rows.map((job) => ({
