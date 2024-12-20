@@ -95,6 +95,7 @@ interface Review {
     role: string;
     profilePicture: string;
   };
+  job?: Job;
 }
 
 interface Proposal {
