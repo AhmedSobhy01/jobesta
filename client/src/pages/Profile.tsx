@@ -43,7 +43,7 @@ const ProfilePage: React.FC & {
   const anyUserData = useLoaderData();
 
   const [activeTab, setActiveTab] = useState({
-    jobsActive: true,
+    jobsActive: false,
     previousWorkActive: false,
     skillsActive: false,
     reviewsActive: false,
@@ -75,6 +75,19 @@ const ProfilePage: React.FC & {
       const { bio, skills, previousWork, badges, jobs } =
         anyUserData.freelancer;
       setFreelancer({ bio, skills, previousWork, badges, jobs });
+    }
+
+    if (
+      anyUserData.user &&
+      (anyUserData.user.role === 'client' ||
+        anyUserData.user.role === 'freelancer')
+    ) {
+      setActiveTab({
+        jobsActive: true,
+        previousWorkActive: false,
+        skillsActive: false,
+        reviewsActive: false,
+      });
     }
   }, [anyUserData, param.username, setFreelancer]);
 
@@ -173,60 +186,71 @@ const ProfilePage: React.FC & {
               })}
             </div>
           )}
+          {accountData.role === 'freelancer' ||
+          accountData.role === 'client' ? (
+            <div className="w-full md:w-2/3 grid grid-cols-2 gap-4">
+              {/* Projects/Jobs */}
+              <div className="text-center">
+                <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200">
+                  {accountData.jobs?.length}
+                </h2>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Jobs</p>
+              </div>
 
-          <div className="w-full md:w-2/3 grid grid-cols-2 gap-4">
-            {/* Projects/Jobs */}
-            <div className="text-center">
-              <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200">
-                {accountData.jobs?.length}
-              </h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Jobs</p>
+              {/* Reviews */}
+              <div className="text-center">
+                <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200">
+                  {Number(anyUserData.user.avgReviewRating).toFixed(2)}
+                </h2>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Rating
+                </p>
+              </div>
             </div>
-
-            {/* Reviews */}
-            <div className="text-center">
-              <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200">
-                {Number(anyUserData.user.avgReviewRating).toFixed(2)}
-              </h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Rating</p>
-            </div>
-          </div>
+          ) : null}
         </div>
+
         {/* Tabs Section */}
-        <div className="mt-4">
-          <ul className="flex space-x-4 border-b">
-            <button
-              onClick={() => handleTabClick('jobs')}
-              className={activeTab.jobsActive ? activeCss : notActiveCss}
-            >
-              Jobs
-            </button>
-            <button
-              onClick={() => handleTabClick('reviews')}
-              className={activeTab.reviewsActive ? activeCss : notActiveCss}
-            >
-              Reviews
-            </button>
-            {accountData.role === 'freelancer' && (
+        {accountData.role === 'freelancer' || accountData.role === 'client' ? (
+          <div className="mt-4">
+            <ul className="flex space-x-4 border-b">
               <>
                 <button
-                  onClick={() => handleTabClick('previousWork')}
-                  className={
-                    activeTab.previousWorkActive ? activeCss : notActiveCss
-                  }
+                  onClick={() => handleTabClick('jobs')}
+                  className={activeTab.jobsActive ? activeCss : notActiveCss}
                 >
-                  Previous Work
+                  Jobs
                 </button>
                 <button
-                  onClick={() => handleTabClick('skills')}
-                  className={activeTab.skillsActive ? activeCss : notActiveCss}
+                  onClick={() => handleTabClick('reviews')}
+                  className={activeTab.reviewsActive ? activeCss : notActiveCss}
                 >
-                  Skills
+                  Reviews
                 </button>
               </>
-            )}
-          </ul>
-        </div>
+              {accountData.role === 'freelancer' && (
+                <>
+                  <button
+                    onClick={() => handleTabClick('previousWork')}
+                    className={
+                      activeTab.previousWorkActive ? activeCss : notActiveCss
+                    }
+                  >
+                    Previous Work
+                  </button>
+                  <button
+                    onClick={() => handleTabClick('skills')}
+                    className={
+                      activeTab.skillsActive ? activeCss : notActiveCss
+                    }
+                  >
+                    Skills
+                  </button>
+                </>
+              )}
+            </ul>
+          </div>
+        ) : null}
         {/* Active Section */}
         {activeTab.jobsActive && accountData.jobs?.length > 0 && (
           <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6 bg-white hover:text-emerald-700 dark:text-gray-200 dark:bg-gray-900 h-min p-5 rounded-xl shadow-md">
