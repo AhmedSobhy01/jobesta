@@ -27,6 +27,13 @@ export async function createProposal(req: Request, res: Response) {
       );
     }
 
+    // Send notification to client
+    await db.query(
+      `INSERT INTO notifications (type, message, account_id, url)
+      VALUES ('proposal_submitted', 'You have a new proposal on your job', (SELECT client_id FROM jobs WHERE id = $1), $2)`,
+      [req.params.jobId, `/jobs/${req.params.jobId}`],
+    );
+
     res.status(201).json({ status: true, message: 'Proposal created' });
   } catch {
     res.status(500).json({ status: false, message: 'Error creating proposal' });
