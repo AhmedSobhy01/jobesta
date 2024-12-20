@@ -228,7 +228,7 @@ function Job() {
                   )}
 
                   {user.username === job.client.username &&
-                    job.status === 'open' && (
+                    (job.status === 'open' || job.status === 'pending') && (
                       <div className="flex gap-2 mt-5">
                         <button
                           onClick={() => setEditJobModalOpen(true)}

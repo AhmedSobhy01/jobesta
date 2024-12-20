@@ -7,17 +7,30 @@ export async function getAccounts(req: Request, res: Response) {
   try {
     let accountsQuery = 'SELECT * from accounts';
     let countQuery = 'SELECT COUNT(*) FROM accounts';
+    const queryParams: string[] = [];
 
     if (req.query.role) {
       accountsQuery += ` WHERE role = '${req.query.role}'`;
       countQuery += ` WHERE role = '${req.query.role}'`;
     }
 
+    if (req.query.search) {
+      const searchCondition = `first_name ILIKE $1 OR last_name ILIKE $1 OR username ILIKE $1 OR email ILIKE $1 OR CONCAT(first_name, ' ', last_name) ILIKE $1`;
+      queryParams.push(`%${req.query.search.toString()}%`);
+
+      accountsQuery += req.query.role
+        ? ` AND (${searchCondition})`
+        : ` WHERE (${searchCondition})`;
+      countQuery += req.query.role
+        ? ` AND (${searchCondition})`
+        : ` WHERE (${searchCondition})`;
+    }
+
     accountsQuery += ' ORDER BY created_at DESC';
 
     const limit = parseInt(process.env.ADMIN_PAGINATION_LIMIT || '10');
 
-    const totalItemsQuery = await db.query(countQuery);
+    const totalItemsQuery = await db.query(countQuery, queryParams);
     const totalItems = parseInt(totalItemsQuery.rows[0].count);
     const totalPages = Math.ceil(totalItems / limit);
 
@@ -30,7 +43,7 @@ export async function getAccounts(req: Request, res: Response) {
 
     accountsQuery += ` LIMIT ${limit} OFFSET ${offset}`;
 
-    const result = await db.query(accountsQuery);
+    const result = await db.query(accountsQuery, queryParams);
 
     const accounts = result.rows.map((account) => {
       return {

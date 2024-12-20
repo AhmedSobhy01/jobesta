@@ -110,7 +110,7 @@ const ReviewModal = ({ job, onClose }: { job: Job; onClose: () => void }) => {
                 key={star}
                 className={`cursor-pointer text-3xl ${
                   (hover || rating) >= star
-                    ? 'text-yellow-500'
+                    ? 'text-emerald-500'
                     : 'text-gray-300'
                 }`}
                 onMouseEnter={() => handleStarHover(star)}

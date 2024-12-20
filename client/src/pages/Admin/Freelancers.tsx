@@ -2,17 +2,19 @@ import FreelancerModal from '@/components/Admin/Freelancers/FreelancerModal';
 import FreelancerRowItem from '@/components/Admin/Freelancers/FreelancerRowItem';
 import TableLoader from '@/components/Common/TableLoader';
 import TableSkeleton from '@/components/Skeletons/TableSkeleton';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import ErrorModule from '@/components/ErrorModule';
 import { useNavigate, useSearchParams } from 'react-router';
 import { getAuthJwtToken } from '@/utils/auth';
+import { useDebounce } from '@/utils/hooks/useDebounce';
 
 const Freelancers = () => {
   const navigate = useNavigate();
 
   const [globalError, setGlobalError] = useState<string | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
+  const tableElement = useRef<HTMLDivElement | null>(null);
 
   const [freelancers, setFreelancers] = useState<Account[]>([]);
   const [loading, setLoading] = useState(true);
@@ -24,14 +26,33 @@ const Freelancers = () => {
     perPage: 0,
   });
 
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get('search') || '',
+  );
+  const searchQueryRef = useRef(searchQuery);
+  useEffect(() => {
+    if (searchQuery.trim() === searchQueryRef.current.trim()) return;
+
+    setLoading(true);
+    setFreelancers([]);
+    setPagination({
+      currentPage: 0,
+      totalItems: 0,
+      totalPages: 0,
+      perPage: 0,
+    });
+    setCurrentPage(1);
+    setSearchParams((prev) => ({ ...prev, search: searchQuery.trim() }));
+    searchQueryRef.current = searchQuery.trim();
+  }, [searchQuery, setSearchParams]);
+
   const [isCreateFreelancerModalOpen, setIsCreateFreelancerModalOpen] =
     useState(false);
 
-  const fetchDataRef = useRef(false);
-  useEffect(() => {
-    const fetchData = async () => {
+  const fetchData = useDebounce(
+    useCallback(async () => {
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/admin/accounts?page=${currentPage}&role=freelancer`,
+        `${import.meta.env.VITE_API_URL}/admin/accounts?page=${currentPage}&role=freelancer${searchQueryRef.current ? `&search=${searchQueryRef.current}` : ''}`,
         {
           headers: {
             Authorization: `Bearer ${getAuthJwtToken()}`,
@@ -45,17 +66,28 @@ const Freelancers = () => {
       }
 
       const data = await res.json();
-      setFreelancers((prevFreelancers) => [
-        ...prevFreelancers,
-        ...data.data.accounts,
-      ]);
+
+      if (currentPage === 1) {
+        if (tableElement.current) tableElement.current.scrollTo({ top: 0 });
+
+        setFreelancers(data.data.accounts);
+      } else
+        setFreelancers((prevFreelancers) => [
+          ...prevFreelancers,
+          ...data.data.accounts,
+        ]);
+
       setPagination(data.data.pagination);
 
       setLoading(false);
 
       fetchDataRef.current = false;
-    };
+    }, [currentPage, searchQueryRef]),
+    300,
+  );
 
+  const fetchDataRef = useRef(false);
+  useEffect(() => {
     if (!fetchDataRef.current) {
       if (searchParams.get('reload')) {
         setFreelancers([]);
@@ -73,7 +105,7 @@ const Freelancers = () => {
       fetchDataRef.current = true;
       fetchData();
     }
-  }, [currentPage, searchParams, navigate, setSearchParams]);
+  }, [currentPage, searchParams, fetchData, navigate, setSearchParams]);
 
   if (globalError)
     return (
@@ -106,9 +138,20 @@ const Freelancers = () => {
           </button>
         </div>
 
+        <div className="mb-6">
+          <input
+            type="text"
+            placeholder="Search freelancers..."
+            className="w-full lg:w-1/3 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-600"
+            onChange={(e) => setSearchQuery(e.target.value)}
+            value={searchQuery}
+          />
+        </div>
+
         <div
           className="relative overflow-x-auto shadow-md sm:rounded-lg max-h-[70vh]"
           id="table"
+          ref={tableElement}
         >
           <InfiniteScroll
             dataLength={freelancers.length}
