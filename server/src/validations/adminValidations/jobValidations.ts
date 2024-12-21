@@ -13,7 +13,14 @@ export const getJobsValidationRules = [
     .optional()
     .isString()
     .withMessage('Status must be a string')
-    .isIn(['open', 'in_progress', 'completed', 'closed', 'cancelled'])
+    .isIn([
+      'pending',
+      'open',
+      'in_progress',
+      'completed',
+      'closed',
+      'cancelled',
+    ])
     .withMessage(
       'Status must be one of the following: open, in_progress, completed, closed, cancelled',
     ),
