@@ -90,7 +90,7 @@ const ReviewModal: React.FC<{
         </div>
 
         <div className="overflow-y-auto">
-          <div className="mb-6">
+          <div className="mb-6 mx-2">
             <h3 className="text-sm font-medium text-gray-600 mb-2">Rating</h3>
             <div className="flex space-x-2">
               {[1, 2, 3, 4, 5].map((star) => (
@@ -107,7 +107,7 @@ const ReviewModal: React.FC<{
             </div>
             <p className="text-sm text-red-500 mt-1">{errors?.rating}</p>
           </div>
-          <div className="mb-4">
+          <div className="mb-4 mx-2">
             <label
               htmlFor="feedback"
               className="block text-sm font-medium text-gray-600 mb-2"
