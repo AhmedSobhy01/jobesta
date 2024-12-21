@@ -75,27 +75,14 @@ function ManageJob() {
 
   const [isReviewModalOpen, setReviewModalOpen] = useState(false);
 
-  const handleReviewJob = () => {
-    Swal.fire({
-      title: 'This job has been completed. Would you like to add a review?',
-      icon: 'success',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#F44336',
-      confirmButtonText: 'Add Review',
-      cancelButtonText: 'Maybe Later',
-      showLoaderOnConfirm: true,
-      allowOutsideClick: () => !Swal.isLoading(),
-      backdrop: true,
-      preConfirm: () => {
-        setReviewModalOpen(true);
-      },
-    });
-  };
-
-  const fetchDataRef = useRef(false);
   useEffect(() => {
-    if (user.username != null) {
+    if (
+      user.username != null &&
+      job &&
+      job.status === 'completed' &&
+      ((user.role === 'freelancer' && job.myProposal) ||
+        (user.role === 'client' && job.myJob))
+    ) {
       const myReview = job.reviews?.reduce<Review | undefined>(
         (acc, review) => {
           if (review.sender.username === user.username) {
@@ -106,11 +93,28 @@ function ManageJob() {
         undefined,
       );
 
-      if (job.status === 'completed' && !myReview) {
-        handleReviewJob();
+      if (!myReview) {
+        Swal.fire({
+          title: 'This job has been completed. Would you like to add a review?',
+          icon: 'success',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#F44336',
+          confirmButtonText: 'Add Review',
+          cancelButtonText: 'Maybe Later',
+          showLoaderOnConfirm: true,
+          allowOutsideClick: () => !Swal.isLoading(),
+          backdrop: true,
+          preConfirm: () => {
+            setReviewModalOpen(true);
+          },
+        });
       }
     }
+  }, [job, user, user.role, user.username]);
 
+  const fetchDataRef = useRef(false);
+  useEffect(() => {
     const fetchMessages = async () => {
       if (fetchDataRef.current) return;
 
@@ -162,8 +166,8 @@ function ManageJob() {
     proposal,
     messages.length,
     user.username,
-    job.reviews,
-    job.status,
+    job?.reviews,
+    job?.status,
   ]);
 
   const [message, setMessage] = useState('');
@@ -309,9 +313,6 @@ function ManageJob() {
         />
       )}
 
-      {isReviewModalOpen && (
-        <ReviewModal job={job} onClose={() => setReviewModalOpen(false)} />
-      )}
       <h1 className="text-center w-full max-w-screen-xl mx-auto px-5 text-3xl font-bold lg:text-4xl">
         Manage Job
       </h1>

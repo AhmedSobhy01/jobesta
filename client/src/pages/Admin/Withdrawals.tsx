@@ -101,21 +101,21 @@ const Withdrawals = () => {
     );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 xl:px-8">
       {isUpdateWithdrawalModalOpen && (
         <CategoryModal onClose={() => setIsUpdateWithdrawalModalOpen(false)} />
       )}
 
-      <div className="py-9 lg:py-12">
-        <div className="text-center pb-6 flex items-center justify-between flex-col lg:flex-row gap-10">
-          <h1 className="font-bold text-3xl lg:text-5xl font-heading text-gray-900">
+      <div className="py-6 xl:py-12">
+        <div className="text-center pb-6 flex items-center justify-between flex-col xl:flex-row gap-4">
+          <h1 className="font-bold text-xl xl:text-5xl font-heading text-gray-900">
             Withdrawals
           </h1>
         </div>
 
-        <div className="mb-6 flex justify-end items-center gap-4">
+        <div className="mb-6">
           <select
-            className="w-full lg:w-64 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-600"
+            className="w-full lg:w-1/3 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-600"
             onChange={handleStatusChange}
             value={status}
           >
@@ -126,7 +126,7 @@ const Withdrawals = () => {
         </div>
 
         <div
-          className="relative overflow-x-auto shadow-md sm:rounded-lg max-h-[70vh]"
+          className="relative overflow-x-auto shadow-md rounded-lg max-h-[70vh]"
           id="table"
           ref={tableElement}
         >
@@ -137,49 +137,58 @@ const Withdrawals = () => {
             loader={<TableLoader />}
             scrollableTarget="table"
           >
-            <table className="w-full text-sm text-left text-gray-500">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-50">
-                <tr>
-                  <th scope="col" className="px-6 py-3">
-                    ID
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Status
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Freelancer Name
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Freelancer Username
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Amount
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Payment Method
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Payment Username
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Requested At
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading && <TableSkeleton columns={9} />}
-
-                {withdrawals.map((withdrawal: Withdrawal) => (
-                  <WithdrawalRowItem
-                    key={withdrawal.id}
-                    withdrawal={withdrawal}
-                  />
-                ))}
-              </tbody>
-            </table>
+            <div className="block w-full overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-3 py-2 xl:px-6 xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left">
+                      ID
+                    </th>
+                    <th className="hidden px-3 py-2 xl:px-6 xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left">
+                      Status
+                    </th>
+                    <th className="hidden xl:table-cell px-3 py-2 xl:px-6 xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left">
+                      Freelancer Name
+                    </th>
+                    <th className="px-3 py-2 xl:px-6 xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left">
+                      Freelancer Username
+                    </th>
+                    <th className="px-3 py-2 xl:px-6 xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left">
+                      Amount
+                    </th>
+                    <th className="hidden xl:table-cell px-3 py-2 xl:px-6 xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left">
+                      Payment Method
+                    </th>
+                    <th className="hidden xl:table-cell px-3 py-2 xl:px-6 xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left">
+                      Payment Username
+                    </th>
+                    <th className="hidden xl:table-cell px-3 py-2 xl:px-6 xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left">
+                      Requested At
+                    </th>
+                    <th className="px-3 py-2 xl:px-6 xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {loading && (
+                    <>
+                      <TableSkeleton
+                        columns={9}
+                        className="xl:table-row hidden"
+                      />
+                      <TableSkeleton columns={4} className="xl:hidden" />
+                    </>
+                  )}
+                  {withdrawals.map((withdrawal: Withdrawal) => (
+                    <WithdrawalRowItem
+                      key={withdrawal.id}
+                      withdrawal={withdrawal}
+                    />
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </InfiniteScroll>
         </div>
       </div>

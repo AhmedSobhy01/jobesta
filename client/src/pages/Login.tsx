@@ -143,7 +143,6 @@ Login.action = async function action({ request }: ActionFunctionArgs) {
       };
       return authErrors;
     }
-    console.log('gerg');
     const jwtToken = resData.data.jwtToken;
     const refreshToken = resData.data.refreshToken;
 

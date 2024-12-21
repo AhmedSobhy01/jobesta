@@ -15,7 +15,7 @@ import {
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 import ProposalModal from '@/components/Proposals/ProposalModal';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import UserContext from '@/store/userContext';
 import Proposals from '@/components/Jobs/Proposals';
 import Swal from 'sweetalert2';
@@ -24,6 +24,7 @@ import EditJobModal from '@/components/Jobs/EditJobModal';
 import { getAuthJwtToken } from '@/utils/auth';
 import Review from '@/components/Jobs/Review';
 import getProfilePicture from '@/utils/profilePicture';
+import ReviewModal from '@/components/Jobs/AddReviewModal';
 
 function Job() {
   const navigate = useNavigate();
@@ -50,7 +51,45 @@ function Job() {
   };
 
   const [isEditJobModalOpen, setEditJobModalOpen] = useState(false);
+  const [isReviewModalOpen, setReviewModalOpen] = useState(false);
 
+  useEffect(() => {
+    if (
+      user.username != null &&
+      job &&
+      job.status === 'completed' &&
+      ((user.role === 'freelancer' && job.myProposal) ||
+        (user.role === 'client' && job.myJob))
+    ) {
+      const myReview = job.reviews?.reduce<Review | undefined>(
+        (acc, review) => {
+          if (review.sender.username === user.username) {
+            return review;
+          }
+          return acc;
+        },
+        undefined,
+      );
+
+      if (!myReview) {
+        Swal.fire({
+          title: 'This job has been completed. Would you like to add a review?',
+          icon: 'success',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#F44336',
+          confirmButtonText: 'Add Review',
+          cancelButtonText: 'Maybe Later',
+          showLoaderOnConfirm: true,
+          allowOutsideClick: () => !Swal.isLoading(),
+          backdrop: true,
+          preConfirm: () => {
+            setReviewModalOpen(true);
+          },
+        });
+      }
+    }
+  }, [job, user.role, user.username]);
   const handleCloseJob = () => {
     Swal.fire({
       title: 'Are you sure?',
@@ -165,6 +204,10 @@ function Job() {
 
   return (
     <div>
+      {isReviewModalOpen && (
+        <ReviewModal job={job} onClose={() => setReviewModalOpen(false)} />
+      )}
+
       {isEditJobModalOpen && (
         <EditJobModal job={job} onClose={() => setEditJobModalOpen(false)} />
       )}

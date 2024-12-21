@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCheck,
+  faInfoCircle,
+  faTrash,
+} from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
 import { getAuthJwtToken } from '@/utils/auth';
@@ -10,6 +14,7 @@ const WithdrawalRowItem: React.FC<{
   withdrawal: Withdrawal;
 }> = ({ withdrawal }) => {
   const navigate = useNavigate();
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const completeWithdrawal = () => {
     Swal.fire({
@@ -108,58 +113,108 @@ const WithdrawalRowItem: React.FC<{
 
   return (
     <>
-      <tr className="bg-white border-b">
-        <th
-          scope="row"
-          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-        >
-          {withdrawal.id}
-        </th>
-        <td className="px-6 py-4 whitespace-nowrap">
+      <tr className="bg-white border-b hover:bg-gray-50">
+        <td className="px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
+          <div className="flex items-center gap-2">
+            {withdrawal.id}
+            <button
+              className="xl:hidden text-gray-500"
+              onClick={() => setIsExpanded(!isExpanded)}
+            >
+              <FontAwesomeIcon icon={faInfoCircle} />
+            </button>
+          </div>
+        </td>
+        <td className="hidden xl:table-cell px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
           {withdrawal.status
             .split('_')
             .map((word) => word[0].toUpperCase() + word.slice(1))
             .join(' ')}
         </td>
-        <td className="px-6 py-4 whitespace-nowrap">
+        <td className="hidden xl:table-cell px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
           {withdrawal.freelancer?.firstName} {withdrawal.freelancer?.lastName}
         </td>
-        <td className="px-6 py-4 whitespace-nowrap">
+        <td className="xl:table-cell px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
           {withdrawal.freelancer?.username}
         </td>
-        <td className="px-6 py-4 whitespace-nowrap">{withdrawal.amount}</td>
-        <td className="px-6 py-4 whitespace-nowrap">
+        <td className="hidden xl:table-cell px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
+          {withdrawal.amount}
+        </td>
+        <td className="hidden xl:table-cell px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
           {withdrawal.paymentMethod
             .split('_')
             .map((word) => word[0].toUpperCase() + word.slice(1))
             .join(' ')}
         </td>
-        <td className="px-6 py-4 whitespace-nowrap">
+        <td className="hidden xl:table-cell px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
           {withdrawal.paymentUsername}
         </td>
-        <td className="px-6 py-4 whitespace-nowrap">
+        <td className="hidden xl:table-cell px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
           {new Date(withdrawal.requestedAt).toLocaleString()}
         </td>
-        <td className="px-6 py-4 space-x-5 rtl:space-x-reverse whitespace-nowrap">
-          {withdrawal.status == 'pending' && (
-            <>
-              <button
-                type="button"
-                onClick={completeWithdrawal}
-                title="Complete withdrawal"
-              >
-                <FontAwesomeIcon icon={faCheck} />
-              </button>
-
-              <button type="button" onClick={deleteWithdrawal}>
-                <FontAwesomeIcon icon={faTrash} />
-              </button>
-            </>
-          )}
-
-          {withdrawal.status == 'completed' && <>-</>}
+        <td className="px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
+          <div className="flex gap-4">
+            {withdrawal.status === 'pending' && (
+              <>
+                <button
+                  type="button"
+                  onClick={completeWithdrawal}
+                  className="text-green-600 hover:text-green-900"
+                  title="Complete withdrawal"
+                >
+                  <FontAwesomeIcon icon={faCheck} />
+                </button>
+                <button
+                  type="button"
+                  onClick={deleteWithdrawal}
+                  className="text-red-600 hover:text-red-900"
+                >
+                  <FontAwesomeIcon icon={faTrash} />
+                </button>
+              </>
+            )}
+          </div>
         </td>
       </tr>
+
+      {isExpanded && (
+        <tr className="xl:hidden bg-gray-50">
+          <td colSpan={9} className="px-3 py-2">
+            <div className="space-y-2">
+              <p>
+                <span className="font-medium">Status:</span>{' '}
+                {withdrawal.status
+                  .split('_')
+                  .map((word) => word[0].toUpperCase() + word.slice(1))
+                  .join(' ')}
+              </p>
+              <p>
+                <span className="font-medium">Freelancer:</span>{' '}
+                {withdrawal.freelancer?.firstName}{' '}
+                {withdrawal.freelancer?.lastName}
+              </p>
+              <p>
+                <span className="font-medium">Amount:</span> {withdrawal.amount}
+              </p>
+              <p>
+                <span className="font-medium">Payment Method:</span>{' '}
+                {withdrawal.paymentMethod
+                  .split('_')
+                  .map((word) => word[0].toUpperCase() + word.slice(1))
+                  .join(' ')}
+              </p>
+              <p>
+                <span className="font-medium">Payment Username:</span>{' '}
+                {withdrawal.paymentUsername}
+              </p>
+              <p>
+                <span className="font-medium">Requested At:</span>{' '}
+                {new Date(withdrawal.requestedAt).toLocaleString()}
+              </p>
+            </div>
+          </td>
+        </tr>
+      )}
     </>
   );
 };

@@ -173,68 +173,76 @@ const Jobs = () => {
                   <tr>
                     <th
                       scope="col"
-                      className="px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-left"
+                      className="px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left"
                     >
                       ID
                     </th>
                     <th
                       scope="col"
-                      className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-left"
+                      className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left"
                     >
                       Title
                     </th>
                     <th
                       scope="col"
-                      className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-left"
+                      className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left"
                     >
                       Category
                     </th>
                     <th
                       scope="col"
-                      className="px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-left"
+                      className="px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left"
                     >
                       Status
                     </th>
                     <th
                       scope="col"
-                      className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-left"
+                      className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left"
                     >
                       Client
                     </th>
                     <th
                       scope="col"
-                      className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-left"
+                      className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left"
                     >
                       Freelancer
                     </th>
                     <th
                       scope="col"
-                      className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-left"
+                      className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left"
                     >
                       Budget
                     </th>
                     <th
                       scope="col"
-                      className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-left"
+                      className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left"
                     >
                       Duration
                     </th>
                     <th
                       scope="col"
-                      className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-left"
+                      className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left"
                     >
                       Proposals
                     </th>
                     <th
                       scope="col"
-                      className="px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-left"
+                      className="px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left"
                     >
                       Actions
                     </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {loading && <TableSkeleton columns={10} />}
+                  {loading && (
+                    <>
+                      <TableSkeleton
+                        columns={10}
+                        className="2xl:table-row hidden"
+                      />
+                      <TableSkeleton columns={3} className="2xl:hidden" />
+                    </>
+                  )}
                   {jobs.map((job) => (
                     <JobRowItem key={job.id} job={job} />
                   ))}

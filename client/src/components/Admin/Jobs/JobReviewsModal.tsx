@@ -20,7 +20,6 @@ const JobReviewsModal: React.FC<{
 }> = ({ jobId, onClose }) => {
   const [loading, setLoading] = useState(true);
   const [reviews, setReviews] = useState<Review[]>([]);
-  console.log(reviews);
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
   const toggleAccordion = (index: number) => {
     setExpandedIndex(expandedIndex === index ? null : index);
