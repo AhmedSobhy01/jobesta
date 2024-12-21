@@ -100,98 +100,102 @@ const BadgeModal: React.FC<{
       className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
       onClick={handleModalClick}
     >
-      <div className="bg-white rounded-lg shadow-lg md:w-fit md:min-w-[32rem] w-full mx-16 p-6 relative max-h-[90vh] overflow-y-auto">
-        <button
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-800 focus:outline-none"
-          onClick={handleClose}
-        >
-          <FontAwesomeIcon icon={faXmark} />
-        </button>
-
-        <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
-          Update Badge
-        </h2>
-
-        <div className="mb-4">
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-600 mb-2"
+      <div className="flex flex-col bg-white rounded-lg shadow-lg md:w-fit md:min-w-[32rem] w-full mx-16 p-6 relative max-h-[90vh]">
+        <div>
+          <button
+            className="absolute top-6 right-6 text-gray-400 hover:text-gray-800 focus:outline-none p-0 m-0"
+            onClick={handleClose}
           >
-            Name
-          </label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Category Name"
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-          />
-          <p className="text-sm text-red-500 mt-1">{errors?.name}</p>
+            <FontAwesomeIcon icon={faXmark} className="text-xl" />
+          </button>
+
+          <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
+            Update Badge
+          </h2>
         </div>
 
-        <div className="mb-4">
-          <label
-            htmlFor="description"
-            className="block text-sm font-medium text-gray-600 mb-2"
-          >
-            Description
-          </label>
-          <input
-            type="text"
-            id="description"
-            name="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Last Name"
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-          />
-          <p className="text-sm text-red-500 mt-1">{errors?.description}</p>
-        </div>
-
-        <div className="mb-4">
-          <label
-            // htmlFor="attachment"
-            className="block text-sm font-medium text-gray-600 mb-2"
-          >
-            Icon
-          </label>
-
-          <input
-            type="file"
-            id="attachment"
-            name="attachment"
-            onChange={handleAttachmentChange}
-            placeholder="Last Name"
-            className="hidden"
-            accept="image/*"
-          />
-          <div className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-            {attachment && (
-              <div className="flex items-center overflow-hidden">
-                <img src={preview} alt="" className="w-20 my-4 rounded-lg" />
-                <span className="ml-4">{attachment.name}</span>
-              </div>
-            )}
-            <div className="flex items-center">
-              <label
-                htmlFor="attachment"
-                className=" block bg-emerald-500 text-white rounded-lg px-4 py-2 w-20 text-center cursor-pointer transition-colors duration-100 ease-in-out hover:bg-emerald-700"
-              >
-                Attach
-              </label>
-              {attachment && (
-                <button
-                  className="text-red-500 dark:text-red-400 mx-4"
-                  onClick={() => setAttachment(null)}
-                >
-                  Remove
-                </button>
-              )}
-            </div>
+        <div className="overflow-y-auto">
+          <div className="mb-4 mx-2">
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-600 mb-2"
+            >
+              Name
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Badge Name"
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+            />
+            <p className="text-sm text-red-500 mt-1">{errors?.name}</p>
           </div>
-          <p className="text-sm text-red-500 mt-1">{errors?.file}</p>
+
+          <div className="mb-4 mx-2">
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-600 mb-2"
+            >
+              Description
+            </label>
+            <input
+              type="text"
+              id="description"
+              name="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Badge Description"
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+            />
+            <p className="text-sm text-red-500 mt-1">{errors?.description}</p>
+          </div>
+
+          <div className="mb-4 mx-2">
+            <label
+              // htmlFor="attachment"
+              className="block text-sm font-medium text-gray-600 mb-2"
+            >
+              Icon
+            </label>
+
+            <input
+              type="file"
+              id="attachment"
+              name="attachment"
+              onChange={handleAttachmentChange}
+              placeholder="Last Name"
+              className="hidden"
+              accept="image/*"
+            />
+            <div className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+              {attachment && (
+                <div className="flex items-center overflow-hidden">
+                  <img src={preview} alt="" className="w-20 my-4 rounded-lg" />
+                  <span className="ml-4">{attachment.name}</span>
+                </div>
+              )}
+              <div className="flex items-center">
+                <label
+                  htmlFor="attachment"
+                  className=" block bg-emerald-500 text-white rounded-lg px-4 py-2 w-20 text-center cursor-pointer transition-colors duration-100 ease-in-out hover:bg-emerald-700"
+                >
+                  Attach
+                </label>
+                {attachment && (
+                  <button
+                    className="text-red-500 dark:text-red-400 mx-4"
+                    onClick={() => setAttachment(null)}
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+            </div>
+            <p className="text-sm text-red-500 mt-1">{errors?.file}</p>
+          </div>
         </div>
 
         <div className="mt-6 flex justify-end space-x-3">

@@ -128,93 +128,99 @@ const JobReviewsModal: React.FC<{
           className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
           onMouseDown={handleModalClick}
         >
-          <div className="bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative max-h-[90vh] overflow-y-auto">
-            <button
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-800 focus:outline-none"
-              onClick={onClose}
-            >
-              <FontAwesomeIcon icon={faXmark} />
-            </button>
+          <div className="flex flex-col bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative max-h-[90vh]">
+            <div>
+              <button
+                className="absolute top-6 right-6 text-gray-400 hover:text-gray-800 focus:outline-none p-0 m-0"
+                onClick={onClose}
+              >
+                <FontAwesomeIcon icon={faXmark} className="text-xl" />
+              </button>
 
-            <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
-              Job Reviews
-            </h2>
+              <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
+                Job Reviews
+              </h2>
+            </div>
 
-            {loading ? (
-              <JobProposalsSkeleton />
-            ) : reviews.length === 0 ? (
-              <p className="text-center">No reviews found</p>
-            ) : (
-              reviews.map((review: Review, index: number) => (
-                <div
-                  key={index}
-                  className="border rounded-lg overflow-hidden mb-4 shadow-sm"
-                >
+            <div className="overflow-y-auto">
+              {loading ? (
+                <JobProposalsSkeleton />
+              ) : reviews.length === 0 ? (
+                <p className="text-center">No reviews found</p>
+              ) : (
+                reviews.map((review: Review, index: number) => (
                   <div
-                    className="p-4 cursor-pointer bg-gray-100 hover:bg-gray-200 transition-colors duration-200"
-                    onClick={() => toggleAccordion(index)}
+                    key={index}
+                    className="border rounded-lg overflow-hidden mb-4 shadow-sm mx-2"
                   >
-                    <div className="flex justify-between items-center gap-4">
-                      <div>
-                        <h4 className="text-lg font-semibold">
-                          {review.sender.firstName} {review.sender.lastName}
-                        </h4>
-                        <p className="text-sm text-gray-500">
-                          Rating: {review.rating}/5
-                        </p>
-                      </div>
-                      <FontAwesomeIcon
-                        icon={
-                          expandedIndex === index ? faChevronUp : faChevronDown
-                        }
-                      />
-                    </div>
-                  </div>
-
-                  {expandedIndex === index && (
-                    <div className="p-3 bg-white">
-                      <div className="mt-3">
-                        <div className="border rounded-lg p-3 bg-gray-50 shadow-sm">
-                          <h4 className="text-base font-semibold">
-                            Review Comment
+                    <div
+                      className="p-4 cursor-pointer bg-gray-100 hover:bg-gray-200 transition-colors duration-200"
+                      onClick={() => toggleAccordion(index)}
+                    >
+                      <div className="flex justify-between items-center gap-4">
+                        <div>
+                          <h4 className="text-lg font-semibold">
+                            {review.sender.firstName} {review.sender.lastName}
                           </h4>
-                          <p className="mt-1 text-gray-700 text-sm">
-                            {review.comment
-                              ? review.comment
-                              : "user didn't add any comment."}
+                          <p className="text-sm text-gray-500">
+                            Rating: {review.rating}/5
                           </p>
                         </div>
-                        <div className="flex items-center gap-3 mt-4">
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleEditReview(review);
-                            }}
-                            className="flex items-center gap-2 text-sm bg-yellow-500 text-white px-3 py-1 rounded-lg hover:bg-yellow-600 transition-colors duration-200"
-                          >
-                            <FontAwesomeIcon icon={faPenToSquare} />
-                            Edit Review
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeleteReview(review);
-                            }}
-                            className="flex items-center gap-2 text-sm bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition-colors duration-200"
-                          >
-                            <FontAwesomeIcon icon={faTrash} />
-                            Delete Review
-                          </button>
-                        </div>
+                        <FontAwesomeIcon
+                          icon={
+                            expandedIndex === index
+                              ? faChevronUp
+                              : faChevronDown
+                          }
+                        />
                       </div>
                     </div>
-                  )}
-                </div>
-              ))
-            )}
+
+                    {expandedIndex === index && (
+                      <div className="p-3 bg-white">
+                        <div className="mt-3">
+                          <div className="border rounded-lg p-3 bg-gray-50 shadow-sm">
+                            <h4 className="text-base font-semibold">
+                              Review Comment
+                            </h4>
+                            <p className="mt-1 text-gray-700 text-sm">
+                              {review.comment
+                                ? review.comment
+                                : "user didn't add any comment."}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-3 mt-4">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleEditReview(review);
+                              }}
+                              className="flex items-center gap-2 text-sm bg-yellow-500 text-white px-3 py-1 rounded-lg hover:bg-yellow-600 transition-colors duration-200"
+                            >
+                              <FontAwesomeIcon icon={faPenToSquare} />
+                              Edit Review
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteReview(review);
+                              }}
+                              className="flex items-center gap-2 text-sm bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition-colors duration-200"
+                            >
+                              <FontAwesomeIcon icon={faTrash} />
+                              Delete Review
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </div>,
         document.body as HTMLElement,

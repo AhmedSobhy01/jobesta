@@ -269,8 +269,12 @@ function Home() {
                 className="p-6 bg-white border rounded-lg shadow-md"
                 key={review.sender.username + review.createdAt}
               >
-                <p className="leading-7 text-slate-500">{review.comment}</p>
-                <div className="flex items-center gap-6 pt-6 mt-6 border-t border-gray-200">
+                {review.comment && (
+                  <p className="leading-7 text-slate-500">{review.comment}</p>
+                )}
+                <div
+                  className={`flex items-center gap-6 border-gray-200 ${review.comment ? 'border-t mt-6 pt-6' : ''}`}
+                >
                   <img
                     src={review.sender.profilePicture}
                     width="55"

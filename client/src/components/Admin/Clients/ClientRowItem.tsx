@@ -9,6 +9,7 @@ import {
   faTrash,
   faEye,
   faInfoCircle,
+  faNewspaper,
 } from '@fortawesome/free-solid-svg-icons';
 
 import ClientModal from '@/components/Admin/Clients/ClientModal';
@@ -16,6 +17,7 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router';
 import { getAuthJwtToken } from '@/utils/auth';
+import AccountPaymentsModal from '@/components/Admin/Payments/AccountPaymentsModal';
 
 const ClientRowItem: React.FC<{
   client: Account;
@@ -24,6 +26,8 @@ const ClientRowItem: React.FC<{
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [isEditAccountModalOpen, setIsEditAccountModalOpen] = useState(false);
+  const [isShowClientPaymentsModalOpen, setIsShowClientPaymentsModalOpen] =
+    useState(false);
 
   const banClient = () => {
     Swal.fire({
@@ -121,7 +125,18 @@ const ClientRowItem: React.FC<{
           },
         })
           .then((response) => {
-            if (!response.ok) throw new Error('Failed to delete client');
+            if (!response.ok) {
+              if (response.status === 422) {
+                response.json().then((data) => {
+                  Object.keys(data.errors).forEach((key) => {
+                    toast(data.errors[key], { type: 'error' });
+                  });
+                });
+                throw new Error('Validation error');
+              }
+
+              throw new Error('Failed to delete client');
+            }
 
             return response.json();
           })
@@ -129,8 +144,9 @@ const ClientRowItem: React.FC<{
             toast(data.message, { type: 'success' });
             navigate('/admin/clients?reload=true');
           })
-          .catch(() => {
-            toast('Failed to delete client', { type: 'error' });
+          .catch((error) => {
+            if (error.message !== 'Validation error')
+              toast('Failed to delete client', { type: 'error' });
           });
       },
     });
@@ -142,6 +158,14 @@ const ClientRowItem: React.FC<{
         <ClientModal
           client={client}
           onClose={() => setIsEditAccountModalOpen(false)}
+        />
+      )}
+
+      {isShowClientPaymentsModalOpen && (
+        <AccountPaymentsModal
+          accountId={client.id}
+          role="client"
+          onClose={() => setIsShowClientPaymentsModalOpen(false)}
         />
       )}
 
@@ -215,6 +239,15 @@ const ClientRowItem: React.FC<{
                 <FontAwesomeIcon icon={faBan} />
               </button>
             )}
+
+            <button
+              type="button"
+              onClick={() => setIsShowClientPaymentsModalOpen(true)}
+              className="text-cyan-600 hover:text-cyan-900"
+              title="Show payments"
+            >
+              <FontAwesomeIcon icon={faNewspaper} />
+            </button>
 
             <button
               type="button"

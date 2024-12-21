@@ -83,19 +83,21 @@ const CreateWithdrawalModal: React.FC<{
       className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
       onMouseDown={handleModalClick}
     >
-      <div className="bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative max-h-[90vh] overflow-y-auto">
-        <button
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-800 focus:outline-none"
-          onClick={handleClose}
-        >
-          <FontAwesomeIcon icon={faXmark} />
-        </button>
+      <div className="flex flex-col bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative max-h-[90vh]">
+        <div>
+          <button
+            className="absolute top-6 right-6 text-gray-400 hover:text-gray-800 focus:outline-none p-0 m-0"
+            onClick={handleClose}
+          >
+            <FontAwesomeIcon icon={faXmark} className="text-xl" />
+          </button>
 
-        <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
-          Request a Withdrawal
-        </h2>
+          <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
+            Request a withdrawal
+          </h2>
+        </div>
 
-        <div className="space-y-4">
+        <div className="space-y-4 overflow-auto">
           <div>
             <label id="amount" className="block text-gray-700 font-medium mb-2">
               Amount ($)
@@ -155,7 +157,8 @@ const CreateWithdrawalModal: React.FC<{
               {errors?.paymentUsername}
             </p>
           </div>
-
+        </div>
+        <div className="mt-6 flex justify-end space-x-3">
           <button
             type="button"
             onClick={handleSubmit}

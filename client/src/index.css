@@ -38,3 +38,24 @@ input[type='range']::-moz-range-thumb {
   pointer-events: all;
   position: relative;
 }
+
+::-webkit-scrollbar {
+  width: 0.9375rem;
+  height: 0.9375rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 100vh;
+  background: rgb(249 250 251);
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(229 231 235);
+  border-radius: 100vh;
+  border: 3px solid rgb(249 250 251);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(156 163 175);
+}

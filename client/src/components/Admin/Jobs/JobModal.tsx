@@ -18,6 +18,8 @@ const JobModal: React.FC<{
 
   const fetchDataRef = useRef(false);
   useEffect(() => {
+    if (fetchDataRef.current) return;
+
     fetchDataRef.current = true;
 
     (async () => {
@@ -115,115 +117,116 @@ const JobModal: React.FC<{
       className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
       onMouseDown={handleModalClick}
     >
-      <div className="bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative max-h-[90vh] overflow-y-auto">
+      <div className="flex flex-col bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative max-h-[90vh]">
         <button
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-800 focus:outline-none"
+          className="absolute top-6 right-6 text-gray-400 hover:text-gray-800 focus:outline-none p-0 m-0"
           onClick={handleClose}
         >
-          <FontAwesomeIcon icon={faXmark} />
+          <FontAwesomeIcon icon={faXmark} className="text-xl" />
         </button>
 
         <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
-          {'Update job'}
+          Update job
         </h2>
 
-        <div className="mb-4">
-          <label
-            htmlFor="title"
-            className="block text-sm font-medium text-gray-600 mb-2"
-          >
-            Title
-          </label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Enter job title"
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-          />
-          <p className="text-sm text-red-500 mt-1">{errors?.title}</p>
-        </div>
+        <div className="overflow-y-auto">
+          <div className="mb-4 mx-2">
+            <label
+              htmlFor="title"
+              className="block text-sm font-medium text-gray-600 mb-2"
+            >
+              Title
+            </label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Enter job title"
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+            />
+            <p className="text-sm text-red-500 mt-1">{errors?.title}</p>
+          </div>
 
-        <div className="mb-4">
-          <label
-            htmlFor="description"
-            className="block text-sm font-medium text-gray-600 mb-2"
-          >
-            Description
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Enter job description"
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-            rows={3}
-          />
-          <p className="text-sm text-red-500 mt-1">{errors?.description}</p>
-        </div>
+          <div className="mb-4 mx-2">
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-600 mb-2"
+            >
+              Description
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Enter job description"
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+              rows={3}
+            />
+            <p className="text-sm text-red-500 mt-1">{errors?.description}</p>
+          </div>
 
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-600 mb-2">
-            Category
-          </label>
-          {isLoadingCategories ? (
-            <InputSkeleton />
-          ) : (
-            <select
-              name="category"
+          <div className="mb-4 mx-2">
+            <label className="block text-sm font-medium text-gray-600 mb-2">
+              Category
+            </label>
+            {isLoadingCategories ? (
+              <InputSkeleton />
+            ) : (
+              <select
+                name="category"
+                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                required
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+              >
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            )}
+            <p className="text-sm text-red-500 mt-1">{errors?.category}</p>
+          </div>
+
+          <div className="mb-4 mx-2">
+            <label className="block text-gray-700 font-medium mb-2">
+              Budget ($)
+            </label>
+            <input
+              type="number"
+              name="budget"
+              placeholder="Enter budget"
               className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               required
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            >
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-          )}
-          <p className="text-sm text-red-500 mt-1">{errors?.category}</p>
-        </div>
+              min={1}
+              step={0.01}
+              value={budget}
+              onChange={(e) => setBudget(e.target.value)}
+            />
+            <p className="text-sm text-red-500 mt-1">{errors?.budget}</p>
+          </div>
 
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-2">
-            Budget ($)
-          </label>
-          <input
-            type="number"
-            name="budget"
-            placeholder="Enter budget"
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-            required
-            min={1}
-            step={0.01}
-            value={budget}
-            onChange={(e) => setBudget(e.target.value)}
-          />
-          <p className="text-sm text-red-500 mt-1">{errors?.budget}</p>
+          <div className="mb-4 mx-2">
+            <label className="block text-gray-700 font-medium mb-2">
+              Duration (days)
+            </label>
+            <input
+              type="number"
+              name="duration"
+              placeholder="Enter duration"
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+              required
+              min={1}
+              value={duration}
+              onChange={(e) => setDuration(e.target.value)}
+            />
+            <p className="text-sm text-red-500 mt-1">{errors?.duration}</p>
+          </div>
         </div>
-
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-2">
-            Duration (days)
-          </label>
-          <input
-            type="number"
-            name="duration"
-            placeholder="Enter duration"
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-            required
-            min={1}
-            value={duration}
-            onChange={(e) => setDuration(e.target.value)}
-          />
-          <p className="text-sm text-red-500 mt-1">{errors?.duration}</p>
-        </div>
-
         <div className="mt-6 flex justify-end space-x-3">
           <button
             onClick={handleClose}

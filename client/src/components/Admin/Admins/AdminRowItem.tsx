@@ -44,7 +44,18 @@ const AdminRowItem: React.FC<{
           },
         })
           .then((response) => {
-            if (!response.ok) throw new Error('Failed to delete admin');
+            if (!response.ok) {
+              if (response.status === 422) {
+                response.json().then((data) => {
+                  Object.keys(data.errors).forEach((key) => {
+                    toast(data.errors[key], { type: 'error' });
+                  });
+                });
+                throw new Error('Validation error');
+              }
+
+              throw new Error('Failed to delete admin');
+            }
 
             return response.json();
           })
@@ -52,8 +63,9 @@ const AdminRowItem: React.FC<{
             toast(data.message, { type: 'success' });
             navigate('/admin/admins?reload=true');
           })
-          .catch(() => {
-            toast('Failed to delete admin', { type: 'error' });
+          .catch((error) => {
+            if (error.message !== 'Validation error')
+              toast('Failed to delete admin', { type: 'error' });
           });
       },
     });

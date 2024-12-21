@@ -9,12 +9,14 @@ import {
   faTrash,
   faEye,
   faInfoCircle,
+  faNewspaper,
 } from '@fortawesome/free-solid-svg-icons';
 import FreelancerModal from '@/components/Admin/Freelancers/FreelancerModal';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router';
 import { getAuthJwtToken } from '@/utils/auth';
+import AccountPaymentsModal from '../Payments/AccountPaymentsModal';
 
 const FreelancerRowItem: React.FC<{
   freelancer: Account;
@@ -23,6 +25,10 @@ const FreelancerRowItem: React.FC<{
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [isEditAccountModalOpen, setIsEditAccountModalOpen] = useState(false);
+  const [
+    isShowFreelancerPaymentsModalOpen,
+    setIsShowFreelancerPaymentsModalOpen,
+  ] = useState(false);
 
   const banFreelancer = () => {
     Swal.fire({
@@ -123,7 +129,18 @@ const FreelancerRowItem: React.FC<{
           },
         )
           .then((response) => {
-            if (!response.ok) throw new Error('Failed to delete freelancer');
+            if (!response.ok) {
+              if (response.status === 422) {
+                response.json().then((data) => {
+                  Object.keys(data.errors).forEach((key) => {
+                    toast(data.errors[key], { type: 'error' });
+                  });
+                });
+                throw new Error('Validation error');
+              }
+
+              throw new Error('Failed to delete freelancer');
+            }
 
             return response.json();
           })
@@ -131,8 +148,9 @@ const FreelancerRowItem: React.FC<{
             toast(data.message, { type: 'success' });
             navigate('/admin/freelancers?reload=true');
           })
-          .catch(() => {
-            toast('Failed to delete freelancer', { type: 'error' });
+          .catch((error) => {
+            if (error.message !== 'Validation error')
+              toast('Failed to delete freelancer', { type: 'error' });
           });
       },
     });
@@ -144,6 +162,14 @@ const FreelancerRowItem: React.FC<{
         <FreelancerModal
           freelancer={freelancer}
           onClose={() => setIsEditAccountModalOpen(false)}
+        />
+      )}
+
+      {isShowFreelancerPaymentsModalOpen && (
+        <AccountPaymentsModal
+          accountId={freelancer.id}
+          role="freelancer"
+          onClose={() => setIsShowFreelancerPaymentsModalOpen(false)}
         />
       )}
 
@@ -217,6 +243,15 @@ const FreelancerRowItem: React.FC<{
                 <FontAwesomeIcon icon={faBan} />
               </button>
             )}
+
+            <button
+              type="button"
+              onClick={() => setIsShowFreelancerPaymentsModalOpen(true)}
+              className="text-cyan-600 hover:text-cyan-900"
+              title="Show payments"
+            >
+              <FontAwesomeIcon icon={faNewspaper} />
+            </button>
 
             <button
               type="button"

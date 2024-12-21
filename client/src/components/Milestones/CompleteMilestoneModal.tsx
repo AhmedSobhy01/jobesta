@@ -92,78 +92,82 @@ const CompleteMilestoneModal: React.FC<{
       className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
       onMouseDown={handleModalClick}
     >
-      <div className="bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative max-h-[90vh] overflow-y-auto">
-        <button
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-800 focus:outline-none"
-          onClick={handleClose}
-        >
-          <FontAwesomeIcon icon={faXmark} />
-        </button>
-
-        <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
-          {`Complete Milestone #${milestoneOrder}`}
-        </h2>
-
-        <div className="mb-4">
-          <label
-            htmlFor="card"
-            className="block text-sm font-medium text-gray-700"
+      <div className="flex flex-col bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative max-h-[90vh]">
+        <div>
+          <button
+            className="absolute top-6 right-6 text-gray-400 hover:text-gray-800 focus:outline-none p-0 m-0"
+            onClick={handleClose}
           >
-            Card Number
-          </label>
-          <input
-            type="text"
-            id="card"
-            value={card}
-            onChange={(e) => setCard(e.target.value.replace(/\D/g, ''))}
-            className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm
+            <FontAwesomeIcon icon={faXmark} className="text-xl" />
+          </button>
+
+          <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
+            {`Complete Milestone #${milestoneOrder}`}
+          </h2>
+        </div>
+
+        <div className="overflow-y-auto">
+          <div className="mb-4 mx-2">
+            <label
+              htmlFor="card"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Card Number
+            </label>
+            <input
+              type="text"
+              id="card"
+              value={card}
+              onChange={(e) => setCard(e.target.value.replace(/\D/g, ''))}
+              className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm
             ${errors?.card ? 'border-red-500' : ''}`}
-            maxLength={16}
-          />
-          {errors?.card && (
-            <p className="mt-1 text-sm text-red-500">{errors.card}</p>
-          )}
-        </div>
+              maxLength={16}
+            />
+            {errors?.card && (
+              <p className="mt-1 text-sm text-red-500">{errors.card}</p>
+            )}
+          </div>
 
-        <div className="mb-4">
-          <label
-            htmlFor="expiry"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Expiry Date
-          </label>
-          <input
-            type="month"
-            id="expiry"
-            value={expiry}
-            onChange={(e) => setExpiry(e.target.value)}
-            className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm
+          <div className="mb-4 mx-2">
+            <label
+              htmlFor="expiry"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Expiry Date
+            </label>
+            <input
+              type="month"
+              id="expiry"
+              value={expiry}
+              onChange={(e) => setExpiry(e.target.value)}
+              className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm
             ${errors?.expiry ? 'border-red-500' : ''}`}
-          />
-          {errors?.expiry && (
-            <p className="mt-1 text-sm text-red-500">{errors.expiry}</p>
-          )}
-        </div>
+            />
+            {errors?.expiry && (
+              <p className="mt-1 text-sm text-red-500">{errors.expiry}</p>
+            )}
+          </div>
 
-        <div className="mb-4">
-          <label
-            htmlFor="cvv"
-            className="block text-sm font-medium text-gray-700"
-          >
-            CVV
-          </label>
-          <input
-            type="text"
-            id="cvv"
-            value={cvv}
-            onChange={(e) => setCvv(e.target.value.replace(/\D/g, ''))}
-            className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm
+          <div className="mb-4 mx-2">
+            <label
+              htmlFor="cvv"
+              className="block text-sm font-medium text-gray-700"
+            >
+              CVV
+            </label>
+            <input
+              type="text"
+              id="cvv"
+              value={cvv}
+              onChange={(e) => setCvv(e.target.value.replace(/\D/g, ''))}
+              className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm
             ${errors?.cvv ? 'border-red-500' : ''}`}
-            maxLength={3}
-          />
-          {errors?.cvv && (
-            <p className="mt-1 text-sm text-red-500">{errors.cvv}</p>
-          )}
+              maxLength={3}
+            />
+            {errors?.cvv && (
+              <p className="mt-1 text-sm text-red-500">{errors.cvv}</p>
+            )}
+          </div>
         </div>
 
         <div className="mt-6 flex justify-end space-x-3">

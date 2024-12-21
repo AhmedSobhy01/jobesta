@@ -82,6 +82,9 @@ interface Payment {
   status: string;
   milestoneName: string;
   amount: string;
+  freelancer?: Freelancer;
+  client?: User;
+  job?: Job;
 }
 
 interface Review {

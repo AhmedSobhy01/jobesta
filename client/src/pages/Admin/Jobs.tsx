@@ -148,6 +148,7 @@ const Jobs = () => {
             value={status}
           >
             <option value="">All Statuses</option>
+            <option value="pending">Pending</option>
             <option value="open">Open</option>
             <option value="in_progress">In Progress</option>
             <option value="completed">Completed</option>
