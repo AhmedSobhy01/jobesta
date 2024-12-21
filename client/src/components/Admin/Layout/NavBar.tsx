@@ -60,9 +60,10 @@ const NavBar: React.FC<{
                   >
                     <FontAwesomeIcon icon={faCircleUser} />
                   </NavButton>
-
-                  {isDropdownProfileOpen && <ProfileDropdown />}
                 </div>
+                {isDropdownProfileOpen && (
+                  <ProfileDropdown loadingBalance={false} />
+                )}
               </>
             )}
           </div>

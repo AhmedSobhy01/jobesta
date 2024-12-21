@@ -11,7 +11,7 @@ import FullPageLoader from '@/components/FullPageLoader';
 function MainLayout() {
   const { state } = useNavigation();
 
-  const { setUser, isUserLoading } = useContext(UserContext);
+  const { setUser, isUserLoading, role } = useContext(UserContext);
   const { setFreelancer } = useContext(FreelancerContext);
 
   const [dropdownOpen, setDropdownOpenMenu] = useState({
@@ -20,6 +20,7 @@ function MainLayout() {
   });
 
   const [loading, setLoading] = useState(false);
+  const [loadingBalance, setLoadingBalance] = useState(false);
 
   // Reset dropdowns only when clicking outside of navigation
   const handleClick = (e: React.MouseEvent) => {
@@ -60,33 +61,6 @@ function MainLayout() {
         profilePicture: userData?.profilePicture || null,
       });
 
-      try {
-        if (userData && userData.role === 'freelancer') {
-          const freelancerBalanceResponse = await fetch(
-            `${import.meta.env.VITE_API_URL}/freelancer/balance`,
-            {
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${getAuthJwtToken()}`,
-              },
-            },
-          );
-
-          const freelancerBalance = await freelancerBalanceResponse.json();
-
-          if (!freelancerBalanceResponse.ok)
-            throw new Error('Failed to fetch freelancer balance');
-
-          setFreelancer({
-            balance: freelancerBalance.data.balance,
-          });
-        }
-      } catch {
-        toast('Failed to fetch balance', {
-          type: 'error',
-        });
-      }
-
       setLoading(false);
       fetchDataRef.current = false;
     };
@@ -95,7 +69,49 @@ function MainLayout() {
       fetchDataRef.current = true;
       fetchData();
     }
-  }, [setUser, setFreelancer]);
+  }, [setUser]);
+
+  const fetchBalanceRef = useRef(false);
+  useEffect(() => {
+    const getBalance = async () => {
+      setLoadingBalance(true);
+      try {
+        const freelancerBalanceResponse = await fetch(
+          `${import.meta.env.VITE_API_URL}/freelancer/balance`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${getAuthJwtToken()}`,
+            },
+          },
+        );
+
+        const freelancerBalance = await freelancerBalanceResponse.json();
+
+        if (!freelancerBalanceResponse.ok)
+          throw new Error('Failed to fetch freelancer balance');
+
+        setFreelancer({
+          balance: freelancerBalance.data.balance,
+        });
+      } catch {
+        toast('Failed to fetch balance', {
+          type: 'error',
+        });
+      }
+      setLoadingBalance(false);
+      fetchBalanceRef.current = false;
+    };
+
+    if (
+      !fetchBalanceRef.current &&
+      role === 'freelancer' &&
+      dropdownOpen.isDropdownProfileOpen
+    ) {
+      fetchBalanceRef.current = true;
+      getBalance();
+    }
+  }, [role, setFreelancer, dropdownOpen.isDropdownProfileOpen]);
 
   return (
     <div
@@ -110,6 +126,7 @@ function MainLayout() {
         loadingProfile={loading}
         dropdownOpen={dropdownOpen}
         setDropdownOpenMenu={setDropdownOpenMenu}
+        loadingBalance={loadingBalance}
       />
       <main>{!isUserLoading && <Outlet />}</main>
     </div>
