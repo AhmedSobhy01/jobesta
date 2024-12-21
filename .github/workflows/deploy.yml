@@ -10,12 +10,19 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout code
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
 
-            - name: Set up SSH
-              uses: webfactory/ssh-agent@v0.5.3
-              with:
-                  ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+            - name: Create SSH key
+              env:
+                  SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
+              run: |
+                  echo "$SSH_PRIVATE_KEY" > private.key
+                  sudo chmod 600 private.key
+
+            - name: Add SSH key to agent
+              run: |
+                  eval `ssh-agent -s`
+                  ssh-add private.key
 
             - name: Deploy to Server
               env:
@@ -23,10 +30,10 @@ jobs:
                   DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
               run: |
                   ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST << 'EOF'
-                    cd /var/www/jobesta
-                    git reset --hard origin/main
-                    cp server/.env server/.env.example
-                    cp client/.env client/.env.example
-                    git pull origin main --force
-                    docker-compose up -d --build
+                  cd /var/www/jobesta
+                  git reset --hard origin/main
+                  cp server/.env server/.env.example
+                  cp client/.env client/.env.example
+                  git pull origin main --force
+                  docker-compose up -d --build
                   EOF
