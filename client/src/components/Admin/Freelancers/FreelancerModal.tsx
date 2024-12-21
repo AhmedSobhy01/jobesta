@@ -175,16 +175,18 @@ const FreelancerModal: React.FC<{
       onMouseDown={handleModalClick}
     >
       <div className="flex flex-col bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative max-h-[90vh]">
-        <button
-          className="absolute top-6 right-6 text-gray-400 hover:text-gray-800 focus:outline-none p-0 m-0"
-          onClick={handleClose}
-        >
-          <FontAwesomeIcon icon={faXmark} className="text-xl" />
-        </button>
+        <div>
+          <button
+            className="absolute top-6 right-6 text-gray-400 hover:text-gray-800 focus:outline-none p-0 m-0"
+            onClick={handleClose}
+          >
+            <FontAwesomeIcon icon={faXmark} className="text-xl" />
+          </button>
 
-        <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
-          {isUpdate ? 'Update Freelancer' : 'Create Freelancer'}
-        </h2>
+          <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
+            {isUpdate ? 'Update Freelancer' : 'Create Freelancer'}
+          </h2>
+        </div>
 
         <div className="overflow-y-auto">
           <div className="mb-4 mx-2">
