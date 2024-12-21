@@ -138,7 +138,7 @@ const EditFreelaancerModal: React.FC<{
           </button>
 
           <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
-            Edit freelancer Profile
+            Edit Freelancer Profile
           </h2>
         </div>
 
