@@ -249,37 +249,43 @@ INSERT INTO
     "categories" ("name", "description")
 VALUES (
         'Web Development',
-        'Web Development'
+        'Building and maintaining websites and web applications'
     ),
     (
         'Mobile Development',
-        'Mobile Development'
+        'Creating applications for mobile devices'
     ),
     (
         'Game Development',
-        'Game Development'
+        'Designing and developing video games'
     ),
     (
         'Data Science',
-        'Data Science'
+        'Analyzing and interpreting complex data'
     ),
     (
         'Machine Learning',
-        'Machine Learning'
+        'Developing algorithms that allow computers to learn from data'
     ),
     (
         'Artificial Intelligence',
-        'Artificial Intelligence'
+        'Creating intelligent agents and systems'
     ),
     (
         'Cybersecurity',
-        'Cybersecurity'
+        'Protecting systems and networks from digital attacks'
     ),
-    ('Blockchain', 'Blockchain'),
-    ('DevOps', 'DevOps'),
+    (
+        'Blockchain',
+        'Developing decentralized applications using blockchain technology'
+    ),
+    (
+        'DevOps',
+        'Combining software development and IT operations'
+    ),
     (
         'Cloud Computing',
-        'Cloud Computing'
+        'Delivering computing services over the internet'
     );
 
 INSERT INTO "badges" ("id", "name", "description", "icon")
