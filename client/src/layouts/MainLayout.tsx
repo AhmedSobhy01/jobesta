@@ -103,7 +103,11 @@ function MainLayout() {
       fetchBalanceRef.current = false;
     };
 
-    if (!fetchBalanceRef.current && role === 'freelancer' && dropdownOpen.isDropdownProfileOpen) {
+    if (
+      !fetchBalanceRef.current &&
+      role === 'freelancer' &&
+      dropdownOpen.isDropdownProfileOpen
+    ) {
       fetchBalanceRef.current = true;
       getBalance();
     }
