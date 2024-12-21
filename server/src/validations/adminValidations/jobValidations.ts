@@ -101,6 +101,14 @@ export const deleteJobValidationRules = [
         throw new Error('Job does not exist');
       }
 
+      if (
+        jobQuery.rows[0].status !== 'open' ||
+        jobQuery.rows[0].status !== 'pending' ||
+        jobQuery.rows[0].status !== 'closed'
+      ) {
+        throw new Error('Job is not open, pending, or closed');
+      }
+
       return true;
     }),
 ];
