@@ -175,24 +175,22 @@ const FreelancerModal: React.FC<{
       onMouseDown={handleModalClick}
     >
       <div className="flex flex-col bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative max-h-[90vh]">
-        <div>
-          <button
-            className="absolute top-6 right-6 text-gray-400 hover:text-gray-800 focus:outline-none p-0 m-0"
-            onClick={handleClose}
-          >
-            <FontAwesomeIcon icon={faXmark} className="text-xl" />
-          </button>
+        <button
+          className="absolute top-6 right-6 text-gray-400 hover:text-gray-800 focus:outline-none p-0 m-0"
+          onClick={handleClose}
+        >
+          <FontAwesomeIcon icon={faXmark} className="text-xl" />
+        </button>
 
-          <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
-            {isUpdate ? 'Update Freelancer' : 'Create Freelancer'}
-          </h2>
-        </div>
+        <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
+          {isUpdate ? 'Update Freelancer' : 'Create Freelancer'}
+        </h2>
 
-        <div className="overflow-y-scroll">
-          <div className="mb-4 flex flex-col">
+        <div className="overflow-y-auto">
+          <div className="mb-4 mx-2">
             <label
               htmlFor="firstName"
-              className="block text-sm font-medium text-gray-600 mb-2 mx-2"
+              className="block text-sm font-medium text-gray-600 mb-2"
             >
               First Name
             </label>
@@ -203,15 +201,15 @@ const FreelancerModal: React.FC<{
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               placeholder="First Name"
-              className="flex-grow mx-2 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
             />
-            <p className="text-sm text-red-500 mt-1 mx-2">{errors?.firstName}</p>
+            <p className="text-sm text-red-500 mt-1">{errors?.firstName}</p>
           </div>
 
-          <div className="mb-4 flex flex-col">
+          <div className="mb-4 mx-2">
             <label
               htmlFor="lastName"
-              className="block text-sm font-medium text-gray-600 mb-2 mx-2"
+              className="block text-sm font-medium text-gray-600 mb-2"
             >
               Last Name
             </label>
@@ -222,15 +220,15 @@ const FreelancerModal: React.FC<{
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               placeholder="Last Name"
-              className="mx-2 flex-grow p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
             />
-            <p className="text-sm text-red-500 mt-1 mx-2">{errors?.lastName}</p>
+            <p className="text-sm text-red-500 mt-1">{errors?.lastName}</p>
           </div>
 
-          <div className="mb-4 flex flex-col">
+          <div className="mb-4 mx-2">
             <label
               htmlFor="username"
-              className="block text-sm font-medium text-gray-600 mb-2 mx-2"
+              className="block text-sm font-medium text-gray-600 mb-2"
             >
               Username
             </label>
@@ -241,15 +239,15 @@ const FreelancerModal: React.FC<{
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Username"
-              className="mx-2 flex-grow p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
             />
-            <p className="text-sm text-red-500 mt-1 mx-2">{errors?.username}</p>
+            <p className="text-sm text-red-500 mt-1">{errors?.username}</p>
           </div>
 
-          <div className="mb-4 flex flex-col">
+          <div className="mb-4 mx-2">
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-600 mb-2 mx-2"
+              className="block text-sm font-medium text-gray-600 mb-2"
             >
               Email
             </label>
@@ -260,15 +258,15 @@ const FreelancerModal: React.FC<{
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Email"
-              className="mx-2 flex-grow p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
             />
-            <p className="text-sm text-red-500 mt-1 mx-2">{errors?.email}</p>
+            <p className="text-sm text-red-500 mt-1">{errors?.email}</p>
           </div>
 
-          <div className="mb-4 flex flex-col">
+          <div className="mb-4 mx-2">
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-600 mb-2 mx-2"
+              className="block text-sm font-medium text-gray-600 mb-2"
             >
               Password
             </label>
@@ -279,15 +277,15 @@ const FreelancerModal: React.FC<{
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
-              className="mx-2 flex-grow p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
             />
-            <p className="text-sm text-red-500 mt-1 mx-2">{errors?.password}</p>
+            <p className="text-sm text-red-500 mt-1">{errors?.password}</p>
           </div>
 
-          <div className="mb-4 flex flex-col">
+          <div className="mb-4 mx-2">
             <label
               htmlFor="confirmPassword"
-              className="block text-sm font-medium text-gray-600 mb-2 mx-2"
+              className="block text-sm font-medium text-gray-600 mb-2"
             >
               Confirm Password
             </label>
@@ -298,17 +296,17 @@ const FreelancerModal: React.FC<{
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Confirm Password"
-              className="mx-2 flex-grow p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
             />
-            <p className="text-sm text-red-500 mt-1 mx-2">
+            <p className="text-sm text-red-500 mt-1">
               {errors?.confirmPassword}
             </p>
           </div>
 
-          <div className="mb-4 flex flex-col">
+          <div className="mb-4 mx-2">
             <label
               htmlFor="bio"
-              className="block text-sm font-medium text-gray-600 mb-2 mx-2"
+              className="block text-sm font-medium text-gray-600 mb-2"
             >
               Bio
             </label>
@@ -318,19 +316,19 @@ const FreelancerModal: React.FC<{
               value={bio}
               onChange={(e) => setBio(e.target.value)}
               placeholder="Write a small bio about yourself..."
-              className="mx-2 flex-grow p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
               rows={3}
             />
-            <p className="text-sm text-red-500 mt-1 mx-2">{errors?.bio}</p>
+            <p className="text-sm text-red-500 mt-1">{errors?.bio}</p>
           </div>
 
-          <div className="space-y-4 mb-4 flex flex-col">
-            <h3 className="text-lg font-medium text-gray-700 mx-2">Previous Work</h3>
+          <div className="space-y-4 mb-4 mx-2">
+            <h3 className="text-lg font-medium text-gray-700">Previous Work</h3>
             {previousWork.length > 0 ? (
               previousWork.map((previousWork, index) => (
                 <div
                   key={index}
-                  className="border rounded-lg p-4 bg-gray-50 shadow-sm space-y-4 mx-2"
+                  className="border rounded-lg p-4 bg-gray-50 shadow-sm space-y-4"
                 >
                   <div>
                     <label
@@ -405,22 +403,22 @@ const FreelancerModal: React.FC<{
                 </div>
               ))
             ) : (
-              <p className="text-gray-500 mx-2">No Previous Work added</p>
+              <p className="text-gray-500">No Previous Work added</p>
             )}
 
             <button
               type="button"
               onClick={addPreviousWork}
-              className="w-fit px-4 py-2 bg-emerald-100 text-emerald-600 rounded-md hover:bg-blue-200 focus:outline-none mx-2"
+              className="px-4 py-2 bg-emerald-100 text-emerald-600 rounded-md hover:bg-blue-200 focus:outline-none"
             >
               + Add Previous Work
             </button>
           </div>
 
-          <div className="space-y-4 mb-4 flex flex-col">
-            <h3 className="text-lg font-medium text-gray-700 mx-2">Skills</h3>
+          <div className="space-y-4 mb-4 mx-2">
+            <h3 className="text-lg font-medium text-gray-700">Skills</h3>
             {skills.length > 0 ? (
-              <div className="border rounded-lg p-4 bg-gray-50 shadow-sm space-y-4 mx-2">
+              <div className="border rounded-lg p-4 bg-gray-50 shadow-sm space-y-4">
                 {skills.map((skill, index) => (
                   <div key={index}>
                     <div className="flex items-center space-x-2">
@@ -463,12 +461,12 @@ const FreelancerModal: React.FC<{
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500 mx-2">No skills added</p>
+              <p className="text-gray-500">No skills added</p>
             )}
             <button
               type="button"
               onClick={() => setSkills((oldSkills) => [...oldSkills, ''])}
-              className="mx-2 w-fit px-4 py-2 bg-emerald-100 text-emerald-600 rounded-md hover:bg-blue-200 focus:outline-none"
+              className="px-4 py-2 bg-emerald-100 text-emerald-600 rounded-md hover:bg-blue-200 focus:outline-none"
             >
               + Add Skill
             </button>
@@ -486,7 +484,7 @@ const FreelancerModal: React.FC<{
           <button
             onClick={handleSubmit}
             className={`px-4 py-2 rounded-md focus:outline-none  bg-emerald-500
-              ${isSubmitting ? 'bg-opacity-50 cursor-not-allowed' : 'text-white hover:bg-emerald-600'}`}
+            ${isSubmitting ? 'bg-opacity-50 cursor-not-allowed' : 'text-white hover:bg-emerald-600'}`}
             disabled={isSubmitting}
           >
             {isSubmitting
