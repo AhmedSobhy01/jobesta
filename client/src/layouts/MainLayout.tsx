@@ -98,7 +98,7 @@ function MainLayout() {
   }, [setUser, setFreelancer]);
 
   return (
-    <div className="h-screen dark:bg-gray-900 bg-white" onClick={handleClick}>
+    <div className="min-h-screen dark:bg-gray-900 bg-white" onClick={handleClick}>
       <ToastContainer />
 
       {(state === 'loading' || isUserLoading) && <FullPageLoader />}
@@ -108,7 +108,6 @@ function MainLayout() {
         dropdownOpen={dropdownOpen}
         setDropdownOpenMenu={setDropdownOpenMenu}
       />
-
       <main>{!isUserLoading && <Outlet />}</main>
     </div>
   );

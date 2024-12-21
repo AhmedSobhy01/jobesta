@@ -7,7 +7,7 @@ const NavButton: React.FC<{
   children: React.ReactNode;
 }> = (props) => {
   let Css =
-    'inline-flex items-center p-2 w-10 h-10 justify-center text-lg text-gray-500 rounded-lg hover:text-green-700 hover:bg-transparent  dark:text-gray-400 dark:hover:text-green-500 dark:hover:bg-transparent ';
+    'leading-4 inline-flex items-center w-12 h-12 justify-center text-lg text-gray-500 rounded-full hover:text-green-700 hover:bg-transparent  dark:text-gray-400 dark:hover:text-green-500 dark:hover:bg-transparent ';
 
   if (props.wideHidden) {
     Css = Css.concat(' md:hidden');
