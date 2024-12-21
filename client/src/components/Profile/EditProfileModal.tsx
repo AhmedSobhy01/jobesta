@@ -251,7 +251,7 @@ const EditProfileModal: React.FC<{
             ${isSubmitting ? 'bg-opacity-50 cursor-not-allowed' : 'text-white hover:bg-emerald-600'}`}
             disabled={isSubmitting}
           >
-            Save Changes
+            {isSubmitting ? 'Loading...' : 'Save Changes'}
           </button>
         </div>
       </div>
