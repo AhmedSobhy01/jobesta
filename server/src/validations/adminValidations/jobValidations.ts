@@ -109,8 +109,8 @@ export const deleteJobValidationRules = [
       }
 
       if (
-        jobQuery.rows[0].status !== 'open' ||
-        jobQuery.rows[0].status !== 'pending' ||
+        jobQuery.rows[0].status !== 'open' &&
+        jobQuery.rows[0].status !== 'pending' &&
         jobQuery.rows[0].status !== 'closed'
       ) {
         throw new Error('Job is not open, pending, or closed');
