@@ -128,7 +128,7 @@ const BadgeModal: React.FC<{
               name="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Category Name"
+              placeholder="Badge Name"
               className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
             />
             <p className="text-sm text-red-500 mt-1">{errors?.name}</p>
@@ -147,7 +147,7 @@ const BadgeModal: React.FC<{
               name="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Category Description"
+              placeholder="Badge Description"
               className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
             />
             <p className="text-sm text-red-500 mt-1">{errors?.description}</p>
