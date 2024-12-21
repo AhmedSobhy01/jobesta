@@ -46,8 +46,7 @@ export const getJobReviews = async (
       message: 'Reviews fetched',
       data: { reviews },
     });
-  } catch (error) {
-    console.log(error);
+  } catch {
     res.status(500).json({ status: false, message: 'Error fetching reviews' });
   }
 };
