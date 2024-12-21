@@ -33,7 +33,7 @@ const NavBar: React.FC<{
     <>
       <nav className="bg-white border-gray-200 dark:bg-gray-900 border-b">
         <div className="flex flex-wrap items-center justify-end mx-auto p-3.5">
-          <div className="flex justify-between md:w-auto md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse relative">
+          <div className="flex justify-between items-center h-12 md:w-auto md:order-2 relative">
             {loadingProfile ? (
               <NavBarProfileSkeleton />
             ) : (
