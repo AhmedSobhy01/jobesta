@@ -9,8 +9,7 @@ CREATE TYPE "job_status" AS ENUM (
   'open',
   'in_progress',
   'completed',
-  'closed',
-  'cancelled'
+  'closed'
 );
 
 CREATE TYPE "proposal_status" AS ENUM (
@@ -226,7 +225,6 @@ ALTER TABLE "withdrawals" ADD FOREIGN KEY ("freelancer_id") REFERENCES "freelanc
 ALTER TABLE "jobs" ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 ALTER TABLE "jobs" ADD FOREIGN KEY ("client_id") REFERENCES "accounts" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
 
 INSERT INTO
     "accounts" (
