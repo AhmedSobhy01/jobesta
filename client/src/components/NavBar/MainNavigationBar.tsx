@@ -55,7 +55,7 @@ const MainNavigationBar: React.FC<{
           </span>
         </Link>
 
-        <div className="flex justify-between h-12 md:w-auto md:order-2 relative">
+        <div className="flex justify-between items-center h-12 md:w-auto md:order-2 relative">
           {loadingProfile ? (
             <NavBarProfileSkeleton />
           ) : (
@@ -95,7 +95,7 @@ const MainNavigationBar: React.FC<{
             )
           )}
           {!username && !loadingProfile && (
-            <div className="flex gap-3">
+            <div className="flex gap-3 h-10">
               <Link
                 to="/login"
                 className="py-2 px-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-green-700 md:dark:hover:text-green-500 dark:text-white dark:hover:bg-transparent dark:hover:text-green-500 md:dark:hover:bg-transparent dark:border-gray-700"
