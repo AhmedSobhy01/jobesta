@@ -123,7 +123,18 @@ const FreelancerRowItem: React.FC<{
           },
         )
           .then((response) => {
-            if (!response.ok) throw new Error('Failed to delete freelancer');
+            if (!response.ok) {
+              if (response.status === 422) {
+                response.json().then((data) => {
+                  Object.keys(data.errors).forEach((key) => {
+                    toast(data.errors[key], { type: 'error' });
+                  });
+                });
+                throw new Error('Validation error');
+              }
+
+              throw new Error('Failed to delete freelancer');
+            }
 
             return response.json();
           })
@@ -131,8 +142,9 @@ const FreelancerRowItem: React.FC<{
             toast(data.message, { type: 'success' });
             navigate('/admin/freelancers?reload=true');
           })
-          .catch(() => {
-            toast('Failed to delete freelancer', { type: 'error' });
+          .catch((error) => {
+            if (error.message !== 'Validation error')
+              toast('Failed to delete freelancer', { type: 'error' });
           });
       },
     });

@@ -121,7 +121,18 @@ const ClientRowItem: React.FC<{
           },
         })
           .then((response) => {
-            if (!response.ok) throw new Error('Failed to delete client');
+            if (!response.ok) {
+              if (response.status === 422) {
+                response.json().then((data) => {
+                  Object.keys(data.errors).forEach((key) => {
+                    toast(data.errors[key], { type: 'error' });
+                  });
+                });
+                throw new Error('Validation error');
+              }
+
+              throw new Error('Failed to delete client');
+            }
 
             return response.json();
           })
@@ -129,8 +140,9 @@ const ClientRowItem: React.FC<{
             toast(data.message, { type: 'success' });
             navigate('/admin/clients?reload=true');
           })
-          .catch(() => {
-            toast('Failed to delete client', { type: 'error' });
+          .catch((error) => {
+            if (error.message !== 'Validation error')
+              toast('Failed to delete client', { type: 'error' });
           });
       },
     });
