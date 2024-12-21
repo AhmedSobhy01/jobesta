@@ -1,9 +1,12 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBell, faCircleUser } from '@fortawesome/free-regular-svg-icons';
 import NavButton from '@/components/NavBar/NavButton';
 import ProfileDropdown from '@/components/Profile/ProfileDropdown';
 import NavBarProfileSkeleton from '@/components/Skeletons/NavBarProfileSkeleton';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
+import NotificationsDropdown from '@/components/Notifications/NotificationsDropdown';
+import UserContext from '@/store/userContext';
+import { useContext } from 'react';
+import getProfilePicture from '@/utils/profilePicture';
 
 const NavBar: React.FC<{
   loadingProfile: boolean;
@@ -16,6 +19,7 @@ const NavBar: React.FC<{
   toggleSidebar: () => void;
 }> = ({ toggleSidebar, loadingProfile, dropdownOpen, setDropdownOpenMenu }) => {
   const { isDropdownProfileOpen } = dropdownOpen;
+  const { profilePicture } = useContext(UserContext);
 
   function handleProfileClick() {
     setDropdownOpenMenu({
@@ -38,19 +42,7 @@ const NavBar: React.FC<{
               <NavBarProfileSkeleton />
             ) : (
               <>
-                <button
-                  className="text-gray-500 hover:text-gray-700 md:hidden"
-                  onClick={toggleSidebar}
-                >
-                  <FontAwesomeIcon icon={faBars} size="lg" />{' '}
-                </button>
-                <NavButton
-                  focus={false}
-                  handleClick={handleBellClick}
-                  wideHidden={false}
-                >
-                  <FontAwesomeIcon icon={faBell} />
-                </NavButton>
+                <NotificationsDropdown onOpen={handleBellClick} />
 
                 <div className="relative">
                   <NavButton
@@ -58,12 +50,22 @@ const NavBar: React.FC<{
                     handleClick={handleProfileClick}
                     wideHidden={false}
                   >
-                    <FontAwesomeIcon icon={faCircleUser} />
+                    <img
+                      src={getProfilePicture(profilePicture ?? '')}
+                      className="rounded-full object-cover w-10 h-10 block"
+                      alt=""
+                    />
                   </NavButton>
                 </div>
                 {isDropdownProfileOpen && (
                   <ProfileDropdown loadingBalance={false} />
                 )}
+                <button
+                  className="text-gray-500 mx-2 hover:text-gray-700 md:hidden"
+                  onClick={toggleSidebar}
+                >
+                  <FontAwesomeIcon icon={faBars} size="lg" />{' '}
+                </button>
               </>
             )}
           </div>
