@@ -236,6 +236,7 @@ const FreelancerRowItem: React.FC<{
               type="button"
               onClick={() => setIsShowFreelancerPaymentsModalOpen(true)}
               className="text-cyan-600 hover:text-cyan-900"
+              title="Show payments"
             >
               <FontAwesomeIcon icon={faNewspaper} />
             </button>

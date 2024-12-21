@@ -232,6 +232,7 @@ const ClientRowItem: React.FC<{
               type="button"
               onClick={() => setIsShowClientPaymentsModalOpen(true)}
               className="text-cyan-600 hover:text-cyan-900"
+              title="Show payments"
             >
               <FontAwesomeIcon icon={faNewspaper} />
             </button>

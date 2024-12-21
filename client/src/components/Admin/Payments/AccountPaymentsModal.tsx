@@ -111,6 +111,21 @@ const AccountPaymentsModal: React.FC<{
                       </a>
                     </div>
                     <div className="flex justify-between items-center mb-4">
+                      <span className="font-medium text-gray-500">Status:</span>
+                      <span
+                        className={`text-gray-800 font-semibold ${
+                          payment.status === 'completed'
+                            ? 'text-green-500'
+                            : payment.status === 'pending'
+                              ? 'text-yellow-500'
+                              : 'text-red-500'
+                        }`}
+                      >
+                        {payment.status.charAt(0).toUpperCase() +
+                          payment.status.slice(1)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center mb-4">
                       <span className="font-medium text-gray-500">Amount:</span>
                       <span
                         className={`text-gray-800 font-semibold ${role === 'client' ? 'text-red-500' : 'text-green-500'}`}
