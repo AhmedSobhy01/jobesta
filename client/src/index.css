@@ -49,7 +49,6 @@ input[type='range']::-moz-range-thumb {
 ::-webkit-scrollbar-track {
   border-radius: 100vh;
   background: rgb(249 250 251);
-
 }
 ::-webkit-scrollbar-thumb {
   background: rgb(229 231 235);
