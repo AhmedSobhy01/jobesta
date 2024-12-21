@@ -1,11 +1,6 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faChevronDown,
-  faChevronUp,
-  faInfoCircle,
-  faPenToSquare,
-} from '@fortawesome/free-solid-svg-icons';
+import { faInfoCircle, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import BadgeModal from '@/components/Admin/Badges/BadgeModal';
 
 const BadgeRowItem: React.FC<{
@@ -24,35 +19,8 @@ const BadgeRowItem: React.FC<{
       )}
 
       <tr className="bg-white border-b hover:bg-gray-50">
-        {/* Mobile (sm) */}
-        <td className="px-2 py-2 sm:hidden">
-          <div className="flex items-center justify-between">
-            <div className="flex flex-col">
-              <span className="font-medium text-sm">{badge.name}</span>
-              <span className="text-xs text-gray-500">ID: {badge.id}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setIsEditAccountModalOpen(true)}
-                className="text-gray-600 hover:text-gray-900 p-2"
-              >
-                <FontAwesomeIcon icon={faPenToSquare} />
-              </button>
-              <button
-                className="text-gray-500 p-2"
-                onClick={() => setIsExpanded(!isExpanded)}
-              >
-                <FontAwesomeIcon
-                  icon={isExpanded ? faChevronUp : faChevronDown}
-                />
-              </button>
-            </div>
-          </div>
-        </td>
-
         {/* Tablet (sm) and up */}
-        <td className="hidden sm:table-cell px-3 py-2 lg:px-4 xl:px-6 text-sm text-gray-900">
+        <td className="sm:table-cell px-3 py-2 lg:px-4 xl:px-6 text-sm text-gray-900">
           <div className="flex items-center gap-2">
             {badge.id}
             <button
@@ -63,7 +31,7 @@ const BadgeRowItem: React.FC<{
             </button>
           </div>
         </td>
-        <td className="hidden sm:table-cell px-3 py-2 lg:px-4 xl:px-6 text-sm text-gray-900">
+        <td className="sm:table-cell px-3 py-2 lg:px-4 xl:px-6 text-sm text-gray-900">
           {badge.name}
         </td>
         <td className="hidden lg:table-cell px-3 py-2 lg:px-4 xl:px-6 text-sm text-gray-900">
@@ -76,7 +44,7 @@ const BadgeRowItem: React.FC<{
             alt={badge.name}
           />
         </td>
-        <td className="hidden sm:table-cell px-3 py-2 lg:px-4 xl:px-6 text-sm text-gray-900">
+        <td className=" sm:table-cell px-3 py-2 lg:px-4 xl:px-6 text-sm text-gray-900">
           <div className="flex gap-4">
             <button
               type="button"
@@ -89,16 +57,10 @@ const BadgeRowItem: React.FC<{
         </td>
       </tr>
 
-      {/* Expanded content for mobile and tablet */}
       {isExpanded && (
         <tr className="lg:hidden bg-gray-50">
           <td colSpan={5} className="px-3 py-2">
             <div className="space-y-2">
-              {/* Show description only on mobile since it's hidden in the main row */}
-              <div className="sm:hidden">
-                <p className="font-medium text-sm">Name:</p>
-                <p className="text-sm text-gray-600">{badge.name}</p>
-              </div>
               <div>
                 <p className="font-medium text-sm">Description:</p>
                 <p className="text-sm text-gray-600">{badge.description}</p>

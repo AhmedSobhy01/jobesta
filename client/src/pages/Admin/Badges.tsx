@@ -99,28 +99,36 @@ const Badges = () => {
               scrollableTarget="badges-table"
             >
               <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50 hidden sm:table-header-group">
+                <thead className="bg-gray-50 sm:table-header-group">
                   <tr>
-                    <th className="px-3 py-2 lg:px-4 xl:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-3 py-2 lg:px-4 xl:px-6 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
                       ID
                     </th>
-                    <th className="px-3 py-2 lg:px-4 xl:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-3 py-2 lg:px-4 xl:px-6 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
                       Name
                     </th>
-                    <th className="hidden lg:table-cell px-3 py-2 lg:px-4 xl:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="hidden lg:table-cell px-3 py-2 lg:px-4 xl:px-6 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
                       Description
                     </th>
-                    <th className="hidden lg:table-cell px-3 py-2 lg:px-4 xl:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="hidden lg:table-cell px-3 py-2 lg:px-4 xl:px-6 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
                       Icon
                     </th>
-                    <th className="px-3 py-2 lg:px-4 xl:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-3 py-2 lg:px-4 xl:px-6 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
                 </thead>
 
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {loading && <TableSkeleton columns={5} />}
+                  {loading && (
+                    <>
+                      <TableSkeleton
+                        columns={5}
+                        className="lg:table-row hidden"
+                      />
+                      <TableSkeleton columns={3} className="lg:hidden" />
+                    </>
+                  )}
                   {badges.map((badge) => (
                     <BadgeRowItem key={badge.id} badge={badge} />
                   ))}

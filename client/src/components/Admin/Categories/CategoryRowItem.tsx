@@ -67,24 +67,24 @@ const CategoryRowItem: React.FC<{
       )}
 
       <tr className="bg-white border-b hover:bg-gray-50">
-        <td className="px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+        <td className="px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
           <div className="flex items-center gap-2">
             {category.id}
             <button
-              className="2xl:hidden text-gray-500"
+              className="xl:hidden text-gray-500"
               onClick={() => setIsExpanded(!isExpanded)}
             >
               <FontAwesomeIcon icon={faInfoCircle} />
             </button>
           </div>
         </td>
-        <td className=" 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+        <td className=" xl:table-cell px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
           {category.name}
         </td>
-        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+        <td className="hidden xl:table-cell px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
           {category.description}
         </td>
-        <td className="px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+        <td className="px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
           <div className="flex gap-4">
             <button
               type="button"
@@ -105,12 +105,9 @@ const CategoryRowItem: React.FC<{
       </tr>
 
       {isExpanded && (
-        <tr className="2xl:hidden bg-gray-50">
+        <tr className="xl:hidden bg-gray-50">
           <td colSpan={4} className="px-3 py-2">
             <div className="space-y-2">
-              <p>
-                <span className="font-medium">Name:</span> {category.name}
-              </p>
               <p>
                 <span className="font-medium">Description:</span>{' '}
                 {category.description}

@@ -1,8 +1,9 @@
 import { getAuthJwtToken } from '@/utils/auth';
 import getProfilePicture from '@/utils/profilePicture';
-import { FormEventHandler, useState, useEffect } from 'react';
+import { FormEventHandler, useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import UserContext from '@/store/userContext';
 
 interface IPreviousWork {
   order: number;
@@ -40,6 +41,7 @@ const ProfilePicture: React.FC<ProfilePictureData> = ({
   const navigate = useNavigate();
   const [pic, setPic] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | undefined>(undefined);
+  const userCtx = useContext(UserContext);
 
   const profilePic = getProfilePicture(anyUserData.user?.profilePicture ?? '');
 
@@ -94,6 +96,18 @@ const ProfilePicture: React.FC<ProfilePictureData> = ({
           throw new Error(resData.message);
         }
         toast('Profile picture updated successfully', { type: 'success' });
+
+        userCtx.setUser({
+          isUserLoading: userCtx.isUserLoading,
+          accountId: userCtx.accountId,
+          firstName: userCtx.firstName,
+          lastName: userCtx.lastName,
+          username: userCtx.username,
+          email: userCtx.email,
+          role: userCtx.role,
+          isBanned: userCtx.isBanned,
+          profilePicture: resData.data.profilePicture,
+        });
       } catch (err) {
         if (err instanceof Error) {
           toast(err.message, { type: 'error' });

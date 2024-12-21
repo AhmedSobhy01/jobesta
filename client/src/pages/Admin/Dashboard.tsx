@@ -16,6 +16,7 @@ import { getAuthJwtToken } from '@/utils/auth';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { mangoFusionPalette } from '@mui/x-charts';
 import { BarChart } from '@mui/x-charts/BarChart';
+import { useEffect, useState } from 'react';
 
 const Dashboard: React.FC & {
   loader?: (args: LoaderFunctionArgs) => Promise<unknown>;
@@ -49,6 +50,14 @@ const Dashboard: React.FC & {
       };
     };
   };
+
+  const [isMobile, setScreenSize] = useState(window.innerWidth < 640);
+
+  useEffect(() => {
+    window.addEventListener('resize', () => {
+      setScreenSize(window.innerWidth < 640);
+    });
+  }, []);
 
   const sortedJobsPerCategory = statistics.jobsPerCategory
     .filter((job) => job.name !== 'Uncategorized')
@@ -86,7 +95,7 @@ const Dashboard: React.FC & {
   };
 
   return (
-    <div>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 xl:px-8">
       <h1 className="font-bold text-3xl lg:text-4xl font-heading text-gray-900">
         Statistics
       </h1>
@@ -147,12 +156,12 @@ const Dashboard: React.FC & {
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-4 w-full mt-4">
+      <div className="flex flex-wrap gap-4 w-full mt-10">
         <h1 className="font-bold text-3xl lg:text-4xl font-heading text-gray-900">
           Graphs
         </h1>
         <div className="w-full flex flex-wrap gap-4">
-          <div className="flex-grow flex flex-col items-center shadow-sm p-4 bg-white rounded-lg border border-gray-200">
+          <div className="flex-grow flex flex-col items-center shadow-sm p-4 bg-white rounded-lg border border-gray-200 w-full xl:w-1/2 2xl:w-1/3 justify-center">
             <h2 className="font-semibold text-xl lg:text-2xl font-heading text-gray-900">
               Jobs Count per Category
             </h2>
@@ -168,15 +177,22 @@ const Dashboard: React.FC & {
                   outerRadius: 100,
                   paddingAngle: 3,
                   cornerRadius: 12,
-                  cx: 100,
+                  cx: '50%',
                 },
               ]}
-              width={500}
-              height={400}
+              width={isMobile ? 300 : 500}
+              height={isMobile ? 300 : 400}
               colors={mangoFusionPalette}
+              slotProps={{
+                legend: {
+                  direction: 'row',
+                  position: { vertical: 'top', horizontal: 'middle' },
+                  padding: 3,
+                },
+              }}
             />
           </div>
-          <div className="flex-grow flex flex-col items-center shadow-sm p-4 bg-white rounded-lg border border-gray-200">
+          <div className="flex-grow flex flex-col items-center shadow-sm p-4 bg-white rounded-lg border border-gray-200 w-full xl:w-1/2 2xl:w-1/3 justify-center">
             <h2 className="font-semibold text-xl lg:text-2xl font-heading text-gray-900">
               Users Count
             </h2>
@@ -195,16 +211,23 @@ const Dashboard: React.FC & {
                   outerRadius: 100,
                   paddingAngle: 3,
                   cornerRadius: 12,
-                  cx: 100,
+                  cx: '50%',
                 },
               ]}
-              width={500}
-              height={400}
+              width={isMobile ? 300 : 500}
+              height={isMobile ? 300 : 400}
               colors={mangoFusionPalette}
+              slotProps={{
+                legend: {
+                  direction: 'row',
+                  position: { vertical: 'top', horizontal: 'middle' },
+                  padding: 3,
+                },
+              }}
             />
           </div>
 
-          <div className="flex-grow flex flex-col items-center shadow-sm p-4 bg-white rounded-lg border border-gray-200">
+          <div className="flex-grow flex flex-col items-center shadow-sm p-4 bg-white rounded-lg border border-gray-200 w-full xl:w-1/2 2xl:w-1/3">
             <h2 className="font-semibold text-xl lg:text-2xl font-heading text-gray-900">
               Payments in the last 6 months
             </h2>
@@ -218,12 +241,19 @@ const Dashboard: React.FC & {
                   valueFormatter,
                 },
               ]}
-              width={600}
-              height={400}
+              width={isMobile ? 300 : 500}
+              height={isMobile ? 300 : 400}
               colors={mangoFusionPalette}
+              slotProps={{
+                legend: {
+                  direction: 'row',
+                  position: { vertical: 'top', horizontal: 'middle' },
+                  padding: 3,
+                },
+              }}
             />
           </div>
-          <div className="flex-grow flex flex-col items-center shadow-sm p-4 bg-white rounded-lg border border-gray-200">
+          <div className="flex-grow flex flex-col items-center shadow-sm p-4 bg-white rounded-lg border border-gray-200 w-full xl:w-1/2 2xl:w-1/3">
             <h2 className="font-semibold text-xl lg:text-2xl font-heading text-gray-900">
               Freelancers Count per Badge
             </h2>
@@ -237,10 +267,17 @@ const Dashboard: React.FC & {
                   label: 'Freelancers Count per Badge',
                 },
               ]}
-              width={400}
-              height={400}
+              width={isMobile ? 300 : 500}
+              height={isMobile ? 300 : 400}
               colors={mangoFusionPalette}
               borderRadius={12}
+              slotProps={{
+                legend: {
+                  direction: 'row',
+                  position: { vertical: 'top', horizontal: 'middle' },
+                  padding: 3,
+                },
+              }}
             />
           </div>
         </div>

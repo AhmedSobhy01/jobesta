@@ -111,20 +111,20 @@ const Admins = () => {
     );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 2xl:px-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 xl:px-8">
       {isCreateAdminModalOpen && (
         <AdminModal onClose={() => setIsCreateAdminModalOpen(false)} />
       )}
 
-      <div className="py-6 2xl:py-12">
-        <div className="text-center pb-6 flex items-center justify-between flex-col 2xl:flex-row gap-4">
-          <h1 className="font-bold text-2xl 2xl:text-5xl font-heading text-gray-900">
+      <div className="py-6 xl:py-12">
+        <div className="text-center pb-6 flex items-center justify-between flex-col xl:flex-row gap-4">
+          <h1 className="font-bold text-xl xl:text-5xl font-heading text-gray-900">
             Admins
           </h1>
 
           <button
             type="button"
-            className="px-5 py-2 bg-blue-600 text-white rounded-lg font-medium focus:outline-none hover:bg-blue-700 transition-colors duration-300 ease-in-out w-full 2xl:w-auto"
+            className="px-5 py-2 bg-blue-600 text-white rounded-lg font-medium focus:outline-none hover:bg-blue-700 transition-colors duration-300 ease-in-out w-full xl:w-auto"
             onClick={() => setIsCreateAdminModalOpen(true)}
           >
             Add Admin
@@ -159,56 +159,64 @@ const Admins = () => {
                   <tr>
                     <th
                       scope="col"
-                      className="px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-left"
+                      className="px-3 py-2 xl:px-6 xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left"
                     >
                       ID
                     </th>
                     <th
                       scope="col"
-                      className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-left"
+                      className="hidden xl:table-cell px-3 py-2 xl:px-6 xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left"
                     >
                       First Name
                     </th>
                     <th
                       scope="col"
-                      className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-left"
+                      className="hidden xl:table-cell px-3 py-2 xl:px-6 xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left"
                     >
                       Last Name
                     </th>
                     <th
                       scope="col"
-                      className="2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-left"
+                      className="xl:table-cell px-3 py-2 xl:px-6 xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left"
                     >
                       Username
                     </th>
                     <th
                       scope="col"
-                      className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-left"
+                      className="hidden xl:table-cell px-3 py-2 xl:px-6 xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left"
                     >
                       Email
                     </th>
                     <th
                       scope="col"
-                      className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-left"
+                      className="hidden xl:table-cell px-3 py-2 xl:px-6 xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left"
                     >
                       Banned
                     </th>
                     <th
                       scope="col"
-                      className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-left"
+                      className="hidden xl:table-cell px-3 py-2 xl:px-6 xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left"
                     >
                       Created At
                     </th>
                     <th
                       scope="col"
-                      className="px-3 py-2 2xl:px-6 2xl:py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-left"
+                      className="px-3 py-2 xl:px-6 xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left"
                     >
                       Actions
                     </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {loading && <TableSkeleton columns={8} />}
+                  {loading && (
+                    <>
+                      <TableSkeleton
+                        columns={8}
+                        className="xl:table-row hidden"
+                      />
+                      <TableSkeleton columns={3} className="xl:hidden" />
+                    </>
+                  )}
                   {admins.map((admin: Account) => (
                     <AdminRowItem key={admin.id} admin={admin} />
                   ))}
