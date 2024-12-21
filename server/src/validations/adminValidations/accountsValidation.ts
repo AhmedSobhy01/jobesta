@@ -265,18 +265,39 @@ export const deleteAccountValidationRules = [
     .withMessage('Account id must be a number')
     .custom(async (accountId, { req }) => {
       const accountsQuery = await db.query(
-        'SELECT id from accounts WHERE id = $1',
+        'SELECT id, role from accounts WHERE id = $1',
         [accountId],
       );
+
       if (accountsQuery.rowCount === 0) throw 'No account found with this id';
+
       if (accountsQuery.rows[0].id === req.user.id)
         throw 'You cannot delete your own account';
 
       const query2 = await db.query(
         "SELECT COUNT(*) from accounts WHERE role = 'admin'",
       );
+
       if (query2.rows[0].count === 1)
         throw 'You cannot delete the only admin account';
+
+      if (accountsQuery.rows[0].role === 'client') {
+        const query = await db.query(
+          'SELECT COUNT(*) FROM payments WHERE client_id = $1',
+          [accountId],
+        );
+
+        if (query.rows[0].count > 0)
+          throw 'Cannot delete client that has payment history';
+      } else if (accountsQuery.rows[0].role === 'freelancer') {
+        const query = await db.query(
+          'SELECT COUNT(*) FROM payments WHERE freelancer_id = (SELECT id FROM freelancers WHERE account_id = $1)',
+          [accountId],
+        );
+
+        if (query.rows[0].count > 0)
+          throw 'Cannot delete freelancer that has payment history';
+      }
 
       return true;
     }),

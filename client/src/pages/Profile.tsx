@@ -136,7 +136,7 @@ const ProfilePage: React.FC & {
           username={userData.username!}
         />
       )}
-      <div className="max-w-6xl h-screen mx-auto mt-6 p-4">
+      <div className="max-w-6xl h-screen mx-auto p-4">
         <div className="relative w-full bg-gradient-to-t from-emerald-200 to-emerald-500 h-48 rounded-lg shadow-lg">
           <ProfilePicture anyUserData={anyUserData} isMe={isMe} />
         </div>
@@ -172,7 +172,7 @@ const ProfilePage: React.FC & {
                     onClick={() => setEditFreelancerModalOpen(true)}
                     className="dark:text-gray-600 text-gray-800 hover:text-gray-500 dark:hover:text-gray-400"
                   >
-                    Edit Profile data
+                    Edit Freelancer Profile
                   </button>
                 )}
               </div>

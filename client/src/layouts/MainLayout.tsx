@@ -110,7 +110,10 @@ function MainLayout() {
   }, [role, setFreelancer, dropdownOpen.isDropdownProfileOpen]);
 
   return (
-    <div className="h-screen dark:bg-gray-900 bg-white" onClick={handleClick}>
+    <div
+      className="min-h-screen dark:bg-gray-900 bg-white"
+      onClick={handleClick}
+    >
       <ToastContainer />
 
       {(state === 'loading' || isUserLoading) && <FullPageLoader />}
@@ -121,7 +124,6 @@ function MainLayout() {
         setDropdownOpenMenu={setDropdownOpenMenu}
         loadingBalance={loadingBalance}
       />
-
       <main>{!isUserLoading && <Outlet />}</main>
     </div>
   );

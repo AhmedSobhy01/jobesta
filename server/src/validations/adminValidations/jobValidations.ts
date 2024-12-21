@@ -13,7 +13,14 @@ export const getJobsValidationRules = [
     .optional()
     .isString()
     .withMessage('Status must be a string')
-    .isIn(['open', 'in_progress', 'completed', 'closed', 'cancelled'])
+    .isIn([
+      'pending',
+      'open',
+      'in_progress',
+      'completed',
+      'closed',
+      'cancelled',
+    ])
     .withMessage(
       'Status must be one of the following: open, in_progress, completed, closed, cancelled',
     ),
@@ -99,6 +106,14 @@ export const deleteJobValidationRules = [
 
       if (jobQuery.rows.length === 0) {
         throw new Error('Job does not exist');
+      }
+
+      if (
+        jobQuery.rows[0].status !== 'open' ||
+        jobQuery.rows[0].status !== 'pending' ||
+        jobQuery.rows[0].status !== 'closed'
+      ) {
+        throw new Error('Job is not open, pending, or closed');
       }
 
       return true;
