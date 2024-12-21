@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
@@ -33,8 +33,10 @@ const EditJobModal = ({ job, onClose }: { job: Job; onClose: () => void }) => {
     if (e.target === e.currentTarget) handleClose();
   };
 
+  const fetchDataRef = useRef(false);
   useEffect(() => {
     const fetchCategories = async () => {
+      fetchDataRef.current = true;
       setLoading(true);
 
       try {
@@ -52,9 +54,10 @@ const EditJobModal = ({ job, onClose }: { job: Job; onClose: () => void }) => {
       }
 
       setLoading(false);
+      fetchDataRef.current = false;
     };
 
-    fetchCategories();
+    if (!fetchDataRef.current) fetchCategories();
   }, []);
 
   const handleUpdateJob = async (e: React.FormEvent<HTMLFormElement>) => {

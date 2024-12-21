@@ -18,6 +18,8 @@ const JobModal: React.FC<{
 
   const fetchDataRef = useRef(false);
   useEffect(() => {
+    if (fetchDataRef.current) return;
+
     fetchDataRef.current = true;
 
     (async () => {
