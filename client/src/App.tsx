@@ -96,11 +96,7 @@ const router = createBrowserRouter([
       { path: 'contacts', element: <Contacts /> },
       {
         path: 'users/:username',
-        element: (
-          <AuthMiddleware>
-            <ProfilePage />
-          </AuthMiddleware>
-        ),
+        element: <ProfilePage />,
         loader: ProfilePage.loader,
       },
     ],
