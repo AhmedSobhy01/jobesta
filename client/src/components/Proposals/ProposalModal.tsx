@@ -73,7 +73,11 @@ const ProposalModal: React.FC<{
     })
       .then((res) => {
         if (!res.ok && res.status !== 422)
-          throw new Error('Failed to submit proposal');
+          throw new Error(
+            isUpdate
+              ? 'Failed to update proposal.'
+              : 'Failed to submit proposal.',
+          );
 
         return res.json();
       })
@@ -116,7 +120,7 @@ const ProposalModal: React.FC<{
           </button>
 
           <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
-            Update Proposal
+            {isUpdate ? 'Update Proposal' : 'Submit Proposal'}
           </h2>
         </div>
 
@@ -248,7 +252,11 @@ const ProposalModal: React.FC<{
             ${isSubmitting ? 'bg-opacity-50 cursor-not-allowed' : 'text-white hover:bg-emerald-600'}`}
             disabled={isSubmitting}
           >
-            {isSubmitting ? 'Loading...' : 'Update Proposal'}
+            {isSubmitting
+              ? 'Loading...'
+              : isUpdate
+                ? 'Update Proposal'
+                : 'Submit Proposal'}
           </button>
         </div>
       </div>
