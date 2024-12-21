@@ -218,7 +218,7 @@ const NotificationsDropdown = ({ onOpen }: { onOpen: () => void }) => {
 
       {isDropdownOpen && (
         <div className="relative" ref={dropdownRef}>
-          <div className="absolute right-0 top-16 bg-white dark:bg-gray-900 dark:border-gray-700 border border-gray-200 rounded-xl shadow-lg z-10">
+          <div className="absolute right-0 top-8 bg-white dark:bg-gray-900 dark:border-gray-700 border border-gray-200 rounded-xl shadow-lg z-10">
             <div className="flex flex-col min-w-[16rem] h-fit">
               {' '}
               <div className="flex-grow py-2">

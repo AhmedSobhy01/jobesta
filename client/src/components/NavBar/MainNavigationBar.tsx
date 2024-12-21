@@ -61,7 +61,7 @@ const MainNavigationBar: React.FC<{
           </span>
         </Link>
 
-        <div className="flex justify-between h-12 md:w-auto md:order-2 relative">
+        <div className="flex justify-between items-center h-12 md:w-auto md:order-2 relative">
           {loadingProfile ? (
             <NavBarProfileSkeleton />
           ) : (
@@ -103,7 +103,7 @@ const MainNavigationBar: React.FC<{
             )
           )}
           {!username && !loadingProfile && (
-            <div className="flex gap-3">
+            <div className="flex gap-3 h-10">
               <Link
                 to="/login"
                 className="py-2 px-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-green-700 md:dark:hover:text-green-500 dark:text-white dark:hover:bg-transparent dark:hover:text-green-500 md:dark:hover:bg-transparent dark:border-gray-700"
@@ -128,7 +128,7 @@ const MainNavigationBar: React.FC<{
             </NavButton>
 
             {isDropdownBarOpen && (
-              <ul className=" md:hidden absolute top-16 right-2 w-min rounded-xl bg-white shadow-lg z-50 flex flex-col font-medium p-4 border-t border-gray-100 dark:bg-gray-800 dark:border-gray-700">
+              <ul className=" md:hidden absolute top-14 right-2 w-min rounded-xl bg-white shadow-lg z-50 flex flex-col font-medium p-4 border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
                 <li
                   className="py-2 border-b hover:bg-gray-100 dark:hover:bg-gray-700"
                   onClick={handleBarClick}

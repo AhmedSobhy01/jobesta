@@ -11,7 +11,7 @@ const ProfileDropdown: React.FC<{ loadingBalance: boolean }> = ({
 
   return (
     <div className="relative">
-      <div className="absolute right-0 top-16 w-56 bg-white dark:bg-gray-900 dark:border-gray-700 border border-gray-200 rounded-lg shadow-lg z-10">
+      <div className="absolute right-0 top-8 w-56 bg-white dark:bg-gray-900 dark:border-gray-700 border border-gray-200 rounded-lg shadow-lg z-10">
         <div className="px-4 py-3">
           <p className="text-sm font-medium text-green-700">
             {userData.username}

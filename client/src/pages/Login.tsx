@@ -21,12 +21,7 @@ function Login() {
     !errors?.status && !!errors?.global,
   );
 
-  const [isErrorMessage, setIsErrorMessage] = useState(
-    !errors?.status && !!errors?.message,
-  );
-
   useEffect(() => {
-    setIsErrorMessage(!!errors?.message);
     setIsGlobalError(!!errors?.global);
   }, [errors]);
 
@@ -36,7 +31,6 @@ function Login() {
   const isSubmitting = navigate.state === 'submitting';
 
   const handleCloseError = () => {
-    setIsErrorMessage(false);
     setIsGlobalError(false);
     const redirectTo =
       new URLSearchParams(window.location.search).get('redirect') || '/';
@@ -48,12 +42,6 @@ function Login() {
         {isGlobalError && (
           <ErrorModule
             errorMessage={errors?.global}
-            onClose={handleCloseError}
-          />
-        )}
-        {isErrorMessage && (
-          <ErrorModule
-            errorMessage={errors?.message}
             onClose={handleCloseError}
           />
         )}
