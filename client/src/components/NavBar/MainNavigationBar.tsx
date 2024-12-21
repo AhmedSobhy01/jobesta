@@ -13,6 +13,7 @@ import NavBarProfileSkeleton from '../Skeletons/NavBarProfileSkeleton';
 
 const MainNavigationBar: React.FC<{
   loadingProfile: boolean;
+  loadingBalance: boolean;
   dropdownOpen: {
     isDropdownBarOpen: boolean;
     isDropdownProfileOpen: boolean;
@@ -21,7 +22,12 @@ const MainNavigationBar: React.FC<{
     isDropdownBarOpen: boolean;
     isDropdownProfileOpen: boolean;
   }) => void;
-}> = ({ loadingProfile, dropdownOpen, setDropdownOpenMenu }) => {
+}> = ({
+  loadingProfile,
+  dropdownOpen,
+  setDropdownOpenMenu,
+  loadingBalance,
+}) => {
   const { username, role } = useContext(UserContext);
   const { isDropdownBarOpen, isDropdownProfileOpen } = dropdownOpen;
 
@@ -89,7 +95,9 @@ const MainNavigationBar: React.FC<{
                       <FontAwesomeIcon icon={faCircleUser} />
                     </NavButton>
 
-                    {isDropdownProfileOpen && <ProfileDropdown />}
+                    {isDropdownProfileOpen && (
+                      <ProfileDropdown loadingBalance={loadingBalance} />
+                    )}
                   </div>
                 </>
               )

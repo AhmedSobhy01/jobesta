@@ -3,7 +3,9 @@ import React, { useContext } from 'react';
 import NavBarItem from '@/components/NavBar/NavBarItem';
 import FreelancerContext from '@/store/freelancerContext';
 
-const ProfileDropdown: React.FC = () => {
+const ProfileDropdown: React.FC<{ loadingBalance: boolean }> = ({
+  loadingBalance,
+}) => {
   const userData = useContext(UserContext);
   const freelancer = useContext(FreelancerContext);
 
@@ -20,8 +22,15 @@ const ProfileDropdown: React.FC = () => {
               {userData.email}
             </p>
             {userData.role === 'freelancer' && (
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                Balance: {freelancer.balance ? freelancer.balance : '0.00'}$
+              <p className="flex gap-1 items-center text-sm text-gray-500 dark:text-gray-400">
+                <span>Balance:</span>
+                {loadingBalance ? (
+                  <div className="animate-pulse">
+                    <div className="h-4 bg-gray-200 rounded w-14"></div>
+                  </div>
+                ) : (
+                  <span>${freelancer.balance}</span>
+                )}
               </p>
             )}
           </div>
