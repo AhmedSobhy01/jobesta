@@ -143,7 +143,6 @@ Login.action = async function action({ request }: ActionFunctionArgs) {
       };
       return authErrors;
     }
-
     const jwtToken = resData.data.jwtToken;
     const refreshToken = resData.data.refreshToken;
 

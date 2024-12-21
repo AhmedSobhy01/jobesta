@@ -1,13 +1,17 @@
 const TableSkeleton: React.FC<{
   columns?: number;
   rowCount?: number;
-}> = ({ columns = 5, rowCount = 10 }) => {
+  className?: string;
+}> = ({ columns = 5, rowCount = 10, className = '' }) => {
   return (
     <>
       {Array(rowCount)
         .fill(0)
         .map((_, rowIndex) => (
-          <tr key={rowIndex} className="bg-white border-b animate-pulse">
+          <tr
+            key={rowIndex}
+            className={`bg-white border-b animate-pulse ${className}`}
+          >
             {Array(columns)
               .fill(0)
               .map((_, colIndex) => (

@@ -14,6 +14,8 @@ import Jobs from '@/components/Profile/Jobs';
 import EditFreelancerModal from '@/components/Profile/EditFreelancerModal';
 import Review from '@/components/Profile/Review';
 import getProfilePicture from '@/utils/profilePicture';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStar, faStarHalfStroke } from '@fortawesome/free-solid-svg-icons';
 
 const activeCss =
   'text-emerald-700 font-semibold pb-2 border-b-2 border-gray-800 dark:text-emerald-700';
@@ -203,6 +205,31 @@ const ProfilePage: React.FC & {
                 <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200">
                   {Number(anyUserData.user.avgReviewRating).toFixed(2)}
                 </h2>
+                {[...Array(5)].map((_, index) => {
+                  const roundedRating =
+                    Math.round(Number(anyUserData.user.avgReviewRating) * 2) /
+                    2;
+                  return (
+                    <span key={index}>
+                      {index < Math.floor(roundedRating) ? (
+                        <FontAwesomeIcon
+                          icon={faStar}
+                          className="text-emerald-500"
+                        />
+                      ) : index < roundedRating ? (
+                        <FontAwesomeIcon
+                          icon={faStarHalfStroke}
+                          className="text-emerald-500"
+                        />
+                      ) : (
+                        <FontAwesomeIcon
+                          icon={faStar}
+                          className="text-gray-300"
+                        />
+                      )}
+                    </span>
+                  );
+                })}
                 <p className="text-sm text-gray-600 dark:text-gray-400">
                   Rating
                 </p>

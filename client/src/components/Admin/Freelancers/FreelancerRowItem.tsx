@@ -174,40 +174,40 @@ const FreelancerRowItem: React.FC<{
       )}
 
       <tr className="bg-white border-b hover:bg-gray-50">
-        <td className="px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+        <td className="px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
           <div className="flex items-center gap-2">
             {freelancer.id}
             <button
-              className="2xl:hidden text-gray-500"
+              className="xl:hidden text-gray-500"
               onClick={() => setIsExpanded(!isExpanded)}
             >
               <FontAwesomeIcon icon={faInfoCircle} />
             </button>
           </div>
         </td>
-        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+        <td className="hidden xl:table-cell px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
           {freelancer.firstName}
         </td>
-        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+        <td className="hidden xl:table-cell px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
           {freelancer.lastName}
         </td>
-        <td className=" 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+        <td className=" xl:table-cell px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
           {freelancer.username}
         </td>
-        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+        <td className="hidden xl:table-cell px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
           {freelancer.email}
         </td>
-        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+        <td className="hidden xl:table-cell px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
           {freelancer.isBanned ? (
             <FontAwesomeIcon icon={faCheck} className="text-red-500" />
           ) : (
             <FontAwesomeIcon icon={faTimes} className="text-green-500" />
           )}
         </td>
-        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+        <td className="hidden xl:table-cell px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
           {freelancer.createdAt}
         </td>
-        <td className="px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+        <td className="px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
           <div className="flex gap-4">
             <Link
               to={`/users/${freelancer.username}`}
@@ -265,7 +265,7 @@ const FreelancerRowItem: React.FC<{
       </tr>
 
       {isExpanded && (
-        <tr className="2xl:hidden bg-gray-50">
+        <tr className="xl:hidden bg-gray-50">
           <td colSpan={8} className="px-3 py-2">
             <div className="space-y-2">
               <p>

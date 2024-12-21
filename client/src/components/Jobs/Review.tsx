@@ -1,6 +1,11 @@
 import { useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faComments, faTrash } from '@fortawesome/free-solid-svg-icons';
+import {
+  faComments,
+  faStar,
+  faStarHalfAlt,
+  faTrash,
+} from '@fortawesome/free-solid-svg-icons';
 import UserContext from '@/store/userContext';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
@@ -102,16 +107,20 @@ const Reviews: React.FC<{ job: Job }> = ({ job }) => {
         )}
 
         {reviews?.map((review: Review, index: number) => (
-          <div key={index} className="border-2 rounded-lg overflow-hidden mb-4">
+          <div
+            key={index}
+            className="border rounded-lg overflow-hidden mb-4 shadow-lg"
+          >
             <div className="p-6 bg-gray-100">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4 w-1/5">
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
+                {/* Profile Section */}
+                <div className="flex items-center gap-4">
                   <img
                     alt="Freelancer profile picture"
                     src={getProfilePicture(review.sender!.profilePicture)}
                     decoding="async"
                     loading="lazy"
-                    className="rounded-full w-16 h-16"
+                    className="rounded-full w-16 h-16 border"
                   />
                   <div>
                     <h4 className="text-lg font-semibold">
@@ -119,32 +128,54 @@ const Reviews: React.FC<{ job: Job }> = ({ job }) => {
                     </h4>
                     <Link
                       to={`/users/${review.sender!.username}`}
-                      className="text-sm hover:underline text-gray-400"
+                      className="text-sm hover:underline text-gray-500"
                     >
-                      {review.sender!.username}
+                      @{review.sender!.username}
                     </Link>
                   </div>
                 </div>
 
-                <div className="w-1/4 text-center">
-                  <p className="text-sm font-semibold truncate">
-                    {review.comment}
+                {/* Comment Section */}
+                <div className="md:col-span-2">
+                  <p className="text-sm font-medium text-gray-700 truncate">
+                    {review.comment ?? 'No comment'}
                   </p>
                 </div>
 
-                <div className="w-1/6 text-center">
-                  <p className="text-sm text-gray-400">
-                    Rating: {review.rating}
+                {/* Rating Section */}
+                <div className="text-center">
+                  <p className="text-sm text-gray-600">
+                    <strong>Rating:</strong> {review.rating}
                   </p>
+                  <div className="flex justify-center mt-1 text-emerald-500">
+                    {[...Array(5)].map((_, i) => (
+                      <FontAwesomeIcon
+                        key={i}
+                        icon={
+                          i < Number(review.rating) ? faStar : faStarHalfAlt
+                        }
+                        className={
+                          i < Number(review.rating)
+                            ? 'text-emerald-500'
+                            : 'text-gray-300'
+                        }
+                      />
+                    ))}
+                  </div>
                 </div>
 
-                <div className="w-1/6 text-center">
-                  <time dateTime={review.createdAt} className="">
+                {/* Date Section */}
+                <div className="text-center">
+                  <time
+                    dateTime={review.createdAt}
+                    className="text-sm text-gray-500"
+                  >
                     Posted {humanReadable(review.createdAt)}
                   </time>
                 </div>
 
-                <div className="w-1/6 text-center justify-items-center">
+                {/* Action Section */}
+                <div className="text-center">
                   {review.sender!.username === user.username ? (
                     <button
                       type="button"
@@ -152,10 +183,10 @@ const Reviews: React.FC<{ job: Job }> = ({ job }) => {
                         e.stopPropagation();
                         handleDeleteReview();
                       }}
-                      className="flex items-center gap-2 text-sm bg-red-500 text-white px-3 py-1 rounded-lg select-none"
+                      className="flex items-center justify-center gap-2 text-sm bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300"
                     >
                       <FontAwesomeIcon icon={faTrash} />
-                      Delete Review
+                      Delete
                     </button>
                   ) : (
                     <div className="invisible h-8"></div>
