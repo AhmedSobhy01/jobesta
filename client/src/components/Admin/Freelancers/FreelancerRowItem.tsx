@@ -9,12 +9,14 @@ import {
   faTrash,
   faEye,
   faInfoCircle,
+  faNewspaper,
 } from '@fortawesome/free-solid-svg-icons';
 import FreelancerModal from '@/components/Admin/Freelancers/FreelancerModal';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router';
 import { getAuthJwtToken } from '@/utils/auth';
+import AccountPaymentsModal from '../Payments/AccountPaymentsModal';
 
 const FreelancerRowItem: React.FC<{
   freelancer: Account;
@@ -23,6 +25,10 @@ const FreelancerRowItem: React.FC<{
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [isEditAccountModalOpen, setIsEditAccountModalOpen] = useState(false);
+  const [
+    isShowFreelancerPaymentsModalOpen,
+    setIsShowFreelancerPaymentsModalOpen,
+  ] = useState(false);
 
   const banFreelancer = () => {
     Swal.fire({
@@ -159,6 +165,14 @@ const FreelancerRowItem: React.FC<{
         />
       )}
 
+      {isShowFreelancerPaymentsModalOpen && (
+        <AccountPaymentsModal
+          accountId={freelancer.id}
+          role="freelancer"
+          onClose={() => setIsShowFreelancerPaymentsModalOpen(false)}
+        />
+      )}
+
       <tr className="bg-white border-b hover:bg-gray-50">
         <td className="px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
           <div className="flex items-center gap-2">
@@ -229,6 +243,15 @@ const FreelancerRowItem: React.FC<{
                 <FontAwesomeIcon icon={faBan} />
               </button>
             )}
+
+            <button
+              type="button"
+              onClick={() => setIsShowFreelancerPaymentsModalOpen(true)}
+              className="text-cyan-600 hover:text-cyan-900"
+              title="Show payments"
+            >
+              <FontAwesomeIcon icon={faNewspaper} />
+            </button>
 
             <button
               type="button"
