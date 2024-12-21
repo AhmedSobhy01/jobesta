@@ -192,7 +192,7 @@ const FreelancerModal: React.FC<{
           <div className="mb-4 flex flex-col">
             <label
               htmlFor="firstName"
-              className="block text-sm font-medium text-gray-600 mb-2 mx-2 mx-2"
+              className="block text-sm font-medium text-gray-600 mb-2 mx-2"
             >
               First Name
             </label>
