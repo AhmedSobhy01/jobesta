@@ -2,6 +2,8 @@ import { getAuthJwtToken } from '@/utils/auth';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXmark, faStar } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 
 const ReviewModal = ({ job, onClose }: { job: Job; onClose: () => void }) => {
@@ -91,63 +93,79 @@ const ReviewModal = ({ job, onClose }: { job: Job; onClose: () => void }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md">
-        <div className="flex justify-between items-center">
-          <h2 className="text-xl font-semibold">Add Review</h2>
+      <div className="flex flex-col bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative max-h-[90vh]">
+        <div>
           <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 text-2xl"
+            className="absolute top-6 right-6 text-gray-400 hover:text-gray-800 focus:outline-none p-0 m-0"
+            onClick={handleClose}
           >
-            &times;
+            <FontAwesomeIcon icon={faXmark} className="text-xl" />
           </button>
+
+          <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
+            Add Review
+          </h2>
         </div>
 
-        <div className="mt-4">
-          <label className="block text-gray-700">Rate the Job:</label>
-          <div className="flex space-x-2 mt-2">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <span
-                key={star}
-                className={`cursor-pointer text-3xl ${
-                  (hover || rating) >= star
-                    ? 'text-emerald-500'
-                    : 'text-gray-300'
-                }`}
-                onMouseEnter={() => handleStarHover(star)}
-                onMouseLeave={() => setHover(0)}
-                onClick={() => handleStarClick(star)}
-              >
-                ★
-              </span>
-            ))}
+        <div className="overflow-y-auto">
+          <div className="mb-6 mx-2">
+            <h3 className="text-sm font-medium text-gray-600 mb-2">Rating</h3>
+            <div className="flex space-x-2">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  onClick={() => handleStarClick(star)}
+                  onMouseEnter={() => handleStarHover(star)}
+                  onMouseLeave={() => handleStarHover(0)}
+                  className={`text-2xl ${
+                    star <= (hover || rating)
+                      ? 'text-emerald-500'
+                      : 'text-gray-300'
+                  }`}
+                >
+                  <FontAwesomeIcon icon={faStar} />
+                </button>
+              ))}
+            </div>
+            <p className="text-sm text-red-500 mt-1">{errors?.rating}</p>
           </div>
-          <p className="text-sm text-red-500 mt-1">{errors?.rating}</p>
+          <div className="mb-4 mx-2">
+            <label
+              htmlFor="feedback"
+              className="block text-sm font-medium text-gray-600 mb-2"
+            >
+              Feedback
+            </label>
+            <textarea
+              id="feedback"
+              name="feedback"
+              value={review}
+              onChange={(e) => setReview(e.target.value)}
+              placeholder="Write your feedback..."
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+              rows={3}
+            />
+            <p className="text-sm text-red-500 mt-1">{errors?.feedback}</p>
+          </div>
         </div>
 
-        <div className="mt-4">
-          <label className="block text-gray-700">Your Review:</label>
-          <textarea
-            value={review}
-            onChange={(e) => setReview(e.target.value)}
-            className="w-full mt-2 border rounded p-2"
-            rows={4}
-            placeholder="Write your feedback here..."
-          ></textarea>
-          <p className="text-sm text-red-500 mt-1">{errors?.comment}</p>
-        </div>
-
-        <div className="mt-6 flex justify-end space-x-2">
+        <div className="mt-6 flex justify-end space-x-3">
           <button
-            onClick={onClose}
-            className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+            onClick={handleClose}
+            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none"
           >
             Cancel
           </button>
           <button
             onClick={handleSubmit}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className={`px-4 py-2 rounded-md focus:outline-none bg-emerald-500 ${
+              isSubmitting
+                ? 'bg-opacity-50 cursor-not-allowed'
+                : 'text-white hover:bg-emerald-600'
+            }`}
+            disabled={isSubmitting}
           >
-            Submit Review
+            {isSubmitting ? 'Loading...' : 'Submit'}
           </button>
         </div>
       </div>

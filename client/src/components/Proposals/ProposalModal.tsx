@@ -73,7 +73,11 @@ const ProposalModal: React.FC<{
     })
       .then((res) => {
         if (!res.ok && res.status !== 422)
-          throw new Error('Failed to submit proposal');
+          throw new Error(
+            isUpdate
+              ? 'Failed to update proposal.'
+              : 'Failed to submit proposal.',
+          );
 
         return res.json();
       })
@@ -103,132 +107,136 @@ const ProposalModal: React.FC<{
 
   return createPortal(
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+      className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[100]"
       onMouseDown={handleModalClick}
     >
-      <div className="bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative max-h-[90vh] overflow-y-auto">
-        <button
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-800 focus:outline-none"
-          onClick={handleClose}
-        >
-          <FontAwesomeIcon icon={faXmark} />
-        </button>
-
-        <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
-          {isUpdate ? 'Update Proposal' : 'Submit Proposal'}
-        </h2>
-
-        <div className="mb-4">
-          <label
-            htmlFor="coverLetter"
-            className="block text-sm font-medium text-gray-600 mb-2"
+      <div className="flex flex-col bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative max-h-[90vh]">
+        <div>
+          <button
+            className="absolute top-6 right-6 text-gray-400 hover:text-gray-800 focus:outline-none p-0 m-0"
+            onClick={handleClose}
           >
-            Cover Letter
-          </label>
-          <textarea
-            id="coverLetter"
-            name="coverLetter"
-            value={coverLetter}
-            onChange={handleCoverLetterChange}
-            placeholder="Write a brief cover letter..."
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-            rows={3}
-          />
-          <p className="text-sm text-red-500 mt-1">{errors?.coverLetter}</p>
+            <FontAwesomeIcon icon={faXmark} className="text-xl" />
+          </button>
+
+          <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
+            {isUpdate ? 'Update Proposal' : 'Submit Proposal'}
+          </h2>
         </div>
 
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium text-gray-700">Milestones</h3>
-          {milestones.map((milestone, index) => (
-            <div
-              key={index}
-              className="border rounded-lg p-4 bg-gray-50 shadow-sm space-y-4"
+        <div className="overflow-y-auto">
+          <div className="mb-4 mx-2">
+            <label
+              htmlFor="coverLetter"
+              className="block text-sm font-medium text-gray-600 mb-2"
             >
-              <div>
-                <label
-                  htmlFor={`milestone-${index}-name`}
-                  className="block text-sm font-medium text-gray-600"
-                >
-                  Milestone Name
-                </label>
-                <input
-                  type="text"
-                  id={`milestone-${index}-name`}
-                  name="name"
-                  value={milestone.name}
-                  onChange={(e) => handleMilestoneChange(e, index)}
-                  placeholder="Enter milestone name"
-                  className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                />
-                <p className="text-sm text-red-500 mt-1">
-                  {errors?.[`milestones[${index}].name`]}
-                </p>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label
-                    htmlFor={`milestone-${index}-amount`}
-                    className="block text-sm font-medium text-gray-600"
-                  >
-                    Amount
-                  </label>
-                  <input
-                    type="number"
-                    id={`milestone-${index}-amount`}
-                    name="amount"
-                    min={1}
-                    step={0.01}
-                    value={milestone.amount}
-                    onChange={(e) => handleMilestoneChange(e, index)}
-                    placeholder="Amount in USD"
-                    className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                  />
-                  <p className="text-sm text-red-500 mt-1">
-                    {errors?.[`milestones[${index}].amount`]}
-                  </p>
-                </div>
-                <div>
-                  <label
-                    htmlFor={`milestone-${index}-duration`}
-                    className="block text-sm font-medium text-gray-600"
-                  >
-                    Duration (Days)
-                  </label>
-                  <input
-                    type="number"
-                    id={`milestone-${index}-duration`}
-                    name="duration"
-                    min={1}
-                    value={milestone.duration}
-                    onChange={(e) => handleMilestoneChange(e, index)}
-                    placeholder="Days"
-                    className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                  />
-                  <p className="text-sm text-red-500 mt-1">
-                    {errors?.[`milestones[${index}].duration`]}
-                  </p>
-                </div>
-              </div>
-              {milestones.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => removeMilestone(index)}
-                  className="text-red-500 text-sm hover:underline mt-2"
-                >
-                  <FontAwesomeIcon icon={faTrash} />
-                  <span className="ml-2">Remove Milestone</span>
-                </button>
-              )}
-            </div>
-          ))}
+              Cover Letter
+            </label>
+            <textarea
+              id="coverLetter"
+              name="coverLetter"
+              value={coverLetter}
+              onChange={handleCoverLetterChange}
+              placeholder="Write a brief cover letter..."
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+              rows={3}
+            />
+            <p className="text-sm text-red-500 mt-1">{errors?.coverLetter}</p>
+          </div>
 
-          <button
-            type="button"
-            onClick={addMilestone}
-            className="px-4 py-2 bg-emerald-100 text-emerald-600 rounded-md hover:bg-blue-200 focus:outline-none"
-          >
-            + Add Milestone
-          </button>
+          <div className="space-y-4 mx-2">
+            <h3 className="text-lg font-medium text-gray-700">Milestones</h3>
+            {milestones.map((milestone, index) => (
+              <div
+                key={index}
+                className="border rounded-lg p-4 bg-gray-50 shadow-sm space-y-4"
+              >
+                <div>
+                  <label
+                    htmlFor={`milestone-${index}-name`}
+                    className="block text-sm font-medium text-gray-600"
+                  >
+                    Milestone Name
+                  </label>
+                  <input
+                    type="text"
+                    id={`milestone-${index}-name`}
+                    name="name"
+                    value={milestone.name}
+                    onChange={(e) => handleMilestoneChange(e, index)}
+                    placeholder="Enter milestone name"
+                    className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                  />
+                  <p className="text-sm text-red-500 mt-1">
+                    {errors?.[`milestones[${index}].name`]}
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label
+                      htmlFor={`milestone-${index}-amount`}
+                      className="block text-sm font-medium text-gray-600"
+                    >
+                      Amount
+                    </label>
+                    <input
+                      type="number"
+                      id={`milestone-${index}-amount`}
+                      name="amount"
+                      min={1}
+                      step={0.01}
+                      value={milestone.amount}
+                      onChange={(e) => handleMilestoneChange(e, index)}
+                      placeholder="Amount in USD"
+                      className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                    />
+                    <p className="text-sm text-red-500 mt-1">
+                      {errors?.[`milestones[${index}].amount`]}
+                    </p>
+                  </div>
+                  <div>
+                    <label
+                      htmlFor={`milestone-${index}-duration`}
+                      className="block text-sm font-medium text-gray-600"
+                    >
+                      Duration (Days)
+                    </label>
+                    <input
+                      type="number"
+                      id={`milestone-${index}-duration`}
+                      name="duration"
+                      min={1}
+                      value={milestone.duration}
+                      onChange={(e) => handleMilestoneChange(e, index)}
+                      placeholder="Days"
+                      className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                    />
+                    <p className="text-sm text-red-500 mt-1">
+                      {errors?.[`milestones[${index}].duration`]}
+                    </p>
+                  </div>
+                </div>
+                {milestones.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => removeMilestone(index)}
+                    className="text-red-500 text-sm hover:underline mt-2"
+                  >
+                    <FontAwesomeIcon icon={faTrash} />
+                    <span className="ml-2">Remove Milestone</span>
+                  </button>
+                )}
+              </div>
+            ))}
+
+            <button
+              type="button"
+              onClick={addMilestone}
+              className="px-4 py-2 bg-emerald-100 text-emerald-600 rounded-md hover:bg-blue-200 focus:outline-none"
+            >
+              + Add Milestone
+            </button>
+          </div>
         </div>
 
         <div className="mt-6 flex justify-end space-x-3">
