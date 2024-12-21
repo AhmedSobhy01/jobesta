@@ -125,7 +125,7 @@ CREATE TABLE "payments" (
   "job_id" INTEGER NOT NULL,
   "freelancer_id" INTEGER NOT NULL,
   "milestone_order" INTEGER NOT NULL,
-  "client_id" INTEGER,
+  "client_id" INTEGER NOT NULL,
   "stripe_id" VARCHAR(255),
   "created_at" TIMESTAMP NOT NULL DEFAULT (now()),
   PRIMARY KEY ("job_id", "freelancer_id", "milestone_order")
@@ -219,13 +219,14 @@ ALTER TABLE "milestones" ADD FOREIGN KEY ("job_id", "freelancer_id") REFERENCES 
 
 ALTER TABLE "payments" ADD FOREIGN KEY ("job_id", "freelancer_id", "milestone_order") REFERENCES "milestones" ("job_id", "freelancer_id", "order") ON DELETE RESTRICT ON UPDATE CASCADE;
 
-ALTER TABLE "payments" ADD FOREIGN KEY ("client_id") REFERENCES "accounts" ("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "payments" ADD FOREIGN KEY ("client_id") REFERENCES "accounts" ("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 ALTER TABLE "withdrawals" ADD FOREIGN KEY ("freelancer_id") REFERENCES "freelancers" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE "jobs" ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 ALTER TABLE "jobs" ADD FOREIGN KEY ("client_id") REFERENCES "accounts" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
 
 INSERT INTO
     "accounts" (
