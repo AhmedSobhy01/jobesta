@@ -11,6 +11,7 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { getAuthJwtToken } from '@/utils/auth';
 import ReviewModal from '@/components/Jobs/AddReviewModal';
 import CompleteMilestoneModal from '@/components/Milestones/CompleteMilestoneModal';
+import getProfilePicture from '@/utils/profilePicture';
 
 function ManageJob() {
   const navigate = useNavigate();
@@ -536,7 +537,7 @@ function ManageJob() {
                         </div>
 
                         <img
-                          src={message.sender.profilePicture}
+                          src={getProfilePicture(message.sender.profilePicture)}
                           className={`object-cover h-8 w-8 rounded-full ${message.sender.username === user.username ? 'order-2' : 'order-1'}`}
                           alt=""
                         />

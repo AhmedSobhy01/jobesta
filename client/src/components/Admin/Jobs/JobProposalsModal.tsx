@@ -15,6 +15,7 @@ import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import ProposalModal from '@/components/Admin/Jobs/ProposalModal';
 import JobProposalsSkeleton from '@/components/Skeletons/JobProposalsSkeleton';
+import getProfilePicture from '@/utils/profilePicture';
 
 const JobProposalsModal: React.FC<{
   jobId: number;
@@ -177,7 +178,9 @@ const JobProposalsModal: React.FC<{
                       <div className="flex items-center flex-wrap gap-4">
                         <img
                           alt="Freelancer profile picture"
-                          src={proposal.freelancer!.profilePicture}
+                          src={getProfilePicture(
+                            proposal.freelancer!.profilePicture,
+                          )}
                           decoding="async"
                           loading="lazy"
                           className="rounded-full w-12 h-12"

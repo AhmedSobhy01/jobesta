@@ -16,6 +16,7 @@ import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
 import { getAuthJwtToken } from '@/utils/auth';
+import getProfilePicture from '@/utils/profilePicture';
 
 const Proposals: React.FC<{ job: Job }> = ({ job }) => {
   const user = useContext(UserContext);
@@ -178,7 +179,7 @@ const Proposals: React.FC<{ job: Job }> = ({ job }) => {
                 <div className="flex items-center flex-wrap gap-4">
                   <img
                     alt="Freelancer profile picture"
-                    src={proposal.freelancer!.profilePicture}
+                    src={getProfilePicture(proposal.freelancer!.profilePicture)}
                     decoding="async"
                     loading="lazy"
                     className="rounded-full w-16 h-16"

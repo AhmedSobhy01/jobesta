@@ -1,3 +1,4 @@
+import getProfilePicture from '@/utils/profilePicture';
 import { Link } from 'react-router';
 import { humanReadableDate } from '@/utils/time';
 
@@ -74,7 +75,7 @@ const Jobs: React.FC<{ job: IJob }> = ({ job }) => {
       <div className="flex items-center space-x-4 mt-4">
         <img
           className="w-12 h-12 rounded-full object-cover"
-          src={client?.profilePicture || '/default-profile.jpg'}
+          src={getProfilePicture(client!.profilePicture ?? '')}
           alt="Client Profile"
         />
         <p className="text-gray-800 dark:text-gray-200 text-sm">

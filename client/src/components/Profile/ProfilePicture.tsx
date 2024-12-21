@@ -1,4 +1,5 @@
 import { getAuthJwtToken } from '@/utils/auth';
+import getProfilePicture from '@/utils/profilePicture';
 import { FormEventHandler, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -40,12 +41,7 @@ const ProfilePicture: React.FC<ProfilePictureData> = ({
   const [pic, setPic] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | undefined>(undefined);
 
-  let profilePic = anyUserData.user?.profilePicture;
-
-  if (!profilePic?.startsWith('http')) {
-    profilePic =
-      import.meta.env.VITE_API_URL + '/' + anyUserData.user?.profilePicture;
-  }
+  const profilePic = getProfilePicture(anyUserData.user?.profilePicture ?? '');
 
   useEffect(() => {
     if (!pic) {

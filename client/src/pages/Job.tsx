@@ -23,6 +23,7 @@ import { toast } from 'react-toastify';
 import EditJobModal from '@/components/Jobs/EditJobModal';
 import { getAuthJwtToken } from '@/utils/auth';
 import Review from '@/components/Jobs/Review';
+import getProfilePicture from '@/utils/profilePicture';
 
 function Job() {
   const navigate = useNavigate();
@@ -180,7 +181,7 @@ function Job() {
                 <div className="flex flex-col md:flex-row items-center flex-1 gap-6">
                   <img
                     alt="Client profile picture"
-                    src={job.client.profilePicture}
+                    src={getProfilePicture(job.client.profilePicture)}
                     decoding="async"
                     loading="lazy"
                     className="rounded-full w-24 h-24"

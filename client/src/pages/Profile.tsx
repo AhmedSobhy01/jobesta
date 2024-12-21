@@ -13,6 +13,7 @@ import Badge from '@/components/Profile/Badge';
 import Jobs from '@/components/Profile/Jobs';
 import EditFreelancerModal from '@/components/Profile/EditFreelancerModal';
 import Review from '@/components/Profile/Review';
+import getProfilePicture from '@/utils/profilePicture';
 
 const activeCss =
   'text-emerald-700 font-semibold pb-2 border-b-2 border-gray-800 dark:text-emerald-700';
@@ -62,7 +63,7 @@ const ProfilePage: React.FC & {
     email: anyUserData.user?.email,
     role: anyUserData.user?.role,
     isBanned: anyUserData.user?.isBanned,
-    profilePicture: anyUserData.user?.profilePicture,
+    profilePicture: getProfilePicture(anyUserData.user?.profilePicture ?? ''),
     jobs: anyUserData.user?.jobs,
   };
 
