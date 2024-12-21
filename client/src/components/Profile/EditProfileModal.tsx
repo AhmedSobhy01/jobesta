@@ -105,130 +105,136 @@ const EditProfileModal: React.FC<{
       className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
       onMouseDown={handleModalClick}
     >
-      <div className="bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative max-h-[90vh] overflow-y-auto">
-        <button
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-800 focus:outline-none"
-          onClick={handleClose}
-        >
-          <FontAwesomeIcon icon={faXmark} />
-        </button>
-
-        <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
-          Edit Profile
-        </h2>
-
-        <div className="mb-4">
-          <label
-            htmlFor="firstName"
-            className="block text-sm font-medium text-gray-600 mb-2"
+      <div className="flex flex-col bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative max-h-[90vh]">
+        <div>
+          <button
+            className="absolute top-6 right-6 text-gray-400 hover:text-gray-800 focus:outline-none p-0 m-0"
+            onClick={handleClose}
           >
-            First Name
-          </label>
-          <input
-            type="text"
-            id="firstName"
-            name="firstName"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            placeholder="First Name"
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-          />
-          <p className="text-sm text-red-500 mt-1">{errors?.firstName}</p>
+            <FontAwesomeIcon icon={faXmark} className="text-xl" />
+          </button>
+
+          <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
+            Edit Profile
+          </h2>
         </div>
 
-        <div className="mb-4">
-          <label
-            htmlFor="lastName"
-            className="block text-sm font-medium text-gray-600 mb-2"
-          >
-            Last Name
-          </label>
-          <input
-            type="text"
-            id="lastName"
-            name="lastName"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            placeholder="Last Name"
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-          />
-          <p className="text-sm text-red-500 mt-1">{errors?.lastName}</p>
-        </div>
+        <div className="overflow-y-auto">
+          <div className="mb-4 mx-2">
+            <label
+              htmlFor="firstName"
+              className="block text-sm font-medium text-gray-600 mb-2"
+            >
+              First Name
+            </label>
+            <input
+              type="text"
+              id="firstName"
+              name="firstName"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              placeholder="First Name"
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+            />
+            <p className="text-sm text-red-500 mt-1">{errors?.firstName}</p>
+          </div>
 
-        <div className="mb-4">
-          <label
-            htmlFor="username"
-            className="block text-sm font-medium text-gray-600 mb-2"
-          >
-            Username
-          </label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="Username"
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-          />
-          <p className="text-sm text-red-500 mt-1">{errors?.username}</p>
-        </div>
+          <div className="mb-4 mx-2">
+            <label
+              htmlFor="lastName"
+              className="block text-sm font-medium text-gray-600 mb-2"
+            >
+              Last Name
+            </label>
+            <input
+              type="text"
+              id="lastName"
+              name="lastName"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              placeholder="Last Name"
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+            />
+            <p className="text-sm text-red-500 mt-1">{errors?.lastName}</p>
+          </div>
 
-        <div className="mb-4">
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-gray-600 mb-2"
-          >
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-          />
-          <p className="text-sm text-red-500 mt-1">{errors?.email}</p>
-        </div>
+          <div className="mb-4 mx-2">
+            <label
+              htmlFor="username"
+              className="block text-sm font-medium text-gray-600 mb-2"
+            >
+              Username
+            </label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Username"
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+            />
+            <p className="text-sm text-red-500 mt-1">{errors?.username}</p>
+          </div>
 
-        <div className="mb-4">
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium text-gray-600 mb-2"
-          >
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-          />
-          <p className="text-sm text-red-500 mt-1">{errors?.password}</p>
-        </div>
+          <div className="mb-4 mx-2">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-600 mb-2"
+            >
+              Email
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email"
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+            />
+            <p className="text-sm text-red-500 mt-1">{errors?.email}</p>
+          </div>
 
-        <div className="mb-4">
-          <label
-            htmlFor="confirmPassword"
-            className="block text-sm font-medium text-gray-600 mb-2"
-          >
-            Confirm Password
-          </label>
-          <input
-            type="password"
-            id="confirmPassword"
-            name="confirmPassword"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder="Confirm Password"
-            className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-          />
-          <p className="text-sm text-red-500 mt-1">{errors?.confirmPassword}</p>
+          <div className="mb-4 mx-2">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-600 mb-2"
+            >
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+            />
+            <p className="text-sm text-red-500 mt-1">{errors?.password}</p>
+          </div>
+
+          <div className="mb-4 mx-2">
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm font-medium text-gray-600 mb-2"
+            >
+              Confirm Password
+            </label>
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Confirm Password"
+              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+            />
+            <p className="text-sm text-red-500 mt-1">
+              {errors?.confirmPassword}
+            </p>
+          </div>
         </div>
 
         <div className="mt-6 flex justify-end space-x-3">
@@ -245,7 +251,7 @@ const EditProfileModal: React.FC<{
             ${isSubmitting ? 'bg-opacity-50 cursor-not-allowed' : 'text-white hover:bg-emerald-600'}`}
             disabled={isSubmitting}
           >
-            {isSubmitting ? 'Loading...' : 'Save'}
+            Save Changes
           </button>
         </div>
       </div>
