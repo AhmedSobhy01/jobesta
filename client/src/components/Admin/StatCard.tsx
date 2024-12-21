@@ -13,7 +13,7 @@ function StatsCard({
   color?: string;
 }) {
   return (
-    <div className="relative flex flex-grow items-center rounded-xl border border-gray-200 bg-white bg-clip-border shadow-md shadow-gray-100 dark:border-gray-600 dark:text-white dark:shadow-none py-4 px-6 max-w-sm">
+    <div className="relative flex flex-grow items-center rounded-xl border border-gray-200 bg-white bg-clip-border shadow-md shadow-gray-100 dark:border-gray-600 dark:text-white dark:shadow-none py-4 px-6">
       <div
         className={`rounded-full text-${color}-600 bg-${color}-100 h-12 w-12 flex items-center justify-center text-lg`}
       >
