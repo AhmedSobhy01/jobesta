@@ -85,7 +85,7 @@ const ReviewModal: React.FC<{
           </button>
 
           <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
-            {review ? 'Update Review' : 'Add Review'}
+            Update Review
           </h2>
         </div>
 
