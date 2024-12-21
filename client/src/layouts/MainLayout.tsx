@@ -98,7 +98,10 @@ function MainLayout() {
   }, [setUser, setFreelancer]);
 
   return (
-    <div className="min-h-screen dark:bg-gray-900 bg-white" onClick={handleClick}>
+    <div
+      className="min-h-screen dark:bg-gray-900 bg-white"
+      onClick={handleClick}
+    >
       <ToastContainer />
 
       {(state === 'loading' || isUserLoading) && <FullPageLoader />}
