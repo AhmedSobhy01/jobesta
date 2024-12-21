@@ -9,6 +9,7 @@ import jobsRouter from './adminRoutes/jobRoutes.js';
 import proposalRouter from './adminRoutes/proposalRoutes.js';
 import reviewRouter from './adminRoutes/reviewRoutes.js';
 import withdrawalRoutes from './adminRoutes/withdrawalsRoutes.js';
+import paymentsRoutes from './adminRoutes/paymentsRoutes.js';
 
 const adminRoutes = router();
 
@@ -22,5 +23,6 @@ adminRoutes.use('/jobs', jobsRouter);
 adminRoutes.use('/proposals', proposalRouter);
 adminRoutes.use('/reviews', reviewRouter);
 adminRoutes.use('/withdrawals', withdrawalRoutes);
+adminRoutes.use('/payments', paymentsRoutes);
 
 export default adminRoutes;
