@@ -1,5 +1,6 @@
 import getProfilePicture from '@/utils/profilePicture';
 import { Link } from 'react-router';
+import { humanReadableDate } from '@/utils/time';
 
 const Jobs: React.FC<{ job: IJob }> = ({ job }) => {
   const {
@@ -33,7 +34,7 @@ const Jobs: React.FC<{ job: IJob }> = ({ job }) => {
   return (
     <Link
       to={`/jobs/${job.id}`}
-      className="bg-inherit shadow-md rounded-lg p-6 w-80 space-y-4 border border-gray-200"
+      className="bg-white shadow-md rounded-lg p-6 border border-gray-200 space-y-4"
     >
       <div className="flex justify-between items-center">
         <h2 className="text-lg dark:text-gray-200 hover:text-green-500 font-semibold text-gray-800">
@@ -85,7 +86,7 @@ const Jobs: React.FC<{ job: IJob }> = ({ job }) => {
         </p>
       </div>
       <p className="text-gray-500 dark:text-gray-100 text-xs">
-        Posted: {createdAt || 'N/A'}
+        Posted: {createdAt ? humanReadableDate(createdAt) : 'N/A'}
       </p>
     </Link>
   );

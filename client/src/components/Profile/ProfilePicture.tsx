@@ -1,7 +1,8 @@
 import { getAuthJwtToken } from '@/utils/auth';
 import getProfilePicture from '@/utils/profilePicture';
-import { FormEventHandler, useState } from 'react';
+import { FormEventHandler, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 interface IPreviousWork {
   order: number;
@@ -29,20 +30,31 @@ interface ProfilePictureData {
       skills?: string[];
     };
   };
-  setError: React.Dispatch<React.SetStateAction<boolean>>;
-  setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
+  isMe: boolean;
 }
 
 const ProfilePicture: React.FC<ProfilePictureData> = ({
   anyUserData,
-  setError,
-  setErrorMessage,
+  isMe,
 }) => {
   const navigate = useNavigate();
-  const [isEditingPic, setIsEditingPic] = useState(false);
   const [pic, setPic] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | undefined>(undefined);
 
   const profilePic = getProfilePicture(anyUserData.user?.profilePicture ?? '');
+
+  useEffect(() => {
+    if (!pic) {
+      setPreview(undefined);
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(pic);
+    setPreview(objectUrl);
+
+    // free memory when ever this component is unmounted
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [pic]);
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (
     e: React.FormEvent<HTMLFormElement>,
@@ -53,7 +65,6 @@ const ProfilePicture: React.FC<ProfilePictureData> = ({
   };
 
   const handleProfilePicChange = async () => {
-    setIsEditingPic(false);
     const file = pic;
 
     if (file) {
@@ -82,63 +93,76 @@ const ProfilePicture: React.FC<ProfilePictureData> = ({
           }
           throw new Error(resData.message);
         }
+        toast('Profile picture updated successfully', { type: 'success' });
       } catch (err) {
         if (err instanceof Error) {
-          setError(true);
-          setErrorMessage(err.message);
+          toast(err.message, { type: 'error' });
         } else {
-          setErrorMessage('A network error occurred. Please try again later.');
+          toast('An error occurred. Please try again later.', {
+            type: 'error',
+          });
         }
       }
     }
     navigate(`/users/${anyUserData.user.username}`);
+    setPic(null);
   };
 
   return (
     <>
-      <div className="absolute top-20 left-10 w-40 h-40 rounded-full overflow-hidden border-4 border-white dark:border-gray-900 group">
+      <div className="bg-white absolute top-20 left-10 w-40 h-40 rounded-full overflow-hidden border-4 border-white dark:border-gray-900 group">
         <img
-          src={profilePic}
+          src={preview ? preview : profilePic}
           alt="Profile Picture"
           className="w-full h-full object-cover cursor-pointer"
         />
 
-        <div
-          onClick={() => setIsEditingPic(true)}
-          className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300 cursor-pointer"
-        >
-          <p className="text-white font-semibold">Edit Picture</p>
-        </div>
+        {isMe && (
+          <label htmlFor="profile-picture" className="text-white font-semibold">
+            <div
+              onClick={() => {
+                setPic(null);
+              }}
+              className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300 cursor-pointer"
+            >
+              <p>Edit Picture</p>
+            </div>
+          </label>
+        )}
       </div>
 
-      {isEditingPic && (
-        <div className="absolute bottom-2 left-0 w-fit bg-white bg-opacity-80 p-2 rounded-lg flex justify-center">
-          <form
-            action="put"
-            encType="multipart/form-data"
-            onSubmit={handleSubmit}
-          >
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => setPic(e.target.files![0])}
-              className="cursor-pointer"
-            />
-            <button
-              type="submit"
-              className="ml-4 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
-            >
-              Submit
-            </button>
-            <button
-              onClick={() => setIsEditingPic(false)}
-              className="ml-4 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
-            >
-              Cancel
-            </button>
-          </form>
-        </div>
-      )}
+      <form action="put" encType="multipart/form-data" onSubmit={handleSubmit}>
+        <input
+          name="profile-picture"
+          id="profile-picture"
+          type="file"
+          accept="image/*"
+          onChange={(e) => setPic(e.target.files![0])}
+          className="cursor-pointer"
+          hidden={true}
+        />
+        {pic && (
+          <div className="absolute bottom-2 right-2 w-fit bg-white shadow-md broder border-gray-400 bg-opacity-80 p-2 rounded-lg flex justify-center">
+            <div className="flex flex-start gap-4">
+              <button
+                type="submit"
+                className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600"
+                hidden={!pic}
+              >
+                Save Profile Picture
+              </button>
+              <button
+                onClick={() => {
+                  setPic(null);
+                }}
+                className="px-4 py-2 bg-gray-200 text-black rounded-lg hover:bg-gray-300"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+      </form>
     </>
   );
 };

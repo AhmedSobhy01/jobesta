@@ -8,6 +8,9 @@ import {
   faFolderOpen,
   faFolderClosed,
   faFileContract,
+  faInfoCircle,
+  faComments,
+  faCheck,
 } from '@fortawesome/free-solid-svg-icons';
 import JobModal from '@/components/Admin/Jobs/JobModal.tsx';
 import { toast } from 'react-toastify';
@@ -15,15 +18,17 @@ import { useNavigate } from 'react-router';
 import { Link } from 'react-router';
 import { getAuthJwtToken } from '@/utils/auth';
 import JobProposalsModal from './JobProposalsModal';
+import JobReviewsModal from './JobReviewsModal';
 
 const JobRowItem: React.FC<{
   job: Job;
 }> = ({ job }) => {
   const navigate = useNavigate();
-
+  const [isExpanded, setIsExpanded] = useState(false);
   const [isEditJobModalOpen, setIsEditJobModalOpen] = useState(false);
   const [isShowProposalsModalOpen, setIsShowProposalsModalOpen] =
     useState(false);
+  const [isShowReviewssModalOpen, setIsShowReviewsModalOpen] = useState(false);
 
   const handleCloseJob = () => {
     Swal.fire({
@@ -166,6 +171,59 @@ const JobRowItem: React.FC<{
     });
   };
 
+  const handleAcceptJob = () => {
+    Swal.fire({
+      title: 'Are you sure?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#F44336',
+      cancelButtonColor: '#3085d6',
+      cancelButtonText: 'Cancel',
+      confirmButtonText: 'Yes, Approve it!',
+      showLoaderOnConfirm: true,
+      allowOutsideClick: () => !Swal.isLoading(),
+      backdrop: true,
+      preConfirm: () =>
+        new Promise<void>((resolve) => {
+          fetch(
+            import.meta.env.VITE_API_URL + '/admin/jobs/' + job.id + '/approve',
+            {
+              method: 'PUT',
+              headers: {
+                Authorization: `Bearer ${getAuthJwtToken()}`,
+                'Content-Type': 'application/json',
+              },
+            },
+          )
+            .then((res) => {
+              if (!res.ok && res.status !== 422)
+                throw new Error('Failed to Approve job');
+
+              return res.json();
+            })
+            .then((data) => {
+              if (Object.values(data?.errors || {}).length) {
+                if (data.errors.jobId) throw new Error(data.errors.jobId);
+
+                throw new Error('Validation failed');
+              }
+
+              return data;
+            })
+            .then((data) => {
+              toast(data.message, { type: 'success' });
+              navigate('/admin/jobs?reload=true');
+            })
+            .catch((error) => {
+              toast(error.message, { type: 'error' });
+            })
+            .finally(() => {
+              resolve();
+            });
+        }),
+    });
+  };
+
   return (
     <>
       {isEditJobModalOpen && (
@@ -179,30 +237,46 @@ const JobRowItem: React.FC<{
         />
       )}
 
-      <tr className="bg-white border-b">
-        <th
-          scope="row"
-          className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-        >
-          {job.id}
-        </th>
+      {isShowReviewssModalOpen && (
+        <JobReviewsModal
+          jobId={job.id}
+          onClose={() => setIsShowReviewsModalOpen(false)}
+        />
+      )}
 
-        <td className="px-6 py-4 whitespace-nowrap">{job.title}</td>
+      <tr className="bg-white border-b hover:bg-gray-50">
+        <td className="px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+          <div className="flex items-center gap-2">
+            {job.id}
+            <button
+              className="2xl:hidden text-gray-500"
+              onClick={() => setIsExpanded(!isExpanded)}
+            >
+              <FontAwesomeIcon icon={faInfoCircle} />
+            </button>
+          </div>
+        </td>
 
-        <td className="px-6 py-4 whitespace-nowrap">
+        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+          {job.title}
+        </td>
+
+        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
           {job.category.name || 'Uncategorized'}
         </td>
 
-        <td className="px-6 py-4 whitespace-nowrap">
+        <td className="px-3 py-2 2xl:px-6 2xl:py-4 text-sm">
           <span
-            className={`px-2 inline-flex text-xs leading-5 rounded-full text-white ${
+            className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full text-white ${
               job.status === 'completed'
                 ? 'bg-green-500'
                 : job.status === 'open'
                   ? 'bg-yellow-500'
-                  : job.status == 'closed'
+                  : job.status === 'closed'
                     ? 'bg-red-500'
-                    : 'bg-blue-500'
+                    : job.status == 'pending'
+                      ? 'bg-gray-500'
+                      : 'bg-blue-500'
             }`}
           >
             {job.status
@@ -211,57 +285,137 @@ const JobRowItem: React.FC<{
               .join(' ')}
           </span>
         </td>
-        <td className="px-6 py-4 whitespace-nowrap">
+
+        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
           {job.client.firstName} {job.client.lastName}
         </td>
-        <td className="px-6 py-4 whitespace-nowrap">
+
+        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
           {job.freelancer
-            ? job.freelancer.firstName + ' ' + job.freelancer.lastName
+            ? `${job.freelancer.firstName} ${job.freelancer.lastName}`
             : '-'}
         </td>
-        <td className="px-6 py-4 whitespace-nowrap">{job.budget}</td>
-        <td className="px-6 py-4 whitespace-nowrap">{job.duration}</td>
-        <td className="px-6 py-4 whitespace-nowrap">{job.proposalsCount}</td>
-        <td className="px-6 py-4 space-x-5 rtl:space-x-reverse whitespace-nowrap">
-          <Link
-            to={`/jobs/${job.id}/${job.status === 'in_progress' || job.status === 'completed' ? 'manage' : ''}`}
-          >
-            <FontAwesomeIcon icon={faEye} />
-          </Link>
 
-          {job.status === 'open' && (
-            <button type="button" onClick={handleCloseJob} title="Close job">
-              <FontAwesomeIcon icon={faFolderClosed} />
+        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+          {job.budget}
+        </td>
+
+        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+          {job.duration}
+        </td>
+
+        <td className="hidden 2xl:table-cell px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+          {job.proposalsCount}
+        </td>
+
+        <td className="px-3 py-2 2xl:px-6 2xl:py-4 text-sm text-gray-900">
+          <div className="flex gap-4">
+            <Link
+              to={`/jobs/${job.id}/${job.status === 'in_progress' || job.status === 'completed' ? 'manage' : ''}`}
+              className="text-blue-600 hover:text-blue-900"
+            >
+              <FontAwesomeIcon icon={faEye} />
+            </Link>
+
+            {job.status === 'open' && (
+              <button
+                type="button"
+                onClick={handleCloseJob}
+                className="text-yellow-600 hover:text-yellow-900"
+                title="Close job"
+              >
+                <FontAwesomeIcon icon={faFolderClosed} />
+              </button>
+            )}
+
+            {job.status === 'closed' && (
+              <button
+                type="button"
+                onClick={handleReopenJob}
+                className="text-green-600 hover:text-green-900"
+                title="Reopen job"
+              >
+                <FontAwesomeIcon icon={faFolderOpen} />
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={() => setIsShowProposalsModalOpen(true)}
+              className="text-purple-600 hover:text-purple-900"
+              title="Show all proposals"
+            >
+              <FontAwesomeIcon icon={faFileContract} />
             </button>
-          )}
 
-          {job.status === 'closed' && (
-            <button type="button" onClick={handleReopenJob} title="Reopen job">
-              <FontAwesomeIcon icon={faFolderOpen} />
+            <button type="button" title="Accept job" onClick={handleAcceptJob}>
+              <FontAwesomeIcon icon={faCheck} />
             </button>
-          )}
 
-          <button
-            type="button"
-            title="Show all proposals"
-            onClick={() => setIsShowProposalsModalOpen(true)}
-          >
-            <FontAwesomeIcon icon={faFileContract} />
-          </button>
+            <button
+              type="button"
+              title="Show all reviews"
+              onClick={() => setIsShowReviewsModalOpen(true)}
+            >
+              <FontAwesomeIcon icon={faComments} />
+            </button>
 
-          <button
-            type="button"
-            onClick={() => setIsEditJobModalOpen(true)}
-            title="Edit job"
-          >
-            <FontAwesomeIcon icon={faPenToSquare} />
-          </button>
+            <button
+              type="button"
+              onClick={() => setIsEditJobModalOpen(true)}
+              className="text-gray-600 hover:text-gray-900"
+              title="Edit job"
+            >
+              <FontAwesomeIcon icon={faPenToSquare} />
+            </button>
 
-          <button type="button" onClick={deleteJob} title="Delete job">
-            <FontAwesomeIcon icon={faTrash} />
-          </button>
+            <button
+              type="button"
+              onClick={deleteJob}
+              className="text-red-600 hover:text-red-900"
+              title="Delete job"
+            >
+              <FontAwesomeIcon icon={faTrash} />
+            </button>
+          </div>
         </td>
       </tr>
+
+      {isExpanded && (
+        <tr className="2xl:hidden bg-gray-50">
+          <td colSpan={10} className="px-3 py-2">
+            <div className="space-y-2">
+              <p>
+                <span className="font-medium">Title:</span> {job.title}
+              </p>
+              <p>
+                <span className="font-medium">Category:</span>{' '}
+                {job.category.name || 'Uncategorized'}
+              </p>
+              <p>
+                <span className="font-medium">Client:</span>{' '}
+                {job.client.firstName} {job.client.lastName}
+              </p>
+              <p>
+                <span className="font-medium">Freelancer:</span>{' '}
+                {job.freelancer
+                  ? `${job.freelancer.firstName} ${job.freelancer.lastName}`
+                  : '-'}
+              </p>
+              <p>
+                <span className="font-medium">Budget:</span> {job.budget}
+              </p>
+              <p>
+                <span className="font-medium">Duration:</span> {job.duration}
+              </p>
+              <p>
+                <span className="font-medium">Proposals:</span>{' '}
+                {job.proposalsCount}
+              </p>
+            </div>
+          </td>
+        </tr>
+      )}
     </>
   );
 };

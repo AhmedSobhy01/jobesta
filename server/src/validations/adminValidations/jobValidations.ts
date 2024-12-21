@@ -1,5 +1,23 @@
-import { body, param } from 'express-validator';
+import { body, param, query } from 'express-validator';
 import db from '../../db/db.js';
+
+export const getJobsValidationRules = [
+  query('page').optional().isNumeric().withMessage('Page must be a number'),
+
+  query('search')
+    .optional()
+    .isString()
+    .withMessage('Search query must be a string'),
+
+  query('status')
+    .optional()
+    .isString()
+    .withMessage('Status must be a string')
+    .isIn(['open', 'in_progress', 'completed', 'closed', 'cancelled'])
+    .withMessage(
+      'Status must be one of the following: open, in_progress, completed, closed, cancelled',
+    ),
+];
 
 export const updateJobValidationRules = [
   param('jobId')
@@ -102,8 +120,11 @@ export const closeJobValidationRules = [
         throw new Error('Job does not exist');
       }
 
-      if (jobQuery.rows[0].status !== 'open') {
-        throw new Error('Job is not open');
+      if (
+        jobQuery.rows[0].status !== 'open' &&
+        jobQuery.rows[0].status !== 'pending'
+      ) {
+        throw new Error('Job is not open or pending');
       }
 
       return true;
@@ -127,6 +148,29 @@ export const reopenJobValidationRules = [
 
       if (jobQuery.rows[0].status !== 'closed') {
         throw new Error('Job is not closed');
+      }
+
+      return true;
+    }),
+];
+
+export const approveJobValidationRules = [
+  param('jobId')
+    .isNumeric()
+    .withMessage('Job ID must be a number')
+    .notEmpty()
+    .withMessage('Job ID must not be empty')
+    .custom(async (jobId) => {
+      const jobQuery = await db.query('SELECT * FROM jobs WHERE id = $1', [
+        jobId,
+      ]);
+
+      if (jobQuery.rows.length === 0) {
+        throw new Error('Job does not exist');
+      }
+
+      if (jobQuery.rows[0].status !== 'pending') {
+        throw new Error('Job is not pending');
       }
 
       return true;

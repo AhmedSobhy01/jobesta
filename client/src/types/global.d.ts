@@ -74,7 +74,18 @@ interface Milestone {
   order: number;
 }
 
+interface Payment {
+  jobTitle: string;
+  jobId: string;
+  createdAt: string;
+  username: string;
+  status: string;
+  milestoneName: string;
+  amount: string;
+}
+
 interface Review {
+  id?: string;
   rating: string;
   comment: string;
   createdAt: string;
@@ -85,6 +96,7 @@ interface Review {
     role: string;
     profilePicture: string;
   };
+  job?: Job;
 }
 
 interface Proposal {
@@ -127,4 +139,14 @@ interface Badge {
   name: string;
   description: string;
   icon: string;
+}
+
+interface Withdrawal {
+  id: number;
+  status: string;
+  amount: string;
+  paymentMethod: string;
+  paymentUsername: string;
+  freelancer?: Freelancer;
+  requestedAt: string;
 }

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+
 interface IBadge {
   name?: string;
   description?: string;
@@ -6,45 +7,25 @@ interface IBadge {
 }
 
 const Badge: React.FC<{ badge: IBadge }> = ({ badge }) => {
-  const [hoverText, setHoverText] = useState<string | undefined>('');
-  const [isClicked, setIsClicked] = useState(false);
-  const handleMouseEnter = () => {
-    setHoverText(badge.name);
-  };
-
-  const handleMouseLeave = () => {
-    setHoverText('');
-  };
-
-  const handleClick = () => {
-    setIsClicked((prev) => !prev);
-  };
-
   return (
-    <div className="relative">
-      <div
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onClick={handleClick}
-      >
+    <div className="relative inline-block group max-w-16">
+      <div className="cursor-pointer h-16 w-16 ">
         <img
-          src={badge.icon}
+          src={`${import.meta.env.VITE_API_URL}/${badge.icon}`}
           alt="badge Icon"
-          className="w-fit h-8 object-cover cursor-pointer"
+          className=" rounded-full shadow-md w-full h-full"
         />
       </div>
 
-      {hoverText && (
-        <div className="absolute top-0 left-6 bg-gray-800 text-white text-sm p-1 rounded">
-          {hoverText}
-        </div>
-      )}
-
-      {isClicked && (
-        <div className="absolute top-12 left-0 bg-green-500 text-white text-sm p-2 rounded shadow-lg">
+      {badge.description && (
+        <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-sm p-1 transition-opacity duration-300 opacity-0 shadow-lg group-hover:opacity-100 z-10 whitespace-nowrap px-4 py-1 rounded-xl">
           {badge.description}
         </div>
       )}
+
+      <div className="text-center text-sm mt-2 font-semibold text-gray-700">
+        {badge.name}
+      </div>
     </div>
   );
 };

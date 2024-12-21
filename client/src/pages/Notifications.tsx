@@ -13,6 +13,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import Pagination from '@/components/Common/Pagination';
 import ErrorModule from '@/components/ErrorModule';
+import { humanReadable } from '@/utils/time';
 
 const NotificationsPage = () => {
   const navigate = useNavigate();
@@ -40,13 +41,6 @@ const NotificationsPage = () => {
         return <FontAwesomeIcon icon={faTrophy} className="text-purple-500" />;
       case 'badge_earned':
         return <FontAwesomeIcon icon={faTrophy} className="text-purple-500" />;
-      case 'withdrawal_requested':
-        return (
-          <FontAwesomeIcon
-            icon={faCircleExclamation}
-            className="text-orange-500"
-          />
-        );
       case 'withdrawal_processed':
         return <FontAwesomeIcon icon={faSpinner} className="text-gray-500" />;
       default:
@@ -94,7 +88,7 @@ const NotificationsPage = () => {
                             {notification.message}
                           </p>
                           <span className="text-sm text-gray-500 dark:text-gray-400 block">
-                            {notification.createdAt}
+                            {humanReadable(notification.createdAt)}
                           </span>
                         </div>
                       </Link>
