@@ -64,7 +64,7 @@ const MainNavigationBar: React.FC<{
                 {role == 'client' && (
                   <Link
                     to="/jobs/create"
-                    className="text-white h-10 my-auto bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-500 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-green-700 dark:hover:bg-green-800 dark:focus:ring-green-800 flex items-center justify-center"
+                    className="text-white h-10 my-auto bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-500 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-green-700 dark:hover:bg-green-800 dark:focus:ring-green-800 items-center justify-center hidden md:flex"
                   >
                     Create Job
                   </Link>
@@ -134,13 +134,21 @@ const MainNavigationBar: React.FC<{
                   <NavBarItem page="/jobs">Jobs</NavBarItem>
                 </li>
                 <li
-                  className="py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  className={`py-2 hover:bg-gray-100 dark:hover:bg-gray-700 ${role === 'client' && 'border-b'}`}
                   onClick={handleBarClick}
                 >
                   <NavBarItem page="/#contact-us" hashLink>
                     Contact Us
                   </NavBarItem>
                 </li>
+                {role === 'client' && (
+                  <li
+                    className="py-2 hover:bg-gray-100 dark:hover:bg-gray-700 md:hidden"
+                    onClick={handleBarClick}
+                  >
+                    <NavBarItem page="/jobs/create">Create Job</NavBarItem>
+                  </li>
+                )}
               </ul>
             )}
           </div>
