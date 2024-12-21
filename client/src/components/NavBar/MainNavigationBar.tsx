@@ -47,7 +47,7 @@ const MainNavigationBar: React.FC<{
           className="flex items-center space-x-3 rtl:space-x-reverse"
         >
           <img
-            className="bg-transparent w-min h-9 align-baseline self-auto"
+            className="bg-transparent w-7 h-7 sm:w-min sm:h-9 align-baseline self-auto"
             src={jobestaLogo}
           />
           <span className="font-customFont self-center text-2xl text-green-700 font-semibold whitespace-nowrap dark:text-green-700">
@@ -85,12 +85,12 @@ const MainNavigationBar: React.FC<{
                   >
                     <img
                       src={getProfilePicture(profilePicture ?? '')}
-                      className="rounded-full object-cover  w-10 h-10 block"
+                      className="rounded-full object-cover w-10 h-10 block"
                       alt=""
                     />
                   </NavButton>
                 </div>
-                  {isDropdownProfileOpen && <ProfileDropdown />}
+                {isDropdownProfileOpen && <ProfileDropdown />}
               </>
             )
           )}
