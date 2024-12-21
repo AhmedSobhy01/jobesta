@@ -125,20 +125,15 @@ const WithdrawalRowItem: React.FC<{
             </button>
           </div>
         </td>
-        <td className="hidden xl:table-cell px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
-          {withdrawal.status
-            .split('_')
-            .map((word) => word[0].toUpperCase() + word.slice(1))
-            .join(' ')}
-        </td>
+
         <td className="hidden xl:table-cell px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
           {withdrawal.freelancer?.firstName} {withdrawal.freelancer?.lastName}
         </td>
         <td className="xl:table-cell px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
           {withdrawal.freelancer?.username}
         </td>
-        <td className="hidden xl:table-cell px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
-          {withdrawal.amount}
+        <td className=" xl:table-cell px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
+          ${withdrawal.amount}
         </td>
         <td className="hidden xl:table-cell px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
           {withdrawal.paymentMethod

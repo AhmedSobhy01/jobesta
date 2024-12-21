@@ -348,9 +348,15 @@ const JobRowItem: React.FC<{
               <FontAwesomeIcon icon={faFileContract} />
             </button>
 
-            <button type="button" title="Accept job" onClick={handleAcceptJob}>
-              <FontAwesomeIcon icon={faCheck} />
-            </button>
+            {job.status === 'pending' && (
+              <button
+                type="button"
+                title="Accept job"
+                onClick={handleAcceptJob}
+              >
+                <FontAwesomeIcon icon={faCheck} />
+              </button>
+            )}
 
             <button
               type="button"
