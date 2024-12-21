@@ -90,6 +90,9 @@ export async function updateProfilePicture(
     res.json({
       status: true,
       message: 'Profile picture updated successfully!',
+      data:{
+        profilePicture: req.file.path
+      }
     });
   } catch {
     res
