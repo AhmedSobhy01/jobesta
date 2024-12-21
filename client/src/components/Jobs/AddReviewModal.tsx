@@ -103,7 +103,7 @@ const ReviewModal = ({ job, onClose }: { job: Job; onClose: () => void }) => {
           </button>
 
           <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">
-            {review ? 'Update Review' : 'Add Review'}
+            Add Review
           </h2>
         </div>
 
@@ -165,7 +165,7 @@ const ReviewModal = ({ job, onClose }: { job: Job; onClose: () => void }) => {
             }`}
             disabled={isSubmitting}
           >
-            {isSubmitting ? 'Loading...' : 'Update Review'}
+            {isSubmitting ? 'Loading...' : 'Submit'}
           </button>
         </div>
       </div>
