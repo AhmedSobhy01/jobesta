@@ -23,7 +23,8 @@ export async function getStatistics(req: Request, res: Response) {
       `SELECT c.name, COUNT(j.id) as jobs_count
       FROM jobs j
       LEFT JOIN categories c ON c.id = j.category_id
-      GROUP BY c.name`,
+      GROUP BY c.name
+      ORDER BY jobs_count DESC`,
     );
 
     const paymentsPerMonthQuery = await db.query(
