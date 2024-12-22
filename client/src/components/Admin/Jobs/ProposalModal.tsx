@@ -2,6 +2,7 @@ import { getAuthJwtToken } from '@/utils/auth';
 import { faTrash, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { toast } from 'react-toastify';
 
 const ProposalModal: React.FC<{
@@ -99,7 +100,7 @@ const ProposalModal: React.FC<{
       });
   };
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[100]"
       onMouseDown={handleModalClick}
@@ -250,7 +251,8 @@ const ProposalModal: React.FC<{
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body as HTMLElement,
   );
 };
 
