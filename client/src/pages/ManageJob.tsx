@@ -12,11 +12,13 @@ import { getAuthJwtToken } from '@/utils/auth';
 import ReviewModal from '@/components/Jobs/AddReviewModal';
 import CompleteMilestoneModal from '@/components/Milestones/CompleteMilestoneModal';
 import getProfilePicture from '@/utils/profilePicture';
-
+import io from 'socket.io-client';
+import type { Socket } from 'socket.io-client';
+// import type { Socket } from 'socket.io-client';
 function ManageJob() {
   const navigate = useNavigate();
   const user = useContext(UserContext);
-
+  const [socket, setSocket] = useState<typeof Socket | null>(null);
   const {
     status: jobFetchStatus,
     error: jobFetchError,
@@ -26,6 +28,19 @@ function ManageJob() {
     error?: string;
     job: Job;
   }>();
+
+  useEffect(() => {
+    // Connect to the Socket.IO server
+    const newSocket = io('ws://localhost:3000', {
+      query: { jobId: job.id, token: getAuthJwtToken() }, // Pass the room ID to the server
+    });
+
+    setSocket(newSocket);
+    // Clean up connection on unmount
+    return () => {
+      newSocket.disconnect();
+    };
+  }, [job.id]);
 
   const [jobStatus, setJobStatus] = useState<string>(job?.status);
 
@@ -113,13 +128,12 @@ function ManageJob() {
     }
   }, [job, user, user.role, user.username]);
 
-  const fetchDataRef = useRef(false);
   useEffect(() => {
-    const fetchMessages = async () => {
-      if (fetchDataRef.current) return;
+    function onConnect() {
+      onMessage();
+    }
 
-      fetchDataRef.current = true;
-
+    async function onMessage() {
       const oldMessagesLength = messages.length;
 
       const response = await fetch(
@@ -142,8 +156,6 @@ function ManageJob() {
       setMessages(data.data.messages);
       setLoadingMessages(false);
 
-      fetchDataRef.current = false;
-
       setTimeout(() => {
         if (
           messagesContainerRef.current &&
@@ -154,21 +166,17 @@ function ManageJob() {
             behavior: 'smooth',
           });
       }, 100);
+    }
+
+    if (!socket) return;
+    socket.on('connect', onConnect);
+    socket.on('recieveMessage', onMessage);
+
+    return () => {
+      socket.off('connect', onConnect);
+      socket.off('recieveMessage', onMessage);
     };
-
-    fetchMessages();
-
-    const intervalId = setInterval(fetchMessages, 5000);
-
-    return () => clearInterval(intervalId);
-  }, [
-    job?.id,
-    proposal,
-    messages.length,
-    user.username,
-    job?.reviews,
-    job?.status,
-  ]);
+  }, [job?.id, proposal?.freelancer?.id, messages.length, socket]);
 
   const [message, setMessage] = useState('');
   const [attachment, setAttachment] = useState<File | null>(null);
@@ -238,6 +246,7 @@ function ManageJob() {
     setMessage('');
     setAttachment(null);
     setIsSendingMessage(false);
+    if (socket && socket.connected) socket.emit('sendMessage', attachment);
 
     // Scroll to bottom of messages
     setTimeout(() => {

@@ -1,4 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express';
+import http from 'http';
 import cors from 'cors';
 import { configDotenv } from 'dotenv';
 import accountRoutes from './routes/accountRoutes.js';
@@ -17,12 +18,15 @@ import milestoneRoutes from './routes/milestoneRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
 import paymentRoutes from './routes/paymentsRoutes.js';
 import withdrawalRoutes from './routes/withdrawalRoutes.js';
-
+import { Server } from 'socket.io';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import db from './db/db.js';
 // Load environment variables from the .env file
 configDotenv();
 
 // Create an instance of the Express application
 const app = express();
+const server = http.createServer(app);
 
 // CORS Configuration
 app.use(
@@ -128,7 +132,54 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction): void => {
   });
 });
 
+// Create an instance of the Socket.io server
+const io = new Server(server, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST', 'DELETE', 'PUT'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  },
+});
+
+io.use(async (socket, next) => {
+  const token = socket.handshake.query.token as string;
+  if (!token) return;
+  const { id } = jwt.verify(
+    token,
+    process.env.JWT_SECRET as string,
+  ) as JwtPayload;
+  const query = await db.query('SELECT * FROM Accounts WHERE id = $1', [id]);
+  if (query.rowCount == 0) return;
+
+  const job = await db.query(
+    'SELECT * FROM Jobs WHERE id = $1',
+    [socket.handshake.query.jobId],
+  );
+
+  if (job.rowCount == 0) return;
+
+  next();
+});
+
+io.on('connection', async (socket) => {
+
+  if (!socket.handshake.query.jobId) return;
+  socket.join(socket.handshake.query.jobId);
+
+  socket.on('sendMessage', (data) => {
+    if (!socket.handshake.query.jobId) return;
+    io.to(socket.handshake.query.jobId).emit('recieveMessage', data);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('A user disconnected');
+  });
+});
+
+// io.attach(server);
+io.listen(4000);
+
 // Start the server and listen on the port defined in the environment variables
-app.listen(process.env.PORT, () => {
+server.listen(process.env.PORT, () => {
   console.log('Started listening on port ' + process.env.PORT);
 });
