@@ -199,9 +199,14 @@ const NotificationsDropdown = ({ onOpen }: { onOpen: () => void }) => {
           wideHidden={false}
         >
           <FontAwesomeIcon icon={faBell} />
-          {totalUnread > 0 && (
+          {totalUnread > 0 && totalUnread < 9 && (
             <span className="bg-red-500 text-white text-xs rounded-full w-4 h-4 absolute top-0 right-1 flex justify-center items-center">
               {totalUnread}
+            </span>
+          )}
+          {totalUnread > 9 && (
+            <span className="bg-red-500 px-2 text-white text-xs rounded-full w-4 h-4 absolute top-0 right-1 flex justify-center items-center">
+              {9}+
             </span>
           )}
         </NavButton>
