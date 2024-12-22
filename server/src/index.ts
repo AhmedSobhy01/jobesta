@@ -151,10 +151,9 @@ io.use(async (socket, next) => {
   const query = await db.query('SELECT * FROM Accounts WHERE id = $1', [id]);
   if (query.rowCount == 0) return;
 
-  const job = await db.query(
-    'SELECT * FROM Jobs WHERE id = $1',
-    [socket.handshake.query.jobId],
-  );
+  const job = await db.query('SELECT * FROM Jobs WHERE id = $1', [
+    socket.handshake.query.jobId,
+  ]);
 
   if (job.rowCount == 0) return;
 
@@ -162,6 +161,7 @@ io.use(async (socket, next) => {
 });
 
 io.on('connection', async (socket) => {
+  console.log('A user connected');
 
   if (!socket.handshake.query.jobId) return;
   socket.join(socket.handshake.query.jobId);

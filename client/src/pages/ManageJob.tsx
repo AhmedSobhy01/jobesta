@@ -14,7 +14,6 @@ import CompleteMilestoneModal from '@/components/Milestones/CompleteMilestoneMod
 import getProfilePicture from '@/utils/profilePicture';
 import io from 'socket.io-client';
 import type { Socket } from 'socket.io-client';
-// import type { Socket } from 'socket.io-client';
 function ManageJob() {
   const navigate = useNavigate();
   const user = useContext(UserContext);
@@ -30,13 +29,11 @@ function ManageJob() {
   }>();
 
   useEffect(() => {
-    // Connect to the Socket.IO server
-    const newSocket = io('ws://localhost:3000', {
-      query: { jobId: job.id, token: getAuthJwtToken() }, // Pass the room ID to the server
+    const newSocket = io(import.meta.env.VITE_WS_URL, {
+      query: { jobId: job.id, token: getAuthJwtToken() },
     });
 
     setSocket(newSocket);
-    // Clean up connection on unmount
     return () => {
       newSocket.disconnect();
     };
