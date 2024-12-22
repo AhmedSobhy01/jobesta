@@ -14,6 +14,7 @@ import UserContext from '@/store/userContext';
 import { toast } from 'react-toastify';
 import { useNavigate, Link } from 'react-router';
 import { getAuthJwtToken } from '@/utils/auth';
+import { humanReadableDate } from '@/utils/time';
 
 const AdminRowItem: React.FC<{
   admin: Account;
@@ -112,7 +113,7 @@ const AdminRowItem: React.FC<{
           )}
         </td>
         <td className="hidden xl:table-cell px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
-          {admin.createdAt}
+          {humanReadableDate(admin.createdAt)}
         </td>
         <td className="px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
           <div className="flex gap-4">
@@ -167,7 +168,8 @@ const AdminRowItem: React.FC<{
               </p>
               <p>
                 <span className="font-medium">Created At:</span>{' '}
-                {admin.createdAt}
+                {humanReadableDate(admin.createdAt)}
+                {new Date(admin.createdAt).toLocaleString()}
               </p>
             </div>
           </td>

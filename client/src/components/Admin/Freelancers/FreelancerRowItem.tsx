@@ -17,6 +17,7 @@ import { useNavigate } from 'react-router';
 import { Link } from 'react-router';
 import { getAuthJwtToken } from '@/utils/auth';
 import AccountPaymentsModal from '../Payments/AccountPaymentsModal';
+import { humanReadableDate } from '@/utils/time';
 
 const FreelancerRowItem: React.FC<{
   freelancer: Account;
@@ -205,7 +206,7 @@ const FreelancerRowItem: React.FC<{
           )}
         </td>
         <td className="hidden xl:table-cell px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
-          {freelancer.createdAt}
+          {humanReadableDate(freelancer.createdAt)}
         </td>
         <td className="px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
           <div className="flex gap-4">
@@ -289,7 +290,7 @@ const FreelancerRowItem: React.FC<{
               </p>
               <p>
                 <span className="font-medium">Created At:</span>{' '}
-                {freelancer.createdAt}
+                {humanReadableDate(freelancer.createdAt)}
               </p>
             </div>
           </td>

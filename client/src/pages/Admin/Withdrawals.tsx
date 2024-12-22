@@ -62,7 +62,7 @@ const Withdrawals = () => {
     }
 
     const data = await res.json();
-    setWithdrawals((prevClients) => [...prevClients, ...data.data.withdrawals]);
+    setWithdrawals(data.data.withdrawals);
     setPagination(data.data.pagination);
 
     setLoading(false);
@@ -150,7 +150,7 @@ const Withdrawals = () => {
                     <th className="hidden xl:table-cell px-3 py-2 xl:px-6 xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left">
                       Freelancer Name
                     </th>
-                    <th className="px-3 py-2 xl:px-6 xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left">
+                    <th className="px-3 py-2 xl:px-6 xl:py-3 text-xs font-bold text-gray-500 uppercase text-left tracking-wider">
                       Freelancer Username
                     </th>
                     <th className="px-3 py-2 xl:px-6 xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left">

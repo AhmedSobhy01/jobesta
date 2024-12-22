@@ -9,6 +9,7 @@ import {
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
 import { getAuthJwtToken } from '@/utils/auth';
+import { humanReadableDate } from '@/utils/time';
 
 const WithdrawalRowItem: React.FC<{
   withdrawal: Withdrawal;
@@ -145,7 +146,7 @@ const WithdrawalRowItem: React.FC<{
           {withdrawal.paymentUsername}
         </td>
         <td className="hidden xl:table-cell px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
-          {new Date(withdrawal.requestedAt).toLocaleString()}
+          {humanReadableDate(withdrawal.requestedAt)}
         </td>
         <td className="px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
           <div className="flex gap-4">
@@ -204,7 +205,7 @@ const WithdrawalRowItem: React.FC<{
               </p>
               <p>
                 <span className="font-medium">Requested At:</span>{' '}
-                {new Date(withdrawal.requestedAt).toLocaleString()}
+                {humanReadableDate(withdrawal.requestedAt)}
               </p>
             </div>
           </td>
