@@ -229,7 +229,7 @@ export async function getUserByUsername(
       };
     });
 
-    let jobsQueryString = `SELECT j.id, j.status, j.budget, j.duration, j.title, j.description, j.created_at, client.first_name, client.last_name, client.username, client.profile_picture, c.id category_id, c.name category_name ,c.description category_description 
+    let jobsQueryString = `SELECT DISTINCT j.id, j.status, j.budget, j.duration, j.title, j.description, j.created_at, client.first_name, client.last_name, client.username, client.profile_picture, c.id category_id, c.name category_name ,c.description category_description 
       FROM jobs j 
       JOIN accounts client ON client.id = j.client_id
       LEFT JOIN categories c ON c.id = j.category_id 
