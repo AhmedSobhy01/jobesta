@@ -11,7 +11,7 @@ jobs:
 
         steps:
             - name: Checkout code
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
 
             - name: Set up SSH
               uses: webfactory/ssh-agent@v0.5.3
@@ -19,10 +19,15 @@ jobs:
                   ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
             - name: Deploy to Server
+              env:
+                  DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+                  DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
               run: |
-                  ssh -o StrictHostKeyChecking=no ahmed@64.226.113.152 << 'EOF'
-                    cd /var/www/jobesta
-                    git reset --hard origin/main
-                    git pull origin main --force
-                    docker-compose up -d --build
+                  ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST << 'EOF'
+                  cd /var/www/jobesta
+                  sudo git reset --hard origin/main
+                  sudo git pull origin main --force
+                  sudo cp server/.env server/.env.example
+                  sudo cp client/.env client/.env.example
+                  sudo docker-compose up -d --build
                   EOF
