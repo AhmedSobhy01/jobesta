@@ -94,8 +94,8 @@ CREATE TABLE "jobs" (
   "duration" INTEGER NOT NULL,
   "title" VARCHAR(255) NOT NULL,
   "description" TEXT NOT NULL,
-  "category_id" INTEGER,
   "client_id" INTEGER NOT NULL,
+  "category_id" INTEGER,
   "created_at" TIMESTAMP NOT NULL DEFAULT (now())
 );
 
@@ -184,8 +184,8 @@ CREATE TABLE "messages" (
 );
 
 CREATE TABLE "badge_freelancer" (
-  "badge_id" INTEGER,
   "freelancer_id" INTEGER,
+  "badge_id" INTEGER,
   "earned_at" TIMESTAMP NOT NULL DEFAULT (now()),
   PRIMARY KEY ("badge_id", "freelancer_id")
 );

@@ -40,6 +40,7 @@ export async function getFreelancerByUsername(req: Request, res: Response) {
       name: badge.name,
       description: badge.description,
       icon: badge.icon,
+      earnedAt: badge.earned_at,
     }));
 
     const previousWork = previousWorkQuery.rows.map((work) => ({
