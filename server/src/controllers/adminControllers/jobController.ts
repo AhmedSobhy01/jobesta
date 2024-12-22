@@ -19,7 +19,6 @@ export async function getJobs(req: Request, res: Response): Promise<void> {
         c.id AS category_id,
         c.name AS category_name,
         c.description AS category_description,
-        COUNT(p.job_id) AS proposals_count,
         f.account_id AS freelancer_account_id,
         freelancer.first_name AS freelancer_first_name,
         freelancer.last_name AS freelancer_last_name,
@@ -27,17 +26,18 @@ export async function getJobs(req: Request, res: Response): Promise<void> {
       FROM jobs j
       LEFT JOIN categories c ON c.id = j.category_id
       INNER JOIN accounts client ON client.id = j.client_id
-      LEFT JOIN proposals p ON p.job_id = j.id
-      LEFT JOIN freelancers f ON f.id = p.freelancer_id AND p.status = 'accepted'
+      LEFT JOIN proposals p ON p.job_id = j.id AND p.status = 'accepted'
+      LEFT JOIN freelancers f ON f.id = p.freelancer_id
       LEFT JOIN accounts freelancer ON freelancer.id = f.account_id
     `;
+
     let countQuery = `
       SELECT COUNT(*)
       FROM jobs j
       LEFT JOIN categories c ON c.id = j.category_id
       INNER JOIN accounts client ON client.id = j.client_id
-      LEFT JOIN proposals p ON p.job_id = j.id
-      LEFT JOIN freelancers f ON f.id = p.freelancer_id AND p.status = 'accepted'
+      LEFT JOIN proposals p ON p.job_id = j.id AND p.status = 'accepted'
+      LEFT JOIN freelancers f ON f.id = p.freelancer_id
       LEFT JOIN accounts freelancer ON freelancer.id = f.account_id
     `;
     const queryParams: string[] = [];
@@ -65,7 +65,6 @@ export async function getJobs(req: Request, res: Response): Promise<void> {
     }
 
     queryString += `
-      GROUP BY j.id, client.id, c.id, f.id, freelancer.id
       ORDER BY j.created_at DESC
     `;
 
@@ -86,6 +85,20 @@ export async function getJobs(req: Request, res: Response): Promise<void> {
 
     const jobsQuery = await db.query(queryString, queryParams);
 
+    const jobPrposalsQuery = await db.query(
+      `
+      SELECT job_id, COUNT(*) AS proposals_count
+      FROM proposals
+      WHERE job_id IN (${jobsQuery.rows.map((job) => job.id).join(',')})
+      GROUP BY job_id
+    `,
+    );
+
+    const jobProposalsMap = jobPrposalsQuery.rows.reduce((acc, row) => {
+      acc[row.job_id] = row.proposals_count;
+      return acc;
+    }, {});
+
     const jobs = jobsQuery.rows.map((job) => {
       return {
         id: job.id,
@@ -99,7 +112,7 @@ export async function getJobs(req: Request, res: Response): Promise<void> {
           name: job.category_name,
           description: job.category_description,
         },
-        proposalsCount: job.proposals_count,
+        proposalsCount: jobProposalsMap[job.id] || 0,
         createdAt: job.created_at,
         client: {
           firstName: job.client_first_name,
