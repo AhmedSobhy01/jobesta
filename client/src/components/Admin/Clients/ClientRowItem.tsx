@@ -11,6 +11,7 @@ import {
   faInfoCircle,
   faNewspaper,
 } from '@fortawesome/free-solid-svg-icons';
+import { humanReadableDate } from '@/utils/time';
 
 import ClientModal from '@/components/Admin/Clients/ClientModal';
 import { toast } from 'react-toastify';
@@ -201,7 +202,7 @@ const ClientRowItem: React.FC<{
           )}
         </td>
         <td className="hidden xl:table-cell px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
-          {client.createdAt}
+          {humanReadableDate(client.createdAt)}
         </td>
         <td className="px-3 py-2 xl:px-6 xl:py-4 text-sm text-gray-900">
           <div className="flex gap-4">
@@ -284,7 +285,7 @@ const ClientRowItem: React.FC<{
               </p>
               <p>
                 <span className="font-medium">Created At:</span>{' '}
-                {client.createdAt}
+                {humanReadableDate(client.createdAt)}
               </p>
             </div>
           </td>
