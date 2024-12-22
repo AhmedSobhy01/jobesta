@@ -31,6 +31,8 @@ services:
         depends_on:
             database:
                 condition: service_healthy
+        volumes:
+            - uploads:/usr/src/app/uploads
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:3000"]
             interval: 10s
@@ -57,3 +59,4 @@ services:
 volumes:
     jobesta-data:
         name: "jobesta-data"
+    uploads: # Define the uploads volume
