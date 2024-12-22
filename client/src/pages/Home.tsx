@@ -15,6 +15,7 @@ import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import LabelSkeleton from '@/components/Skeletons/LabelSkeleton';
 import CardSkeleton from '@/components/Skeletons/CardSkeleton';
 import UserContext from '@/store/userContext';
+import getProfilePicture from '@/utils/profilePicture';
 
 function Home() {
   const user = useContext(UserContext);
@@ -276,7 +277,7 @@ function Home() {
                   className={`flex items-center gap-6 border-gray-200 ${review.comment ? 'border-t mt-6 pt-6' : ''}`}
                 >
                   <img
-                    src={review.sender.profilePicture}
+                    src={getProfilePicture(review.sender.profilePicture)}
                     width="55"
                     height="55"
                     decoding="async"
