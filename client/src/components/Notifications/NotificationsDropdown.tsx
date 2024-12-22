@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { toast } from 'react-toastify';
 import NotificationsDropdownSkeleton from '../Skeletons/NotificationsDropdownSkeleton';
 import { getAuthJwtToken } from '@/utils/auth';
 import NavButton from '../NavBar/NavButton';
@@ -98,9 +97,7 @@ const NotificationsDropdown = ({ onOpen }: { onOpen: () => void }) => {
           },
         );
       } catch {
-        toast('An error occurred while marking notifications as read.', {
-          type: 'error',
-        });
+        console.error('Failed to mark notifications as read');
       }
     }
   }, [notifications]);
@@ -159,9 +156,6 @@ const NotificationsDropdown = ({ onOpen }: { onOpen: () => void }) => {
 
         if (!response.ok) {
           setError(notificationsData.message);
-          toast(notificationsData.message, {
-            type: 'error',
-          });
           setLoading(false);
           fetchDataRef.current = false;
           return;
@@ -171,9 +165,6 @@ const NotificationsDropdown = ({ onOpen }: { onOpen: () => void }) => {
         setTotalUnread(notificationsData.data.totalUnread);
       } catch {
         setError('An error occurred while fetching notifications data.');
-        toast('An error occurred while fetching notifications data.', {
-          type: 'error',
-        });
       }
 
       setLoading(false);
