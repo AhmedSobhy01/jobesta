@@ -498,21 +498,21 @@ function ManageJob() {
                               style={{ wordBreak: 'break-word' }}
                             >
                               {message.sender.isAdmin && (
-                                <span className="text-xs font-bold -ml-2 mr-2 bg-red-500 text-white px-1 rounded-full">
+                                <span className="text-xs font-bold -ml-2 mr-2 bg-red-500 text-white px-1 rounded-full whitespace-nowrap">
                                   Admin
                                 </span>
                               )}
                               {user.role == 'admin' &&
                                 message.sender.username ===
                                   job.client.username && (
-                                  <span className="text-xs font-bold -ml-2 mr-2 bg-blue-500 text-white px-1 rounded-full">
+                                  <span className="text-xs font-bold -ml-2 mr-2 bg-blue-500 text-white px-1 rounded-full whitespace-nowrap">
                                     Client
                                   </span>
                                 )}
                               {user.role == 'admin' &&
                                 message.sender.username ===
                                   proposal?.freelancer?.username && (
-                                  <span className="text-xs font-bold -ml-2 mr-2 bg-green-500 text-white px-1 rounded-full">
+                                  <span className="text-xs font-bold -ml-2 mr-2 bg-green-500 text-white px-1 rounded-full whitespace-nowrap">
                                     Freelancer
                                   </span>
                                 )}
