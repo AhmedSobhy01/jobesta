@@ -146,7 +146,7 @@ const Reviews: React.FC<{ job: Job }> = ({ job }) => {
                     {[...Array(5)].map((_, i) => (
                       <FontAwesomeIcon
                         key={i}
-                        icon={i < Number(review.rating) ? faStar : faStar}
+                        icon={faStar}
                         className={
                           i < Number(review.rating)
                             ? 'text-emerald-500'
