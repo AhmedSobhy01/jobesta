@@ -1,6 +1,11 @@
 import { limitText } from '@/utils/string';
 import ErrorModule from '@/components/ErrorModule';
-import { LoaderFunctionArgs, useLoaderData, useNavigate } from 'react-router';
+import {
+  LoaderFunctionArgs,
+  useLoaderData,
+  useNavigate,
+  useRevalidator,
+} from 'react-router';
 import UserContext from '@/store/userContext';
 import { useContext, useEffect, useRef, useState } from 'react';
 import MessagesSkeleton from '@/components/Skeletons/MessagesSkeleton';
@@ -16,6 +21,8 @@ import io from 'socket.io-client';
 import type { Socket } from 'socket.io-client';
 function ManageJob() {
   const navigate = useNavigate();
+  const { revalidate } = useRevalidator();
+
   const user = useContext(UserContext);
   const [socket, setSocket] = useState<typeof Socket | null>(null);
   const {
@@ -39,13 +46,11 @@ function ManageJob() {
     };
   }, [job.id]);
 
-  const [jobStatus, setJobStatus] = useState<string>(job?.status);
-
-  const [proposal, setProposal] = useState<Proposal | null>(
+  const jobStatus = job?.status;
+  const proposal =
     job?.proposals!.find((p) => p.status === 'accepted') ??
-      job?.myProposal ??
-      null,
-  );
+    job?.myProposal ??
+    null;
 
   const [currentMilestone, setCurrentMilestone] = useState<Milestone | null>(
     proposal?.milestones[0] ?? null,
@@ -60,21 +65,7 @@ function ManageJob() {
           (milestone) => milestone.status !== 'completed',
         ).length === 1
       )
-        setJobStatus('completed');
-
-      setProposal((prevProposal) => {
-        if (!prevProposal) return null;
-
-        return {
-          ...prevProposal,
-          milestones: prevProposal.milestones!.map((milestone) => {
-            if (milestone.order === currentMilestone?.order)
-              return { ...milestone, status: 'completed' };
-
-            return milestone;
-          }),
-        };
-      });
+        revalidate();
     }
 
     setIsCompleteMilestoneModalOpen(false);
@@ -165,15 +156,21 @@ function ManageJob() {
       }, 100);
     }
 
+    function onMilestoneAccept() {
+      revalidate();
+    }
+
     if (!socket) return;
     socket.on('connect', onConnect);
     socket.on('recieveMessage', onMessage);
+    socket.on('milestoneCompleted', onMilestoneAccept);
 
     return () => {
       socket.off('connect', onConnect);
       socket.off('recieveMessage', onMessage);
+      socket.off('milestoneCompleted', onMilestoneAccept);
     };
-  }, [job?.id, proposal?.freelancer?.id, messages.length, socket]);
+  }, [job?.id, proposal?.freelancer?.id, messages.length, socket, revalidate]);
 
   const [message, setMessage] = useState('');
   const [attachment, setAttachment] = useState<File | null>(null);

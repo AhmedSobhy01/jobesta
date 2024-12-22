@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import db from '../db/db.js';
+import { io } from '../index.js';
 
 export async function completeMilestone(req: Request, res: Response) {
   const { jobId, freelancerId, milestoneOrder } = req.params;
@@ -50,6 +51,8 @@ export async function completeMilestone(req: Request, res: Response) {
       VALUES ('payment_received', 'You have received payment for a milestone', $1, '/payments')`,
       [accountResult.rows[0].account_id],
     );
+
+    io.to(jobId).emit('milestoneCompleted');
 
     res.json({ status: true, message: 'Milestone completed' });
   } catch {
