@@ -184,8 +184,8 @@ CREATE TABLE "messages" (
 );
 
 CREATE TABLE "badge_freelancer" (
-  "badge_id" INTEGER,
   "freelancer_id" INTEGER,
+  "badge_id" INTEGER,
   "earned_at" TIMESTAMP NOT NULL DEFAULT (now()),
   PRIMARY KEY ("badge_id", "freelancer_id")
 );
