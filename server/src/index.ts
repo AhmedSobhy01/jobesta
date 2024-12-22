@@ -19,8 +19,8 @@ import reviewRoutes from './routes/reviewRoutes.js';
 import paymentRoutes from './routes/paymentsRoutes.js';
 import withdrawalRoutes from './routes/withdrawalRoutes.js';
 import { Server } from 'socket.io';
-import jwt, { JwtPayload } from 'jsonwebtoken';
 import db from './db/db.js';
+import { socketAuthMiddleware } from './middlewares/socketAuthMiddleware.js';
 // Load environment variables from the .env file
 configDotenv();
 
@@ -133,7 +133,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction): void => {
 });
 
 // Create an instance of the Socket.io server
-const io = new Server(server, {
+export const io = new Server(server, {
   cors: {
     origin: '*',
     methods: ['GET', 'POST', 'DELETE', 'PUT'],
@@ -141,30 +141,18 @@ const io = new Server(server, {
   },
 });
 
-io.use(async (socket, next) => {
-  const token = socket.handshake.query.token as string;
-  if (!token) return;
-  const { id } = jwt.verify(
-    token,
-    process.env.JWT_SECRET as string,
-  ) as JwtPayload;
-  const query = await db.query('SELECT * FROM Accounts WHERE id = $1', [id]);
-  if (query.rowCount == 0) return;
-
-  const job = await db.query('SELECT * FROM Jobs WHERE id = $1', [
-    socket.handshake.query.jobId,
-  ]);
-
-  if (job.rowCount == 0) return;
-
-  next();
-});
+io.use(socketAuthMiddleware);
 
 io.on('connection', async (socket) => {
   console.log('A user connected');
 
   if (!socket.handshake.query.jobId) return;
-  socket.join(socket.handshake.query.jobId);
+  const job = await db.query('SELECT * FROM Jobs WHERE id = $1', [
+    socket.handshake.query.jobId,
+  ]);
+  if (job.rowCount != 0) {
+    socket.join(socket.handshake.query.jobId);
+  }
 
   socket.on('sendMessage', (data) => {
     if (!socket.handshake.query.jobId) return;
@@ -175,9 +163,6 @@ io.on('connection', async (socket) => {
     console.log('A user disconnected');
   });
 });
-
-// io.attach(server);
-io.listen(4000);
 
 // Start the server and listen on the port defined in the environment variables
 server.listen(process.env.PORT, () => {
