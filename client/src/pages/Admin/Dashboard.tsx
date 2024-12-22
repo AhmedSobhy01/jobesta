@@ -17,6 +17,7 @@ import { PieChart } from '@mui/x-charts/PieChart';
 import { mangoFusionPalette } from '@mui/x-charts';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { useEffect, useState } from 'react';
+import ThreeStatCard from '@/components/Admin/ThreeStatCard';
 
 const Dashboard: React.FC & {
   loader?: (args: LoaderFunctionArgs) => Promise<unknown>;
@@ -26,7 +27,7 @@ const Dashboard: React.FC & {
   const {
     status: loaderStatus,
     error: loaderError,
-    data: { statistics },
+    data,
   } = useLoaderData() as {
     status: boolean;
     error?: string;
@@ -41,6 +42,9 @@ const Dashboard: React.FC & {
         totalOpenJobs: number;
         totalCompletedJobs: number;
         totalAcceptedProposals: number;
+        minBudget: number;
+        maxBudget: number;
+        avgBudget: number;
         jobsPerCategory: { name: string; jobsCount: number }[];
         paymentsPerMonth: { month: string; totalPrice: number }[];
         freelancerBadgesCount: {
@@ -59,11 +63,17 @@ const Dashboard: React.FC & {
     });
   }, []);
 
-  const sortedJobsPerCategory = statistics.jobsPerCategory
+  if (!loaderStatus) {
+    return (
+      <ErrorModule onClose={() => navigate('/')} errorMessage={loaderError} />
+    );
+  }
+
+  const sortedJobsPerCategory = data.statistics.jobsPerCategory
     .filter((job) => job.name !== 'Uncategorized')
     .sort((a, b) => b.jobsCount - a.jobsCount);
 
-  const uncategorizedCount = statistics.jobsPerCategory.find(
+  const uncategorizedCount = data.statistics.jobsPerCategory.find(
     (job) => job.name === 'Uncategorized',
   );
 
@@ -71,13 +81,7 @@ const Dashboard: React.FC & {
     sortedJobsPerCategory.push(uncategorizedCount);
   }
 
-  if (!loaderStatus) {
-    return (
-      <ErrorModule onClose={() => navigate('/')} errorMessage={loaderError} />
-    );
-  }
-
-  const formattedPaymentsPerMonth = statistics.paymentsPerMonth.map(
+  const formattedPaymentsPerMonth = data.statistics.paymentsPerMonth.map(
     (payment) => ({
       month: new Date(payment.month).toLocaleString('default', {
         month: 'long',
@@ -102,34 +106,34 @@ const Dashboard: React.FC & {
       <div className="mt-3 flex flex-wrap gap-4">
         <StatsCard
           title="Total Clients"
-          value={statistics.totalClients}
+          value={data.statistics.totalClients}
           icon={faUser}
         />
         <StatsCard
           title="Total Freelancers"
-          value={statistics.totalFreelancers}
+          value={data.statistics.totalFreelancers}
           icon={faUser}
         />
         <StatsCard
           title="Total Reviews"
-          value={statistics.totalReviews}
+          value={data.statistics.totalReviews}
           icon={faCommentDots}
         />
         <StatsCard
           title="Total Categories"
-          value={statistics.totalCategories}
+          value={data.statistics.totalCategories}
           icon={faLayerGroup}
         />
         <div className="flex flex-wrap gap-4 w-full">
           <StatsCard
             title="Total Proposals"
-            value={statistics.totalProposals}
+            value={data.statistics.totalProposals}
             icon={faChartSimple}
             color="cyan"
           />
           <StatsCard
             title="Total Accepted Proposals"
-            value={statistics.totalAcceptedProposals}
+            value={data.statistics.totalAcceptedProposals}
             icon={faChartSimple}
             color="cyan"
           />
@@ -137,23 +141,31 @@ const Dashboard: React.FC & {
         <div className="flex flex-wrap gap-4 w-full">
           <StatsCard
             title="Total Jobs"
-            value={statistics.totalJobs}
+            value={data.statistics.totalJobs}
             icon={faBriefcase}
             color="orange"
           />
           <StatsCard
             title="Total Open Jobs"
-            value={statistics.totalOpenJobs}
+            value={data.statistics.totalOpenJobs}
             icon={faBriefcase}
             color="orange"
           />
           <StatsCard
             title="Total Completed Jobs"
-            value={statistics.totalCompletedJobs}
+            value={data.statistics.totalCompletedJobs}
             icon={faBriefcase}
             color="orange"
           />
         </div>
+        <ThreeStatCard
+          title="Job Budget"
+          min={data.statistics.minBudget}
+          max={data.statistics.maxBudget}
+          avg={data.statistics.avgBudget}
+          icon={faBriefcase}
+          color="orange"
+        />
       </div>
 
       <div className="flex flex-wrap gap-4 w-full mt-10">
@@ -200,11 +212,15 @@ const Dashboard: React.FC & {
               series={[
                 {
                   data: [
-                    { id: 0, label: 'Clients', value: statistics.totalClients },
+                    {
+                      id: 0,
+                      label: 'Clients',
+                      value: data.statistics.totalClients,
+                    },
                     {
                       id: 1,
                       label: 'Freelancers',
-                      value: statistics.totalFreelancers,
+                      value: data.statistics.totalFreelancers,
                     },
                   ],
                   innerRadius: 40,
@@ -258,7 +274,7 @@ const Dashboard: React.FC & {
               Freelancers Count per Badge
             </h2>
             <BarChart
-              dataset={statistics.freelancerBadgesCount}
+              dataset={data.statistics.freelancerBadgesCount}
               xAxis={[{ scaleType: 'band', dataKey: 'badgeName' }]}
               yAxis={[{ domainLimit: 'nice', tickMinStep: 1 }]}
               series={[

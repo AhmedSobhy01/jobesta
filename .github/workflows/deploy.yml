@@ -27,7 +27,7 @@ jobs:
                   cd /var/www/jobesta
                   sudo git reset --hard origin/main
                   sudo git pull origin main --force
-                  cp server/.env server/.env.example
-                  cp client/.env client/.env.example
+                  sudo cp server/.env server/.env.example
+                  sudo cp client/.env client/.env.example
                   sudo docker-compose up -d --build
                   EOF

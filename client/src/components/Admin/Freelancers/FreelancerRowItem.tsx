@@ -218,6 +218,15 @@ const FreelancerRowItem: React.FC<{
 
             <button
               type="button"
+              onClick={() => setIsShowFreelancerPaymentsModalOpen(true)}
+              className="text-cyan-600 hover:text-cyan-900"
+              title="Show payments"
+            >
+              <FontAwesomeIcon icon={faNewspaper} />
+            </button>
+
+            <button
+              type="button"
               onClick={() => setIsEditAccountModalOpen(true)}
               className="text-gray-600 hover:text-gray-900"
             >
@@ -243,15 +252,6 @@ const FreelancerRowItem: React.FC<{
                 <FontAwesomeIcon icon={faBan} />
               </button>
             )}
-
-            <button
-              type="button"
-              onClick={() => setIsShowFreelancerPaymentsModalOpen(true)}
-              className="text-cyan-600 hover:text-cyan-900"
-              title="Show payments"
-            >
-              <FontAwesomeIcon icon={faNewspaper} />
-            </button>
 
             <button
               type="button"

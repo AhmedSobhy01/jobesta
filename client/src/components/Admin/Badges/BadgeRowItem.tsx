@@ -24,27 +24,27 @@ const BadgeRowItem: React.FC<{
           <div className="flex items-center gap-2">
             {badge.id}
             <button
-              className="lg:hidden text-gray-500"
+              className="xl:hidden text-gray-500"
               onClick={() => setIsExpanded(!isExpanded)}
             >
               <FontAwesomeIcon icon={faInfoCircle} />
             </button>
           </div>
         </td>
-        <td className="sm:table-cell px-3 py-2 lg:px-4 xl:px-6 text-sm text-gray-900">
+        <td className="sm:table-cell px-3 py-2 xl:px-6 text-sm text-gray-900">
           {badge.name}
         </td>
-        <td className="hidden lg:table-cell px-3 py-2 lg:px-4 xl:px-6 text-sm text-gray-900">
+        <td className="hidden xl:table-cell px-3 py-2 xl:px-6 text-sm text-gray-900">
           {badge.description}
         </td>
-        <td className="hidden lg:table-cell px-3 py-2 lg:px-4 xl:px-6 text-sm text-gray-900">
+        <td className="hidden xl:table-cell px-3 py-2 xl:px-6 text-sm text-gray-900">
           <img
             className="w-12 xl:w-16 rounded-lg"
             src={import.meta.env.VITE_API_URL + '/' + badge.icon}
             alt={badge.name}
           />
         </td>
-        <td className=" sm:table-cell px-3 py-2 lg:px-4 xl:px-6 text-sm text-gray-900">
+        <td className=" sm:table-cell px-3 py-2 xl:px-6 text-sm text-gray-900">
           <div className="flex gap-4">
             <button
               type="button"
@@ -58,7 +58,7 @@ const BadgeRowItem: React.FC<{
       </tr>
 
       {isExpanded && (
-        <tr className="lg:hidden bg-gray-50">
+        <tr className="xl:hidden bg-gray-50">
           <td colSpan={5} className="px-3 py-2">
             <div className="space-y-2">
               <div>

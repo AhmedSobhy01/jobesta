@@ -29,13 +29,14 @@ const Sidebar: React.FC<{ className?: string }> = ({ className }) => {
 
       <nav className="mt-4 space-y-3">
         <SidebarButton icon={faHome} text="Dashboard" route="/admin" />
-        <SidebarButton icon={faUser} text="Clients" route="/admin/clients" />
         <SidebarButton icon={faUser} text="Admins" route="/admin/admins" />
+        <SidebarButton icon={faUser} text="Clients" route="/admin/clients" />
         <SidebarButton
           icon={faUser}
           text="Freelancers"
           route="/admin/freelancers"
         />
+        <SidebarButton icon={faSuitcase} text="Jobs" route="/admin/jobs" />
         <SidebarButton
           icon={faLayerGroup}
           text="Categories"
@@ -51,7 +52,6 @@ const Sidebar: React.FC<{ className?: string }> = ({ className }) => {
           text="Withdrawals"
           route="/admin/withdrawals"
         />
-        <SidebarButton icon={faSuitcase} text="Jobs" route="/admin/jobs" />
       </nav>
 
       <div className="mt-auto p-4 text-center text-sm text-gray-600 dark:text-gray-400">

@@ -41,7 +41,7 @@ const Badges = () => {
       }
 
       const data = await res.json();
-      setBadges((prevClients) => [...prevClients, ...data.data.badges]);
+      setBadges(data.data.badges);
       setPagination(data.data.pagination);
 
       setLoading(false);
@@ -81,7 +81,7 @@ const Badges = () => {
     <div className="w-full max-w-[95%] sm:max-w-[90%] lg:max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 xl:px-8">
       <div className="py-4 sm:py-6 lg:py-8 xl:py-12">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
-          <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-900">
+          <h1 className="font-bold text-xl xl:text-5xl font-heading text-gray-900">
             Badges
           </h1>
         </div>
@@ -98,43 +98,62 @@ const Badges = () => {
               loader={<TableLoader />}
               scrollableTarget="badges-table"
             >
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50 sm:table-header-group">
-                  <tr>
-                    <th className="px-3 py-2 lg:px-4 xl:px-6 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
-                      ID
-                    </th>
-                    <th className="px-3 py-2 lg:px-4 xl:px-6 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
-                      Name
-                    </th>
-                    <th className="hidden lg:table-cell px-3 py-2 lg:px-4 xl:px-6 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
-                      Description
-                    </th>
-                    <th className="hidden lg:table-cell px-3 py-2 lg:px-4 xl:px-6 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
-                      Icon
-                    </th>
-                    <th className="px-3 py-2 lg:px-4 xl:px-6 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
+              <div
+                className="relative overflow-x-auto shadow-md rounded-lg max-h-[70vh]"
+                id="table"
+              >
+                <table className="min-w-full divide-y divide-gray-200 rounded-lg">
+                  <thead className="bg-gray-50 sm:table-header-group">
+                    <tr>
+                      <th
+                        scope="col"
+                        className="px-3 py-2 xl:px-6 xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left"
+                      >
+                        ID
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-3 py-2 xl:px-6 xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left"
+                      >
+                        Name
+                      </th>
+                      <th
+                        scope="col"
+                        className="hidden xl:table-cell px-3 py-2 xl:px-6 xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left"
+                      >
+                        Description
+                      </th>
+                      <th
+                        scope="col"
+                        className="hidden xl:table-cell px-3 py-2 xl:px-6 xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left"
+                      >
+                        Icon
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-3 py-2 xl:px-6 xl:py-3 text-xs font-bold text-gray-500 uppercase tracking-wider text-left"
+                      >
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
 
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {loading && (
-                    <>
-                      <TableSkeleton
-                        columns={5}
-                        className="lg:table-row hidden"
-                      />
-                      <TableSkeleton columns={3} className="lg:hidden" />
-                    </>
-                  )}
-                  {badges.map((badge) => (
-                    <BadgeRowItem key={badge.id} badge={badge} />
-                  ))}
-                </tbody>
-              </table>
-
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {loading && (
+                      <>
+                        <TableSkeleton
+                          columns={5}
+                          className="lg:table-row hidden"
+                        />
+                        <TableSkeleton columns={3} className="lg:hidden" />
+                      </>
+                    )}
+                    {badges.map((badge) => (
+                      <BadgeRowItem key={badge.id} badge={badge} />
+                    ))}
+                  </tbody>
+                </table>
+              </div>
               {!loading && badges.length === 0 && (
                 <div className="text-center py-12">
                   <p className="text-gray-500 text-sm sm:text-base">

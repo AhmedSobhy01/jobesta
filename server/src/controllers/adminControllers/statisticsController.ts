@@ -13,7 +13,10 @@ export async function getStatistics(req: Request, res: Response) {
 		(SELECT COUNT(*) FROM reviews) AS total_reviews, 
 		(SELECT COUNT(*) FROM proposals WHERE status = 'accepted') AS total_accepted_proposals, 
 		(SELECT COUNT(*) FROM jobs WHERE status = 'open') AS total_open_jobs, 
-		(SELECT COUNT(*) FROM jobs WHERE status = 'completed') AS total_completed_jobs`,
+		(SELECT COUNT(*) FROM jobs WHERE status = 'completed') AS total_completed_jobs,
+    (SELECT MIN(budget) FROM jobs WHERE status = 'open' OR status = 'in_progress' OR status = 'completed') AS min_budget,
+    (SELECT MAX(budget) FROM jobs WHERE status = 'open' OR status = 'in_progress' OR status = 'completed') AS max_budget,
+    (SELECT AVG(budget) FROM jobs WHERE status = 'open' OR status = 'in_progress' OR status = 'completed') AS avg_budget`,
     );
 
     const jobsPerCategoryQuery = await db.query(
@@ -93,6 +96,9 @@ export async function getStatistics(req: Request, res: Response) {
             totalDataQuery.rows[0].total_accepted_proposals,
           totalOpenJobs: totalDataQuery.rows[0].total_open_jobs,
           totalCompletedJobs: totalDataQuery.rows[0].total_completed_jobs,
+          minBudget: totalDataQuery.rows[0].min_budget,
+          maxBudget: totalDataQuery.rows[0].max_budget,
+          avgBudget: totalDataQuery.rows[0].avg_budget,
           jobsPerCategory,
           paymentsPerMonth,
           freelancerBadgesCount,

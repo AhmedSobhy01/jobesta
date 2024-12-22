@@ -267,7 +267,7 @@ const JobRowItem: React.FC<{
 
         <td className="px-3 py-2 2xl:px-6 2xl:py-4 text-sm">
           <span
-            className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full text-white ${
+            className={`whitespace-nowrap px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full text-white ${
               job.status === 'completed'
                 ? 'bg-green-500'
                 : job.status === 'open'
