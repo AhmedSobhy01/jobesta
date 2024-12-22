@@ -292,7 +292,7 @@ function ManageJob() {
     });
   };
 
-  if (!jobFetchStatus) {
+  if (!jobFetchStatus || proposal === null) {
     return (
       <ErrorModule errorMessage={jobFetchError} onClose={() => navigate('/')} />
     );
