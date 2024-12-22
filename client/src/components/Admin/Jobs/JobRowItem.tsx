@@ -320,6 +320,7 @@ const JobRowItem: React.FC<{
             <Link
               to={`/jobs/${job.id}/${job.status === 'in_progress' || job.status === 'completed' ? 'manage' : ''}`}
               className="text-blue-600 hover:text-blue-900"
+              title="See job"
             >
               <FontAwesomeIcon icon={faEye} />
             </Link>

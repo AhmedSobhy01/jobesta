@@ -1,11 +1,6 @@
 import { useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faComments,
-  faStar,
-  faStarHalfAlt,
-  faTrash,
-} from '@fortawesome/free-solid-svg-icons';
+import { faComments, faStar, faTrash } from '@fortawesome/free-solid-svg-icons';
 import UserContext from '@/store/userContext';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
@@ -151,9 +146,7 @@ const Reviews: React.FC<{ job: Job }> = ({ job }) => {
                     {[...Array(5)].map((_, i) => (
                       <FontAwesomeIcon
                         key={i}
-                        icon={
-                          i < Number(review.rating) ? faStar : faStarHalfAlt
-                        }
+                        icon={faStar}
                         className={
                           i < Number(review.rating)
                             ? 'text-emerald-500'
