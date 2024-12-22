@@ -156,11 +156,18 @@ const JobRowItem: React.FC<{
           },
         })
           .then((response) => {
-            if (!response.ok) throw new Error('Failed to delete job');
+            if (!response.ok && response.status !== 422)
+              throw new Error('Failed to delete job');
 
             return response.json();
           })
           .then((data) => {
+            if (Object.values(data?.errors || {}).length) {
+              if (data.errors.jobId) throw new Error(data.errors.jobId);
+
+              throw new Error('Validation failed');
+            }
+
             toast(data.message, { type: 'success' });
             navigate('/admin/jobs?reload=true');
           })
