@@ -309,9 +309,7 @@ function Job() {
                     )}
 
                   {(user.username === job.client.username ||
-                    (job.myProposal &&
-                      job.myProposal.freelancer &&
-                      user.username == job.myProposal.freelancer.username) ||
+                    (job.myProposal && job.myProposal.status === 'accepted') ||
                     user.role === 'admin') &&
                     (job.status === 'in_progress' ||
                       job.status === 'completed') && (
