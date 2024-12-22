@@ -58,7 +58,9 @@ function Job() {
       user.username != null &&
       job &&
       job.status === 'completed' &&
-      ((user.role === 'freelancer' && job.myProposal) ||
+      ((user.role === 'freelancer' &&
+        job.myProposal &&
+        job.myProposal.status === 'accepted') ||
         (user.role === 'client' && job.myJob))
     ) {
       const myReview = job.reviews?.reduce<Review | undefined>(
