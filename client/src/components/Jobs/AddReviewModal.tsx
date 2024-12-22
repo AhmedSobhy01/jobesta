@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark, faStar } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
+import { createPortal } from 'react-dom';
 
 const ReviewModal = ({ job, onClose }: { job: Job; onClose: () => void }) => {
   const navigate = useNavigate();
@@ -91,8 +92,8 @@ const ReviewModal = ({ job, onClose }: { job: Job; onClose: () => void }) => {
     }
   };
 
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+  return createPortal(
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="flex flex-col bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative max-h-[90vh]">
         <div>
           <button
@@ -169,7 +170,8 @@ const ReviewModal = ({ job, onClose }: { job: Job; onClose: () => void }) => {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body as HTMLElement,
   );
 };
 

@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 import { getAuthJwtToken } from '@/utils/auth';
+import { createPortal } from 'react-dom';
 
 const ReviewModal: React.FC<{
   jobId: number;
@@ -70,7 +71,7 @@ const ReviewModal: React.FC<{
       });
   };
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-[100]"
       onMouseDown={handleModalClick}
@@ -147,7 +148,8 @@ const ReviewModal: React.FC<{
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body as HTMLElement,
   );
 };
 
