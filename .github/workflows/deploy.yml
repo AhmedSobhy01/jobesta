@@ -23,7 +23,7 @@ jobs:
                   DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
                   DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
               run: |
-                  ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST << 'EOF'
+                  ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST << 'EOF' > /dev/null 2>&1
                   cd /var/www/jobesta
                   sudo git reset --hard origin/main
                   sudo git pull origin main --force
