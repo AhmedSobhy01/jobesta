@@ -31,7 +31,9 @@ function ManageJob() {
 
   const [proposal, setProposal] = useState<Proposal | null>(
     job?.proposals!.find((p) => p.status === 'accepted') ??
-      job?.myProposal ??
+      (job.myProposal && job.myProposal.status === 'accepted'
+        ? job.myProposal
+        : null) ??
       null,
   );
 
@@ -693,7 +695,8 @@ ManageJob.loader = async ({ params }: LoaderFunctionArgs) => {
 
   if (
     (data.data.job.proposals!.find((p: Proposal) => p.status === 'accepted') ||
-      data.data.job.myProposal) === null
+      (data.data.job.myProposal &&
+        data.data.job.myProposal.status === 'accepted')) === null
   )
     return { status: false, error: 'Failed to fetch job details' };
 
