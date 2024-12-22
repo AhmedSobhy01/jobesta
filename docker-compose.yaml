@@ -59,4 +59,4 @@ services:
 volumes:
     jobesta-data:
         name: "jobesta-data"
-    uploads: # Define the uploads volume
+    uploads:
