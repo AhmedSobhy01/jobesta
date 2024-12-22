@@ -292,7 +292,7 @@ function Home() {
                         <FontAwesomeIcon
                           key={index}
                           icon={faStar}
-                          className={`text-yellow-500 ${index < parseInt(review.rating) ? 'fas' : 'far'}`}
+                          className={`text-emerald-500 ${index < parseInt(review.rating) ? 'fas' : 'far'}`}
                         />
                       ))}
                     </div>
