@@ -85,19 +85,28 @@ export async function getJobs(req: Request, res: Response): Promise<void> {
 
     const jobsQuery = await db.query(queryString, queryParams);
 
-    const jobPrposalsQuery = await db.query(
-      `
+    let jobPrposalsQuery = { rows: [] };
+
+    if (jobsQuery.rows.length !== 0)
+      jobPrposalsQuery = await db.query(
+        `
       SELECT job_id, COUNT(*) AS proposals_count
       FROM proposals
       WHERE job_id IN (${jobsQuery.rows.map((job) => job.id).join(',')})
       GROUP BY job_id
     `,
-    );
+      );
 
-    const jobProposalsMap = jobPrposalsQuery.rows.reduce((acc, row) => {
-      acc[row.job_id] = row.proposals_count;
-      return acc;
-    }, {});
+    const jobProposalsMap = jobPrposalsQuery.rows.reduce(
+      (
+        acc: { [key: string]: number },
+        row: { job_id: string; proposals_count: number },
+      ) => {
+        acc[row.job_id] = row.proposals_count;
+        return acc;
+      },
+      {},
+    );
 
     const jobs = jobsQuery.rows.map((job) => {
       return {
