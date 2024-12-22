@@ -257,6 +257,11 @@ const EditFreelaancerModal: React.FC<{
 
           <div className="space-y-4 mb-4 mx-2">
             <h3 className="text-lg font-medium text-gray-700">Skills</h3>
+            {errors?.skills && (
+              <p className="text-sm text-red-500 mt-1 block">
+                {errors?.skills}
+              </p>
+            )}
             {skills.length > 0 ? (
               <div className="border rounded-lg p-4 bg-gray-50 shadow-sm space-y-4">
                 {skills.map((skill, index) => (
