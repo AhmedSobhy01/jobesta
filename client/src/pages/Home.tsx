@@ -3,6 +3,7 @@ import {
   faHeadset,
   faLaptopCode,
   faStar,
+  faStarHalfStroke,
   faSuitcase,
   faUserFriends,
   faUserSecret,
@@ -248,7 +249,7 @@ function Home() {
                   )}
                 </h2>
                 <p className="mt-1 text-lg font-medium text-gray-600">
-                  Open Job Positions
+                  Jobs Posted
                 </p>
               </div>
             </div>
@@ -289,13 +290,30 @@ function Home() {
                       {review.sender.firstName} {review.sender.lastName}
                     </p>
                     <div className="flex items-center mt-1">
-                      {[...Array(5)].map((_, index) => (
-                        <FontAwesomeIcon
-                          key={index}
-                          icon={faStar}
-                          className={`text-emerald-500 ${index < parseInt(review.rating) ? 'fas' : 'far'}`}
-                        />
-                      ))}
+                      {[...Array(5)].map((_, index) => {
+                        const roundedRating =
+                          Math.round(Number(review.rating) * 2) / 2;
+                        return (
+                          <span key={index}>
+                            {index < Math.floor(roundedRating) ? (
+                              <FontAwesomeIcon
+                                icon={faStar}
+                                className="text-emerald-500"
+                              />
+                            ) : index < roundedRating ? (
+                              <FontAwesomeIcon
+                                icon={faStarHalfStroke}
+                                className="text-emerald-500"
+                              />
+                            ) : (
+                              <FontAwesomeIcon
+                                icon={faStar}
+                                className="text-gray-300"
+                              />
+                            )}
+                          </span>
+                        );
+                      })}
                     </div>
                     <Link
                       to={`/jobs/${review.job!.id}`}
