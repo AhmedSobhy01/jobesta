@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import db from '../db/db.js';
+import { io } from '../index.js';
 
 export async function getRecentReviews(
   req: Request,
@@ -95,20 +96,44 @@ export async function createReview(req: Request, res: Response): Promise<void> {
         'SELECT account_id FROM freelancers WHERE id = $1',
         [req.params.freelancerId],
       );
-      await db.query(
+      const notificationQuery = await db.query(
         `INSERT INTO notifications (type, message, account_id, url)
-        VALUES ('review_received', 'You have received a review', $1, $2)`,
+        VALUES ('review_received', 'You have received a review', $1, $2) RETURNING id,created_at`,
         [accountResult.rows[0].account_id, `/jobs/${req.params.jobId}`],
+      );
+
+      io.to(`notifications-${accountResult.rows[0].client_id}`).emit(
+        'new-notification',
+        {
+          id: notificationQuery.rows[0].id,
+          type: 'review_received',
+          message: 'You have received a review',
+          isRead: false,
+          createdAt: notificationQuery.rows[0].created_at,
+          url: `/jobs/${req.params.jobId}`,
+        },
       );
     } else {
       const accountResult = await db.query(
         'SELECT client_id FROM jobs WHERE id = $1',
         [req.params.jobId],
       );
-      await db.query(
+      const notificationQuery = await db.query(
         `INSERT INTO notifications (type, message, account_id, url)
-        VALUES ('review_received', 'You have received a review', $1, $2)`,
+        VALUES ('review_received', 'You have received a review', $1, $2) RETURNING id,created_at`,
         [accountResult.rows[0].client_id, `/jobs/${req.params.jobId}`],
+      );
+
+      io.to(`notifications-${accountResult.rows[0].client_id}`).emit(
+        'new-notification',
+        {
+          id: notificationQuery.rows[0].id,
+          type: 'review_received',
+          message: 'You have received a review',
+          isRead: false,
+          createdAt: notificationQuery.rows[0].created_at,
+          url: `/jobs/${req.params.jobId}`,
+        },
       );
     }
 
