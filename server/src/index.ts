@@ -17,7 +17,7 @@ import milestoneRoutes from './routes/milestoneRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
 import paymentRoutes from './routes/paymentsRoutes.js';
 import withdrawalRoutes from './routes/withdrawalRoutes.js';
-import { setupSocketHandlers } from './socket/socket.js';
+import { setupSocketHandlers } from './sockets/socket.js';
 import http from 'http';
 import { Server } from 'socket.io';
 
@@ -133,7 +133,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction): void => {
 
 // Create HTTP server and Socket.IO instance
 const server = http.createServer(app);
-const io = new Server(server, {
+export const io = new Server(server, {
   cors: {
     origin: '*', // Adjust origin based on your requirements
   },
