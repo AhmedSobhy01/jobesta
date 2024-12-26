@@ -166,6 +166,8 @@ export async function deleteMessage(req: Request, res: Response) {
       [req.params.messageId, req.params.jobId, req.params.freelancerId],
     );
 
+    io.to(`job-chat-${req.params.jobId}`).emit('delete-message', req.params.messageId);
+
     res.json({ status: true, message: 'Message deleted' });
   } catch {
     res.status(500).json({ status: false, message: 'Error deleting message' });
