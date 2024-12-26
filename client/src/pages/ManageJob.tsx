@@ -27,7 +27,6 @@ function ManageJob() {
     job: Job;
   }>();
 
-
   const [jobStatus, setJobStatus] = useState<string>(job?.status);
 
   const [proposal, setProposal] = useState<Proposal | null>(
@@ -162,7 +161,6 @@ function ManageJob() {
     };
 
     fetchMessages();
-
   }, [
     job?.id,
     proposal,
@@ -292,12 +290,11 @@ function ManageJob() {
     });
   };
 
-  
   useEffect(() => {
     function recieveMessage(message: Message) {
       setMessages((prevMessages) => [...prevMessages, message]);
       setTimeout(() => {
-        if(messagesContainerRef.current)
+        if (messagesContainerRef.current)
           messagesContainerRef.current.scrollTo({
             top: messagesContainerRef.current.scrollHeight,
             behavior: 'smooth',
@@ -311,7 +308,7 @@ function ManageJob() {
         prevMessages.filter((m) => m.id !== parseInt(messageId)),
       );
       setTimeout(() => {
-        if(messagesContainerRef.current)
+        if (messagesContainerRef.current)
           messagesContainerRef.current.scrollTo({
             top: messagesContainerRef.current.scrollHeight,
             behavior: 'smooth',
@@ -319,34 +316,35 @@ function ManageJob() {
       }, 100);
     }
 
-    if(user.socket) {
+    if (user.socket) {
       user.socket.on('recieve-message', recieveMessage);
       user.socket.on('delete-message', deleteMessage);
     }
 
     return () => {
-      if(user.socket) {
+      if (user.socket) {
         user.socket.off('recieve-message', recieveMessage);
         user.socket.off('delete-message', deleteMessage);
       }
     };
-
   }, [user.socket]);
 
-
-  // TODO: Fix this part
+  const subscribedToChat = useRef(false);
   useEffect(() => {
-    if(user.socket) {
-      user.socket.emit('subscribe-chat', job?.id);
+    if (user.socket && !subscribedToChat.current) {
+      user.socket.emit('subscribe-chat', job.id);
+      subscribedToChat.current = true;
     }
+  }, [user.socket, job.id]);
 
+  useEffect(() => {
     return () => {
-      if(user.socket) {
-        user.socket.emit('unsubscribe-chat', job?.id);
+      if (user.socket && subscribedToChat.current) {
+        user.socket.emit('unsubscribe-chat', job.id);
+        subscribedToChat.current = false;
       }
     };
-
-  }, [job?.id]);
+  }, [user.socket, job.id]);
 
   if (!jobFetchStatus || proposal === null) {
     return (
