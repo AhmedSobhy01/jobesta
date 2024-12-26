@@ -70,12 +70,26 @@ export async function sendMessage(req: Request, res: Response) {
         [req.params.freelancerId],
       );
 
-      await db.query(
+      const notificationQuery = await db.query(
         `INSERT INTO notifications (type, message, account_id, url)
-        VALUES ('message_received', 'You have a new message', $1, $2)`,
+        VALUES ('message_received', 'You have a new message', $1, $2) RETURNING id`,
         [accountResult.rows[0].account_id, `/jobs/${req.params.jobId}/manage`],
       );
+
+      io.to(`notifications-${accountResult.rows[0].account_id}`).emit(
+        'new-notification',
+        {
+          id: notificationQuery.rows[0].id,
+          type: 'message_received',
+          message: 'You have a new message',
+          isRead: false,
+          createdAt: notificationQuery.rows[0].created_at,
+          url: `/jobs/${req.params.jobId}/manage`,
+        },
+      );
+
     }
+
 
     if (req.user!.role === 'freelancer' || req.user!.role === 'admin') {
       const accountResult = await db.query(
@@ -83,11 +97,24 @@ export async function sendMessage(req: Request, res: Response) {
         [req.params.jobId],
       );
 
-      await db.query(
+      const notificationQuery = await db.query(
         `INSERT INTO notifications (type, message, account_id, url)
-        VALUES ('message_received', 'You have a new message', $1, $2)`,
+        VALUES ('message_received', 'You have a new message', $1, $2) RETURNING id`,
         [accountResult.rows[0].client_id, `/jobs/${req.params.jobId}/manage`],
       );
+
+      io.to(`notifications-${accountResult.rows[0].client_id}`).emit(
+        'new-notification',
+        {
+          id: notificationQuery.rows[0].id,
+          type: 'message_received',
+          message: 'You have a new message',
+          isRead: false,
+          createdAt: notificationQuery.rows[0].created_at,
+          url: `/jobs/${req.params.jobId}/manage`,
+        },
+      );
+
     }
 
     const messageTobeSent: IMessage = {
@@ -118,7 +145,8 @@ export async function sendMessage(req: Request, res: Response) {
         message: messageTobeSent,
       },
     });
-  } catch {
+  } catch (err){
+    console.log(err);
     res.status(500).json({ status: false, message: 'Error sending message' });
   }
 }
