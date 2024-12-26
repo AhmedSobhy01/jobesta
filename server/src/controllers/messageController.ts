@@ -87,9 +87,7 @@ export async function sendMessage(req: Request, res: Response) {
           url: `/jobs/${req.params.jobId}/manage`,
         },
       );
-
     }
-
 
     if (req.user!.role === 'freelancer' || req.user!.role === 'admin') {
       const accountResult = await db.query(
@@ -114,7 +112,6 @@ export async function sendMessage(req: Request, res: Response) {
           url: `/jobs/${req.params.jobId}/manage`,
         },
       );
-
     }
 
     const messageTobeSent: IMessage = {
@@ -136,7 +133,10 @@ export async function sendMessage(req: Request, res: Response) {
       },
     };
 
-    io.to(`job-chat-${req.params.jobId}`).emit('recieve-message', messageTobeSent);
+    io.to(`job-chat-${req.params.jobId}`).emit(
+      'recieve-message',
+      messageTobeSent,
+    );
 
     res.json({
       status: true,
@@ -145,7 +145,7 @@ export async function sendMessage(req: Request, res: Response) {
         message: messageTobeSent,
       },
     });
-  } catch (err){
+  } catch (err) {
     console.log(err);
     res.status(500).json({ status: false, message: 'Error sending message' });
   }
@@ -166,7 +166,10 @@ export async function deleteMessage(req: Request, res: Response) {
       [req.params.messageId, req.params.jobId, req.params.freelancerId],
     );
 
-    io.to(`job-chat-${req.params.jobId}`).emit('delete-message', req.params.messageId);
+    io.to(`job-chat-${req.params.jobId}`).emit(
+      'delete-message',
+      req.params.messageId,
+    );
 
     res.json({ status: true, message: 'Message deleted' });
   } catch {

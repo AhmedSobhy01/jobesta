@@ -1,5 +1,5 @@
 import { getAuthJwtToken } from '@/utils/auth';
-import { createContext, useCallback, useEffect, useState,useRef } from 'react';
+import { createContext, useCallback, useEffect, useState, useRef } from 'react';
 import io from 'socket.io-client';
 import { Socket } from 'socket.io-client';
 
@@ -124,7 +124,7 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
     role: userState.role,
     isBanned: userState.isBanned,
     profilePicture: userState.profilePicture,
-    socket:socket.current,
+    socket: socket.current,
     setUser,
     setUsername,
   };

@@ -179,7 +179,7 @@ const NotificationsDropdown = ({ onOpen }: { onOpen: () => void }) => {
   }, []);
 
   const { socket } = useContext(UserContext);
-  
+
   useEffect(() => {
     function addNotification(notification: INotifications) {
       setNotifications((prevNotifications) => [
