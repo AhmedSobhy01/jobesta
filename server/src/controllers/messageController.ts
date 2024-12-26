@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import db from '../db/db.js';
 import { promises as fs } from 'fs';
+import { IMessage } from '../models/model.js';
+import { io } from '../index.js';
 
 export async function getMessages(req: Request, res: Response) {
   try {
@@ -88,28 +90,32 @@ export async function sendMessage(req: Request, res: Response) {
       );
     }
 
+    const messageTobeSent: IMessage = {
+      id: result.rows[0].id,
+      message,
+      attachmentPath: req.file ? req.file.path : null,
+      sentAt: result.rows[0].sent_at,
+      sender: {
+        firstName: req.user!.first_name,
+        lastName: req.user!.last_name,
+        profilePicture:
+          req.user!.profile_picture ||
+          'https://ui-avatars.com/api/?name=' +
+            req.user!.first_name +
+            '+' +
+            req.user!.last_name,
+        username: req.user!.username,
+        isAdmin: req.user!.role === 'admin',
+      },
+    };
+
+    io.to(`job-chat-${req.params.jobId}`).emit('recieve-message', messageTobeSent);
+
     res.json({
       status: true,
       message: 'Message sent',
       data: {
-        message: {
-          id: result.rows[0].id,
-          message,
-          attachmentPath: req.file ? req.file.path : null,
-          sentAt: result.rows[0].sent_at,
-          sender: {
-            firstName: req.user!.first_name,
-            lastName: req.user!.last_name,
-            profilePicture:
-              req.user!.profile_picture ||
-              'https://ui-avatars.com/api/?name=' +
-                req.user!.first_name +
-                '+' +
-                req.user!.last_name,
-            username: req.user!.username,
-            isAdmin: req.user!.role === 'admin',
-          },
-        },
+        message: messageTobeSent,
       },
     });
   } catch {
