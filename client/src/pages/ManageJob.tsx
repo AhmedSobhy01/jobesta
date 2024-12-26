@@ -335,9 +335,6 @@ function ManageJob() {
       user.socket.emit('subscribe-chat', job.id);
       subscribedToChat.current = true;
     }
-  }, [user.socket, job.id]);
-
-  useEffect(() => {
     return () => {
       if (user.socket && subscribedToChat.current) {
         user.socket.emit('unsubscribe-chat', job.id);
