@@ -72,7 +72,7 @@ export async function sendMessage(req: Request, res: Response) {
 
       const notificationQuery = await db.query(
         `INSERT INTO notifications (type, message, account_id, url)
-        VALUES ('message_received', 'You have a new message', $1, $2) RETURNING id`,
+        VALUES ('message_received', 'You have a new message', $1, $2) RETURNING id,created_at`,
         [accountResult.rows[0].account_id, `/jobs/${req.params.jobId}/manage`],
       );
 
@@ -99,7 +99,7 @@ export async function sendMessage(req: Request, res: Response) {
 
       const notificationQuery = await db.query(
         `INSERT INTO notifications (type, message, account_id, url)
-        VALUES ('message_received', 'You have a new message', $1, $2) RETURNING id`,
+        VALUES ('message_received', 'You have a new message', $1, $2) RETURNING id,created_at`,
         [accountResult.rows[0].client_id, `/jobs/${req.params.jobId}/manage`],
       );
 

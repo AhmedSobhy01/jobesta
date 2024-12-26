@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import db from '../db/db.js';
 import { IMilestone, IProposal } from '../models/model.js';
+import { io } from '../index.js';
 
 export async function createProposal(req: Request, res: Response) {
   try {
@@ -27,11 +28,28 @@ export async function createProposal(req: Request, res: Response) {
       );
     }
 
+    const accountResult = await db.query(
+      'SELECT client_id FROM jobs WHERE id = $1',
+      [req.params.jobId],
+    );
+
     // Send notification to client
-    await db.query(
+    const notificationQuery = await db.query(
       `INSERT INTO notifications (type, message, account_id, url)
-      VALUES ('proposal_submitted', 'You have a new proposal on your job', (SELECT client_id FROM jobs WHERE id = $1), $2)`,
-      [req.params.jobId, `/jobs/${req.params.jobId}`],
+      VALUES ('proposal_submitted', 'You have a new proposal on your job', $1, $2) RETURNING id,created_at`,
+      [accountResult.rows[0].client_id, `/jobs/${req.params.jobId}`],
+    );
+
+    io.to(`notifications-${accountResult.rows[0].client_id}`).emit(
+      'new-notification',
+      {
+        id: notificationQuery.rows[0].id,
+        type: 'proposal_submitted',
+        message: 'You have a new proposal on your job',
+        isRead: false,
+        createdAt: notificationQuery.rows[0].created_at,
+        url: `/jobs/${req.params.jobId}`,
+      },
     );
 
     res.status(201).json({ status: true, message: 'Proposal created' });

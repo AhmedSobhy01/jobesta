@@ -368,7 +368,7 @@ export async function acceptProposal(req: Request, res: Response) {
     for (const id of rejectedFreelancers) {
       const rejectFreelancerNotificationQuery = await db.query(
         `INSERT INTO notifications (type, message, account_id, url)
-        VALUES ('proposal_rejected', 'Your proposal has been rejected', $1, $2)`,
+        VALUES ('proposal_rejected', 'Your proposal has been rejected', $1, $2) RETURNING id,created_at`,
         [id, `/jobs/${jobId}`],
       );
 
