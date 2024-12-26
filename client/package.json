@@ -26,6 +26,7 @@
     "react-router-dom": "^7.0.1",
     "react-router-hash-link": "^2.4.3",
     "react-toastify": "^10.0.6",
+    "socket.io-client": "^4.8.1",
     "sweetalert2": "^11.14.5"
   },
   "devDependencies": {
