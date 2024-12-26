@@ -134,7 +134,7 @@ export async function sendMessage(req: Request, res: Response) {
     };
 
     io.to(`job-chat-${req.params.jobId}`).emit(
-      'recieve-message',
+      'receive-message',
       messageTobeSent,
     );
 
@@ -145,8 +145,7 @@ export async function sendMessage(req: Request, res: Response) {
         message: messageTobeSent,
       },
     });
-  } catch (err) {
-    console.log(err);
+  } catch {
     res.status(500).json({ status: false, message: 'Error sending message' });
   }
 }

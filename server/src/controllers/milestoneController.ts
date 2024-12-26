@@ -77,8 +77,7 @@ export async function completeMilestone(req: Request, res: Response) {
     );
 
     res.json({ status: true, message: 'Milestone completed' });
-  } catch (err) {
-    console.error(err);
+  } catch {
     res
       .status(500)
       .json({ status: false, message: 'Error completing milestone' });

@@ -1,9 +1,8 @@
-import { Server, Socket } from 'socket.io';
+import { Socket } from 'socket.io';
 
-export function notificationsHandler(io: Server, socket: Socket) {
+export function notificationsHandler(socket: Socket) {
   socket.on('subscribe-notifications', () => {
     socket.join(`notifications-${socket.data.user.id}`);
-    console.log(`User ${socket.data.user.id} subscribed to notifications`);
   });
 
   socket.on('unsubscribe-notifications', () => {
