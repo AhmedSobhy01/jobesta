@@ -17,6 +17,9 @@ import milestoneRoutes from './routes/milestoneRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
 import paymentRoutes from './routes/paymentsRoutes.js';
 import withdrawalRoutes from './routes/withdrawalRoutes.js';
+import { setupSocketHandlers } from './socket/socket.js';
+import http from 'http';
+import { Server } from 'socket.io';
 
 // Load environment variables from the .env file
 configDotenv();
@@ -128,7 +131,17 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction): void => {
   });
 });
 
+// Create HTTP server and Socket.IO instance
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: '*', // Adjust origin based on your requirements
+  },
+});
+
+setupSocketHandlers(io);
+
 // Start the server and listen on the port defined in the environment variables
-app.listen(process.env.PORT, () => {
+server.listen(process.env.PORT, () => {
   console.log('Started listening on port ' + process.env.PORT);
 });

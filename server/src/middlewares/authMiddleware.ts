@@ -2,6 +2,7 @@ import type { Request, Response, NextFunction } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { configDotenv } from 'dotenv';
 import db from '../db/db.js';
+import { Socket, ExtendedError } from 'socket.io';
 
 configDotenv();
 
@@ -68,4 +69,51 @@ export async function authenticate(
     }
     next();
   });
+}
+
+export async function authenticateSocket(
+  socket: Socket,
+  next: (err?: ExtendedError) => void,
+) {
+  try {
+    const jwtToken = socket.handshake.auth.token;
+
+    const { id } = jwt.verify(
+      jwtToken,
+      process.env.JWT_SECRET as string,
+    ) as JwtPayload;
+
+    const query = await db.query('SELECT * FROM Accounts WHERE id = $1', [id]);
+    if (query.rowCount == 0) throw 'User not found';
+
+    socket.data.user = {
+      id: query.rows[0].id,
+      first_name: query.rows[0].first_name,
+      last_name: query.rows[0].last_name,
+      username: query.rows[0].username,
+      email: query.rows[0].email,
+      role: query.rows[0].role,
+      is_banned: query.rows[0].is_banned,
+      profile_picture: query.rows[0].profile_picture,
+    };
+
+    if (query.rows[0].role == 'freelancer') {
+      const freelancerQuery = await db.query(
+        'SELECT * FROM freelancers WHERE account_id = $1',
+        [id],
+      );
+
+      if (freelancerQuery.rowCount == 0) throw 'Freelancer not found';
+
+      socket.data.user.freelancer = {
+        id: freelancerQuery.rows[0].id,
+        balance: freelancerQuery.rows[0].balance,
+        bio: freelancerQuery.rows[0].bio,
+      };
+    }
+    next();
+  } catch {
+    next(new Error('Unauthorized'));
+    return;
+  }
 }
