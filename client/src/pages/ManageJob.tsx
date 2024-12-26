@@ -27,6 +27,7 @@ function ManageJob() {
     job: Job;
   }>();
 
+
   const [jobStatus, setJobStatus] = useState<string>(job?.status);
 
   const [proposal, setProposal] = useState<Proposal | null>(
@@ -162,9 +163,6 @@ function ManageJob() {
 
     fetchMessages();
 
-    const intervalId = setInterval(fetchMessages, 5000);
-
-    return () => clearInterval(intervalId);
   }, [
     job?.id,
     proposal,
@@ -293,6 +291,62 @@ function ManageJob() {
       },
     });
   };
+
+  
+  useEffect(() => {
+    function recieveMessage(message: Message) {
+      setMessages((prevMessages) => [...prevMessages, message]);
+      setTimeout(() => {
+        if(messagesContainerRef.current)
+          messagesContainerRef.current.scrollTo({
+            top: messagesContainerRef.current.scrollHeight,
+            behavior: 'smooth',
+          });
+      }, 100);
+    }
+
+    function deleteMessage(messageId: string) {
+      console.log('delete message', messageId);
+      setMessages((prevMessages) =>
+        prevMessages.filter((m) => m.id !== parseInt(messageId)),
+      );
+      setTimeout(() => {
+        if(messagesContainerRef.current)
+          messagesContainerRef.current.scrollTo({
+            top: messagesContainerRef.current.scrollHeight,
+            behavior: 'smooth',
+          });
+      }, 100);
+    }
+
+    if(user.socket) {
+      user.socket.on('recieve-message', recieveMessage);
+      user.socket.on('delete-message', deleteMessage);
+    }
+
+    return () => {
+      if(user.socket) {
+        user.socket.off('recieve-message', recieveMessage);
+        user.socket.off('delete-message', deleteMessage);
+      }
+    };
+
+  }, [user.socket]);
+
+
+  // TODO: Fix this part
+  useEffect(() => {
+    if(user.socket) {
+      user.socket.emit('subscribe-chat', job?.id);
+    }
+
+    return () => {
+      if(user.socket) {
+        user.socket.emit('unsubscribe-chat', job?.id);
+      }
+    };
+
+  }, [job?.id]);
 
   if (!jobFetchStatus || proposal === null) {
     return (
