@@ -84,7 +84,7 @@
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/yourusername/jobesta.git
+    git clone https://github.com/AhmedSobhy01/jobesta.git
     cd jobesta
     ```
 
