@@ -98,3 +98,17 @@ interface IWithdrawal {
   freelancer: Freelancer;
   requestedAt: string;
 }
+
+export interface IMessage {
+  id: string;
+  message: string;
+  attachmentPath: string | null;
+  sentAt: Date;
+  sender: {
+    firstName: string;
+    lastName: string;
+    profilePicture: string;
+    username: string;
+    isAdmin: boolean;
+  };
+}

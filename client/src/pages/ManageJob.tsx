@@ -118,14 +118,9 @@ function ManageJob() {
   }, [job, user, user.role, user.username]);
 
   const fetchDataRef = useRef(false);
+  const messagesCountRef = useRef(messages.length);
   useEffect(() => {
     const fetchMessages = async () => {
-      if (fetchDataRef.current) return;
-
-      fetchDataRef.current = true;
-
-      const oldMessagesLength = messages.length;
-
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/messages/${job?.id}/${proposal?.freelancer?.id}`,
         {
@@ -139,6 +134,7 @@ function ManageJob() {
       if (!response.ok) {
         setMessagesError('Failed to fetch messages');
         setLoadingMessages(false);
+        fetchDataRef.current = false;
         return;
       }
 
@@ -146,33 +142,27 @@ function ManageJob() {
       setMessages(data.data.messages);
       setLoadingMessages(false);
 
-      fetchDataRef.current = false;
-
       setTimeout(() => {
         if (
           messagesContainerRef.current &&
-          data.data.messages.length !== oldMessagesLength
+          data.data.messages.length !== messagesCountRef.current
         )
           messagesContainerRef.current.scrollTo({
             top: messagesContainerRef.current.scrollHeight,
             behavior: 'smooth',
           });
+
+        messagesCountRef.current = data.data.messages.length;
       }, 100);
+
+      fetchDataRef.current = false;
     };
 
-    fetchMessages();
-
-    const intervalId = setInterval(fetchMessages, 5000);
-
-    return () => clearInterval(intervalId);
-  }, [
-    job?.id,
-    proposal,
-    messages.length,
-    user.username,
-    job?.reviews,
-    job?.status,
-  ]);
+    if (!fetchDataRef.current) {
+      fetchDataRef.current = true;
+      fetchMessages();
+    }
+  }, [job?.id, proposal?.freelancer?.id, user.username]);
 
   const [message, setMessage] = useState('');
   const [attachment, setAttachment] = useState<File | null>(null);
@@ -237,8 +227,6 @@ function ManageJob() {
       return;
     }
 
-    const data = await response.json();
-    setMessages((prevMessages) => [...prevMessages, data.data.message]);
     setMessage('');
     setAttachment(null);
     setIsSendingMessage(false);
@@ -293,6 +281,58 @@ function ManageJob() {
       },
     });
   };
+
+  useEffect(() => {
+    function receiveMessage(message: Message) {
+      setMessages((prevMessages) => [...prevMessages, message]);
+      setTimeout(() => {
+        if (messagesContainerRef.current)
+          messagesContainerRef.current.scrollTo({
+            top: messagesContainerRef.current.scrollHeight,
+            behavior: 'smooth',
+          });
+      }, 100);
+    }
+
+    function deleteMessage(messageId: string) {
+      setMessages((prevMessages) =>
+        prevMessages.filter((m) => m.id !== parseInt(messageId)),
+      );
+      setTimeout(() => {
+        if (messagesContainerRef.current)
+          messagesContainerRef.current.scrollTo({
+            top: messagesContainerRef.current.scrollHeight,
+            behavior: 'smooth',
+          });
+      }, 100);
+    }
+
+    if (user.socket) {
+      user.socket.on('receive-message', receiveMessage);
+      user.socket.on('delete-message', deleteMessage);
+    }
+
+    return () => {
+      if (user.socket) {
+        user.socket.off('receive-message', receiveMessage);
+        user.socket.off('delete-message', deleteMessage);
+      }
+    };
+  }, [user.socket]);
+
+  const subscribedToChat = useRef(false);
+  useEffect(() => {
+    if (user.socket && !subscribedToChat.current) {
+      user.socket.emit('subscribe-chat', job.id);
+      subscribedToChat.current = true;
+    }
+    return () => {
+      if (user.socket && subscribedToChat.current) {
+        user.socket.emit('unsubscribe-chat', job.id);
+        subscribedToChat.current = false;
+      }
+    };
+  }, [user.socket, job.id]);
 
   if (!jobFetchStatus || proposal === null) {
     return (

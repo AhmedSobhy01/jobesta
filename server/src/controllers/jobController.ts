@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import db from '../db/db.js';
 import { IJob, IProposal } from '../models/model.js';
+import { io } from '../index.js';
 
 export async function createJob(req: Request, res: Response): Promise<void> {
   const { title, description, category, budget, duration } = req.body;
@@ -339,10 +340,21 @@ export async function acceptProposal(req: Request, res: Response) {
       [freelancerId],
     );
 
-    await db.query(
+    const freelancerNotifcationQuery = await db.query(
       `INSERT INTO notifications (type, message, account_id, url)
-      VALUES ('proposal_accepted', 'Your proposal has been accepted', $1, $2)`,
+      VALUES ('proposal_accepted', 'Your proposal has been accepted', $1, $2) RETURNING id,created_at`,
       [accountResult.rows[0].account_id, `/jobs/${jobId}/manage`],
+    );
+    io.to(`notifications-${accountResult.rows[0].account_id}`).emit(
+      'new-notification',
+      {
+        id: freelancerNotifcationQuery.rows[0].id,
+        type: 'proposal_accepted',
+        message: 'Your proposal has been accepted',
+        isRead: false,
+        createdAt: freelancerNotifcationQuery.rows[0].created_at,
+        url: `/jobs/${jobId}/manage`,
+      },
     );
 
     // Send notification to rejected freelancers
@@ -354,10 +366,22 @@ export async function acceptProposal(req: Request, res: Response) {
     const rejectedFreelancers = result.rows.map((row) => row.account_id);
 
     for (const id of rejectedFreelancers) {
-      await db.query(
+      const rejectFreelancerNotificationQuery = await db.query(
         `INSERT INTO notifications (type, message, account_id, url)
-        VALUES ('proposal_rejected', 'Your proposal has been rejected', $1, $2)`,
+        VALUES ('proposal_rejected', 'Your proposal has been rejected', $1, $2) RETURNING id,created_at`,
         [id, `/jobs/${jobId}`],
+      );
+
+      io.to(`notifications-${accountResult.rows[0].account_id}`).emit(
+        'new-notification',
+        {
+          id: rejectFreelancerNotificationQuery.rows[0].id,
+          type: 'proposal_rejected',
+          message: 'Your proposal has been rejected',
+          isRead: false,
+          createdAt: rejectFreelancerNotificationQuery.rows[0].created_at,
+          url: `/jobs/${jobId}`,
+        },
       );
     }
 

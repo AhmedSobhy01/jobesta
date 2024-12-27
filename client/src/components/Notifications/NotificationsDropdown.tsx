@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, useContext } from 'react';
 import { useNavigate } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import NotificationsDropdownSkeleton from '../Skeletons/NotificationsDropdownSkeleton';
@@ -18,6 +18,7 @@ import {
   faStarHalfAlt,
   faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons';
+import UserContext from '@/store/userContext';
 
 const NotificationsDropdown = ({ onOpen }: { onOpen: () => void }) => {
   const navigate = useNavigate();
@@ -175,16 +176,29 @@ const NotificationsDropdown = ({ onOpen }: { onOpen: () => void }) => {
       fetchDataRef.current = true;
       fetchNotifications();
     }
-
-    const interval = setInterval(() => {
-      if (fetchDataRef.current === false) {
-        fetchDataRef.current = true;
-        fetchNotifications();
-      }
-    }, 5000);
-
-    return () => clearInterval(interval);
   }, []);
+
+  const { socket } = useContext(UserContext);
+
+  useEffect(() => {
+    function addNotification(notification: INotifications) {
+      setNotifications((prevNotifications) => [
+        notification,
+        ...prevNotifications,
+      ]);
+      setTotalUnread((prevTotalUnread) => prevTotalUnread + 1);
+    }
+
+    if (socket) {
+      socket.on('new-notification', addNotification);
+    }
+
+    return () => {
+      if (socket) {
+        socket.off('new-notification', addNotification);
+      }
+    };
+  }, [socket]);
 
   return (
     <>

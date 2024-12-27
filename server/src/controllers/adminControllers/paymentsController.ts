@@ -59,8 +59,7 @@ export async function getPaymentsForAccount(req: Request, res: Response) {
     }));
 
     res.status(200).json({ status: true, data: { payments } });
-  } catch (error) {
-    console.error(error);
+  } catch {
     res.status(500).json({ status: false, message: 'Failed to get payments' });
   }
 }

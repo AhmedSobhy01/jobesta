@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import db from '../db/db.js';
 import { promises as fs } from 'fs';
+import { IMessage } from '../models/model.js';
+import { io } from '../index.js';
 
 export async function getMessages(req: Request, res: Response) {
   try {
@@ -68,10 +70,22 @@ export async function sendMessage(req: Request, res: Response) {
         [req.params.freelancerId],
       );
 
-      await db.query(
+      const notificationQuery = await db.query(
         `INSERT INTO notifications (type, message, account_id, url)
-        VALUES ('message_received', 'You have a new message', $1, $2)`,
+        VALUES ('message_received', 'You have a new message', $1, $2) RETURNING id,created_at`,
         [accountResult.rows[0].account_id, `/jobs/${req.params.jobId}/manage`],
+      );
+
+      io.to(`notifications-${accountResult.rows[0].account_id}`).emit(
+        'new-notification',
+        {
+          id: notificationQuery.rows[0].id,
+          type: 'message_received',
+          message: 'You have a new message',
+          isRead: false,
+          createdAt: notificationQuery.rows[0].created_at,
+          url: `/jobs/${req.params.jobId}/manage`,
+        },
       );
     }
 
@@ -81,35 +95,54 @@ export async function sendMessage(req: Request, res: Response) {
         [req.params.jobId],
       );
 
-      await db.query(
+      const notificationQuery = await db.query(
         `INSERT INTO notifications (type, message, account_id, url)
-        VALUES ('message_received', 'You have a new message', $1, $2)`,
+        VALUES ('message_received', 'You have a new message', $1, $2) RETURNING id,created_at`,
         [accountResult.rows[0].client_id, `/jobs/${req.params.jobId}/manage`],
       );
+
+      io.to(`notifications-${accountResult.rows[0].client_id}`).emit(
+        'new-notification',
+        {
+          id: notificationQuery.rows[0].id,
+          type: 'message_received',
+          message: 'You have a new message',
+          isRead: false,
+          createdAt: notificationQuery.rows[0].created_at,
+          url: `/jobs/${req.params.jobId}/manage`,
+        },
+      );
     }
+
+    const messageTobeSent: IMessage = {
+      id: result.rows[0].id,
+      message,
+      attachmentPath: req.file ? req.file.path : null,
+      sentAt: result.rows[0].sent_at,
+      sender: {
+        firstName: req.user!.first_name,
+        lastName: req.user!.last_name,
+        profilePicture:
+          req.user!.profile_picture ||
+          'https://ui-avatars.com/api/?name=' +
+            req.user!.first_name +
+            '+' +
+            req.user!.last_name,
+        username: req.user!.username,
+        isAdmin: req.user!.role === 'admin',
+      },
+    };
+
+    io.to(`job-chat-${req.params.jobId}`).emit(
+      'receive-message',
+      messageTobeSent,
+    );
 
     res.json({
       status: true,
       message: 'Message sent',
       data: {
-        message: {
-          id: result.rows[0].id,
-          message,
-          attachmentPath: req.file ? req.file.path : null,
-          sentAt: result.rows[0].sent_at,
-          sender: {
-            firstName: req.user!.first_name,
-            lastName: req.user!.last_name,
-            profilePicture:
-              req.user!.profile_picture ||
-              'https://ui-avatars.com/api/?name=' +
-                req.user!.first_name +
-                '+' +
-                req.user!.last_name,
-            username: req.user!.username,
-            isAdmin: req.user!.role === 'admin',
-          },
-        },
+        message: messageTobeSent,
       },
     });
   } catch {
@@ -130,6 +163,11 @@ export async function deleteMessage(req: Request, res: Response) {
     await db.query(
       `DELETE FROM messages WHERE id = $1 AND job_id = $2 AND freelancer_id = $3`,
       [req.params.messageId, req.params.jobId, req.params.freelancerId],
+    );
+
+    io.to(`job-chat-${req.params.jobId}`).emit(
+      'delete-message',
+      req.params.messageId,
     );
 
     res.json({ status: true, message: 'Message deleted' });

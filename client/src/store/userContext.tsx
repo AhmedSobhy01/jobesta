@@ -1,4 +1,7 @@
-import { createContext, useCallback, useState } from 'react';
+import { getAuthJwtToken } from '@/utils/auth';
+import { createContext, useCallback, useEffect, useState, useRef } from 'react';
+import io from 'socket.io-client';
+import { Socket } from 'socket.io-client';
 
 interface UserContextType {
   isUserLoading: boolean;
@@ -10,6 +13,7 @@ interface UserContextType {
   role: string | null;
   isBanned: boolean | null;
   profilePicture: string | null;
+  socket: Socket | null;
   setUsername: (username: string | null) => void;
   setUser: (newUser: {
     isUserLoading: boolean;
@@ -35,6 +39,7 @@ const UserContext = createContext<UserContextType>({
   role: null,
   isBanned: null,
   profilePicture: null,
+  socket: null,
   setUsername: () => {},
   setUser: () => {},
 });
@@ -42,6 +47,7 @@ const UserContext = createContext<UserContextType>({
 export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const socket = useRef<Socket | null>(null);
   const [userState, setUserState] = useState<{
     isUserLoading: boolean;
     accountId: string | null;
@@ -71,6 +77,26 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
     }));
   }, []);
 
+  useEffect(() => {
+    const token = getAuthJwtToken();
+    if (token && !socket.current) {
+      socket.current = io(import.meta.env.VITE_API_URL as string, {
+        auth: {
+          token,
+        },
+      });
+      socket.current.emit('subscribe-notifications');
+    }
+
+    return () => {
+      if (socket.current) {
+        socket.current.disconnect();
+        socket.current.emit('unsubscribe-notifications');
+        socket.current = null; // Reset socket connection
+      }
+    };
+  }, [userState.accountId]);
+
   const setUser = useCallback(
     (newUser: {
       isUserLoading: boolean;
@@ -98,6 +124,7 @@ export const UserContextProvider: React.FC<{ children: React.ReactNode }> = ({
     role: userState.role,
     isBanned: userState.isBanned,
     profilePicture: userState.profilePicture,
+    socket: socket.current,
     setUser,
     setUsername,
   };
